@@ -1411,7 +1411,7 @@ function PeerT(){
    Every player keeps one connection to each relay below; the host's state is published as a
    retained message, so someone who opens the link gets the table straight away. Works on any
    network (mobile data, hotel wifi, school networks) because nobody connects to anybody directly. */
-const RELAYS=(()=>{try{const o=new URLSearchParams(location.search).get('relay'); if(o) return o.split(',');}catch(e){} return ['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt','wss://test.mosquitto.org:8081/mqtt'];})();
+const RELAYS=(()=>{try{const o=new URLSearchParams(location.search).get('relay'); if(o) return o.split(',');}catch(e){} return ['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt'];})();
 const RELAY_ROOT='moropoly-hcmh/v1/';
 const U8=new TextEncoder(), D8=new TextDecoder();
 function mqStr(s){const b=typeof s==='string'?U8.encode(s):s; const o=new Uint8Array(2+b.length); o[0]=b.length>>8; o[1]=b.length&255; o.set(b,2); return o;}
