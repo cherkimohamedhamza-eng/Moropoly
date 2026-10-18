@@ -393,6 +393,18 @@ button,.cell,.tok{touch-action:manipulation}
   .ttl .tif{display:none}
   .event{font-size:2.6cqi}
 }
+/* languages */
+.langsw{display:inline-flex;border:1px solid var(--line-2);border-radius:999px;overflow:hidden;flex:0 0 auto;direction:ltr}
+.langsw button{background:none;border:0;padding:6px 10px;font-size:12px;font-weight:700;color:var(--dim);min-width:34px;letter-spacing:.04em}
+.langsw button[aria-pressed="true"]{background:var(--metal);color:var(--ink)}
+.langsw button[lang="ar"]{font-family:var(--f-ar);font-size:14px;line-height:1}
+.board-box,#map,.marquee,.dice,.invite .field,.code{direction:ltr}
+html[lang="ar"] .eyebrow,html[lang="ar"] .sec,html[lang="ar"] .chipcode,html[lang="ar"] .feat h3,html[lang="ar"] .corner .lat,html[lang="ar"] .fate .kl{letter-spacing:0}
+html[lang="ar"] .hero h1,html[lang="ar"] .h2,html[lang="ar"] .feat h3,html[lang="ar"] .modal .hd h2,html[lang="ar"] .who .n,html[lang="ar"] .who .cash,html[lang="ar"] .book h3,html[lang="ar"] .sec,html[lang="ar"] .eyebrow,html[lang="ar"] .bidbig,html[lang="ar"] .floater{font-family:var(--f-ar)}
+html[lang="ar"] .hero h1{line-height:1.3;font-weight:700}
+html[lang="ar"] body{font-size:14.5px}
+html[lang="ar"] .corner .lat:empty,html[lang="ar"] .cell .nm:empty{display:none}
+html[lang="ar"] .cell .nm{font-family:var(--f-ar);font-size:1.25cqi}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.map-land{stroke-dashoffset:0;fill-opacity:1}}
 </style>
 </head>
@@ -403,55 +415,55 @@ button,.cell,.tok{touch-action:manipulation}
 <!-- ================= HOME ================= -->
 <section id="home" class="wrap">
   <div class="home-top">
-    <canvas id="flag" width="168" height="116" aria-label="Flag of Morocco"></canvas>
+    <canvas id="flag" width="168" height="116" data-i18n-aria="aria.flag"></canvas>
     <div class="wm">MOROPOLY<span class="ar">مُوروبولي</span><span class="tif">ⵎⵓⵔⵓⴱⵓⵍⵉ</span></div>
     <div class="sp"></div>
-    <span class="eyebrow">2–8 players · online or one screen</span>
+    <span class="eyebrow" data-i18n="home.players"></span><div class="langsw"></div>
   </div>
   <div class="hero">
     <div>
-      <div class="eyebrow">لعبة العقارات المغربية · The Moroccan property game</div>
-      <h1><span class="s">Buy Morocco,</span><br>from <span class="r">Salé</span> to <span class="g">Ain Diab</span>.</h1>
-      <p class="lead">Host a game, send the invite link, and your friends join from their own screens. Each player picks a name and one of the ten silver tokens, then the dice decide.</p>
+      <div class="eyebrow" data-i18n="home.eyebrow"></div>
+      <h1 data-i18n="home.h1"></h1>
+      <p class="lead" data-i18n="home.lead"></p>
       <div class="ctas">
-        <button class="btn red" id="hostBtn">Host an online game</button>
-        <button class="btn" id="localBtn">Play on this device</button>
-        <button class="btn ghost" id="installBtn" hidden>Install the app</button>
+        <button class="btn red" id="hostBtn" data-i18n="home.host"></button>
+        <button class="btn" id="localBtn" data-i18n="home.local"></button>
+        <button class="btn ghost" id="installBtn" hidden data-i18n="home.install"></button>
       </div>
       <form class="joinrow" id="joinForm" autocomplete="off">
-        <input class="field" id="joinCode" maxlength="8" placeholder="Game code" aria-label="Game code">
-        <button class="btn green" type="submit">Join</button>
+        <input class="field" id="joinCode" maxlength="8" dir="ltr" data-i18n-ph="home.code" data-i18n-aria="home.code">
+        <button class="btn green" type="submit" data-i18n="home.join"></button>
       </form>
-      <div class="note" id="onlineNote">Checking online play…</div>
+      <div class="note" id="onlineNote"></div>
       <div class="mygames" id="myGames"></div>
     </div>
-    <div class="hero-map"><svg id="map" viewBox="0 0 420 450" role="img" aria-label="Map of Morocco with the game’s cities"></svg></div>
+    <div class="hero-map"><svg id="map" viewBox="0 0 420 450" role="img" data-i18n-aria="aria.map"></svg></div>
   </div>
   <div class="parade" id="parade"></div>
   <div class="marquee"><div class="track" id="mq1"></div></div>
   <div class="marquee rev"><div class="track" id="mq2"></div></div>
   <div class="feats">
-    <div class="feat"><div class="k" style="color:var(--red-hi)">الدلالة</div><h3>DLALA</h3><p>Nobody buys a property? The souk auctioneer sells it to the highest bidder.</p></div>
-    <div class="feat"><div class="k" style="color:var(--green-hi)">دارت</div><h3>DARET</h3><p>Taxes and fines pool into the Daret. Stop at the Qahwa and take it all.</p></div>
-    <div class="feat"><div class="k" style="color:var(--silver-hi)">مكتوب · بركة</div><h3>MEKTOUB &amp; BARAKA</h3><p>Grand taxis, radars, the Eid sheep, Friday couscous and grandma’s baraka.</p></div>
-    <div class="feat"><div class="k" style="color:var(--red-hi)">عكاشة</div><h3>3OKACHA</h3><p>Roll a double, pay 500 DH, or hope your cousin really is a lawyer.</p></div>
+    <div class="feat"><div class="k" style="color:var(--red-hi)">الدلالة</div><h3 data-i18n="feat.dlala"></h3><p data-i18n="feat.dlalaP"></p></div>
+    <div class="feat"><div class="k" style="color:var(--green-hi)">دارت</div><h3 data-i18n="feat.daret"></h3><p data-i18n="feat.daretP"></p></div>
+    <div class="feat"><div class="k" style="color:var(--silver-hi)">مكتوب · بركة</div><h3 data-i18n="feat.cards"></h3><p data-i18n="feat.cardsP"></p></div>
+    <div class="feat"><div class="k" style="color:var(--red-hi)">عكاشة</div><h3 data-i18n="feat.jail"></h3><p data-i18n="feat.jailP"></p></div>
   </div>
   <div class="sketch">
     <img src="assets/board.webp" alt="Moropoly board concept sketch">
-    <div><div class="eyebrow">From the sketchbook</div><h2 class="h2">Every tile has its own painting</h2><p class="muted">22 property cards painted for Moropoly, from the riverside homes of Sidi Moussa to the Twin Center in Maarif, plus the 3okacha gate and ten silver tokens. They all appear in the game: on the board, in the deed cards and in the reveal when you land.</p></div>
+    <div><div class="eyebrow" data-i18n="sk.eyebrow"></div><h2 class="h2" data-i18n="sk.h2"></h2><p class="muted" data-i18n="sk.p"></p></div>
   </div>
 </section>
 
 <!-- ================= LOCAL SETUP ================= -->
 <section id="setup" class="wrap screen" hidden>
-  <div class="bar-top"><button class="btn ghost sm" data-home>← Home</button><div class="sp"></div></div>
-  <div class="eyebrow">Play on this device</div>
-  <h2 class="h2">Who’s playing?</h2>
-  <p class="muted">Pass the screen around. Turn seats on or off, and let the computer take any empty chair.</p>
+  <div class="bar-top"><button class="btn ghost sm" data-home data-i18n="back"></button><div class="sp"></div><div class="langsw"></div></div>
+  <div class="eyebrow" data-i18n="setup.eyebrow"></div>
+  <h2 class="h2" data-i18n="setup.h2"></h2>
+  <p class="muted" data-i18n="setup.p"></p>
   <div class="seats" id="seats"></div>
-  <div class="sec">House rules</div>
+  <div class="sec" data-i18n="sec.rules"></div>
   <div class="opts" id="optsLocal"></div>
-  <div class="ctas" style="margin-top:20px"><button class="btn red" id="startLocal">Start game</button><button class="btn" id="demoLocal">Watch 8 computer players</button><button class="btn" id="resumeLocal" hidden>Resume saved game</button><span class="muted" id="seatCount"></span></div>
+  <div class="ctas" style="margin-top:20px"><button class="btn red" id="startLocal" data-i18n="btn.startGame"></button><button class="btn" id="demoLocal" data-i18n="btn.demo"></button><button class="btn" id="resumeLocal" hidden data-i18n="btn.resume"></button><span class="muted" id="seatCount"></span></div>
 </section>
 
 <!-- ================= LOBBY ================= -->
@@ -464,8 +476,9 @@ button,.cell,.tok{touch-action:manipulation}
     <div class="wm" style="font-size:16px">MOROPOLY</div>
     <span class="muted" id="roundMeta"></span>
     <div class="sp"></div>
-    <span class="chipcode" id="codeChip" hidden></span>
-    <button class="btn ghost sm" id="leaveBtn">Leave</button>
+    <span class="chipcode" id="codeChip" hidden dir="ltr"></span>
+    <div class="langsw"></div>
+    <button class="btn ghost sm" id="leaveBtn" data-i18n="btn.leave"></button>
   </div>
   <div id="bannerSlot"></div>
   <div class="layout">
@@ -474,10 +487,10 @@ button,.cell,.tok{touch-action:manipulation}
       <div class="turn" id="turnCard"></div>
       <div>
         <div class="tabs" role="tablist" id="tabs">
-          <button role="tab" aria-selected="true" data-tab="players">Players</button>
-          <button role="tab" aria-selected="false" data-tab="deeds">My deeds</button>
-          <button role="tab" aria-selected="false" data-tab="log">Journal</button>
-          <button role="tab" aria-selected="false" data-tab="book">Rules</button>
+          <button role="tab" aria-selected="true" data-tab="players" data-i18n="tab.players"></button>
+          <button role="tab" aria-selected="false" data-tab="deeds" data-i18n="tab.deeds"></button>
+          <button role="tab" aria-selected="false" data-tab="log" data-i18n="tab.log"></button>
+          <button role="tab" aria-selected="false" data-tab="book" data-i18n="tab.book"></button>
         </div>
         <div class="tabpanel" id="tabpanel"></div>
       </div>
@@ -514,7 +527,7 @@ const SP=[
  {t:'prop',g:'brown',name:'Sidi Moussa',ar:'سيدي موسى',price:400,rent:R(2,10,30,90,160,250),note:'Historic neighbour of Rabat, looking over the Bouregreg.'},
  {t:'baraka',name:'Baraka',ar:'بركة'},
  {t:'prop',g:'brown',name:'Tabriket',ar:'تابريكت',price:450,rent:R(4,20,60,180,320,450),note:'Quiet residential streets and market stalls.'},
- {t:'tax',name:'Impôts',ar:'الضرائب',amount:2000,why:'income tax'},
+ {t:'tax',name:'Impôts',ar:'الضرائب',amount:2000,why:'incomeTax'},
  {t:'rail',name:'Tanger TGV',ar:'محطة طنجة',price:2000},
  {t:'prop',g:'lblue',name:'Blue Medina',ar:'المدينة الزرقاء',price:600,rent:R(6,30,90,270,400,550),note:'Iconic blue alleys of the Rif.'},
  {t:'mektoub',name:'Mektoub',ar:'مكتوب'},
@@ -548,7 +561,7 @@ const SP=[
  {t:'rail',name:'Marrakech Gare',ar:'محطة مراكش',price:2000},
  {t:'mektoub',name:'Mektoub',ar:'مكتوب'},
  {t:'prop',g:'dblue',name:'Maarif',ar:'المعاريف',price:3800,rent:R(35,175,500,1100,1300,1500),note:'The Twin Center and the business district.'},
- {t:'tax',name:"L'3ers",ar:'العرس',amount:1000,why:'wedding season'},
+ {t:'tax',name:"L'3ers",ar:'العرس',amount:1000,why:'wedding'},
  {t:'prop',g:'dblue',name:'Ain Diab',ar:'عين الذياب',price:4000,rent:R(50,200,600,1400,1700,2000),note:'The corniche at sunset.'}
 ];
 SP.forEach((s,i)=>{if(s.t==='prop') s.art=ART(i);}); SP[30].art=ART(30); SP[10].art=ART(30);
@@ -566,31 +579,31 @@ const MEKTOUB=[
  {text:'Take Al Boraq. Advance to the nearest station and pay the owner double rent.',act:(G,p)=>{moveTo(G,p,nextOf(p.pos,RAILS));land(G,p,{railDouble:true});}},
  {text:'Summer on the corniche. Advance to Ain Diab.',act:(G,p)=>{moveTo(G,p,39);land(G,p);}},
  {text:'The power is out. Advance to the nearest utility. If it is owned, pay 100 × the dice.',act:(G,p)=>{moveTo(G,p,nextOf(p.pos,UTILS));land(G,p,{util100:true});}},
- {text:'Radar on the autoroute. Pay a 300 DH fine.',act:(G,p)=>payTax(G,p,300,'a speeding fine')},
+ {text:'Radar on the autoroute. Pay a 300 DH fine.',act:(G,p)=>payTax(G,p,300,'speeding')},
  {text:'You left your CIN at home. Go back 3 spaces.',act:(G,p)=>{jumpTo(G,p,(p.pos+37)%40);land(G,p);}},
  {text:'Go directly to 3okacha. Do not pass Al Inṭilāq.',act:(G,p)=>sendToJail(G,p)},
  {text:'Your cousin is a lawyer. Get out of 3okacha free.',goojf:true},
  {text:'You resold your Mawazine tickets. Collect 500 DH.',act:(G,p)=>gain(G,p,500)},
  {text:'Your stall in the souk had a great season. Collect 1,500 DH.',act:(G,p)=>gain(G,p,1500)},
  {text:'The commune repaints the medina. Pay 250 DH per dar and 1,000 DH per riad.',act:(G,p)=>repairs(G,p,250,1000)},
- {text:'You were elected head of the neighbourhood association. Pay each player 200 DH.',act:(G,p)=>alive(G).filter(o=>o.id!==p.id).forEach(o=>pay(G,p,o.id,200,'association dues'))},
+ {text:'You were elected head of the neighbourhood association. Pay each player 200 DH.',act:(G,p)=>alive(G).filter(o=>o.id!==p.id).forEach(o=>pay(G,p,o.id,200,'assoc'))},
  {text:'A tourist paid full price for your carpet. Collect 1,000 DH.',act:(G,p)=>gain(G,p,1000)}
 ];
 const BARAKA=[
  {text:'Your grandmother’s baraka. Collect 2,000 DH.',act:(G,p)=>gain(G,p,2000)},
  {text:'Your cousin abroad sends money home. Collect 1,000 DH.',act:(G,p)=>gain(G,p,1000)},
- {text:'Eid al-Adha. Buy the sheep. Pay 1,500 DH.',act:(G,p)=>payTax(G,p,1500,'the Eid sheep')},
- {text:'Henna night for your sister. Pay 500 DH.',act:(G,p)=>payTax(G,p,500,'henna night')},
- {text:'It is your birthday. Every player gives you 100 DH.',act:(G,p)=>alive(G).filter(o=>o.id!==p.id).forEach(o=>pay(G,o,p.id,100,'a birthday gift'))},
+ {text:'Eid al-Adha. Buy the sheep. Pay 1,500 DH.',act:(G,p)=>payTax(G,p,1500,'eid')},
+ {text:'Henna night for your sister. Pay 500 DH.',act:(G,p)=>payTax(G,p,500,'henna')},
+ {text:'It is your birthday. Every player gives you 100 DH.',act:(G,p)=>alive(G).filter(o=>o.id!==p.id).forEach(o=>pay(G,o,p.id,100,'birthday'))},
  {text:'Your argan cooperative sold its harvest. Collect 1,000 DH.',act:(G,p)=>gain(G,p,1000)},
- {text:'Hammam and gommage. Pay 100 DH.',act:(G,p)=>payTax(G,p,100,'the hammam')},
- {text:'Doctor’s fees. Pay 500 DH.',act:(G,p)=>payTax(G,p,500,'doctor’s fees')},
+ {text:'Hammam and gommage. Pay 100 DH.',act:(G,p)=>payTax(G,p,100,'hammam')},
+ {text:'Doctor’s fees. Pay 500 DH.',act:(G,p)=>payTax(G,p,500,'doctor')},
  {text:'Bank error in your favour. Collect 2,000 DH.',act:(G,p)=>gain(G,p,2000)},
  {text:'Your uncle knows the judge. Get out of 3okacha free.',goojf:true},
  {text:'Go directly to 3okacha. Do not pass Al Inṭilāq.',act:(G,p)=>sendToJail(G,p)},
  {text:'Advance to Al Inṭilāq. Collect 2,000 DH.',act:(G,p)=>moveTo(G,p,0)},
  {text:'Ftour for the whole family. Pay 400 DH.',act:(G,p)=>payTax(G,p,400,'ftour')},
- {text:'Friday couscous at your place. Every player brings 150 DH.',act:(G,p)=>alive(G).filter(o=>o.id!==p.id).forEach(o=>pay(G,o,p.id,150,'Friday couscous'))},
+ {text:'Friday couscous at your place. Every player brings 150 DH.',act:(G,p)=>alive(G).filter(o=>o.id!==p.id).forEach(o=>pay(G,o,p.id,150,'couscous'))},
  {text:'Tax refund. Collect 200 DH.',act:(G,p)=>gain(G,p,200)},
  {text:'Roof repairs after the rains. Pay 400 DH per dar and 1,150 DH per riad.',act:(G,p)=>repairs(G,p,400,1150)}
 ];
@@ -599,7 +612,6 @@ const BARAKA=[
    HELPERS
    ============================================================ */
 const $=id=>document.getElementById(id);
-const fmt=n=>(n<0?'−':'')+Math.abs(Math.round(n)).toLocaleString('en-US')+' DH';
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const rnd6=()=>1+Math.floor(Math.random()*6);
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
@@ -622,12 +634,338 @@ document.addEventListener('error',e=>{const t=e.target; if(t&&t.tagName==='IMG')
 function toast(msg){const t=document.createElement('div'); t.className='toast'; t.textContent=msg; $('toasts').appendChild(t); setTimeout(()=>t.remove(),2800);}
 function lsGet(k){try{return JSON.parse(localStorage.getItem(k));}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+/* ============================================================
+   LANGUAGES: English, Français, العربية
+   ============================================================ */
+const LANGS=[['en','EN','English'],['fr','FR','Français'],['ar','ع','العربية']];
+let LANG=(()=>{const s=lsGet('moropoly.lang'); if(['en','fr','ar'].includes(s)) return s; const n=(navigator.language||'en').slice(0,2).toLowerCase(); return ['fr','ar'].includes(n)?n:'en';})();
+const STR={en:{},fr:{},ar:{}};
+function S(k,en,fr,ar){STR.en[k]=en; STR.fr[k]=fr; STR.ar[k]=ar;}
+function t(k,p){
+  let s=STR[LANG][k]; if(s==null) s=STR.en[k]; if(s==null) return k;
+  if(typeof s==='function') return s(p||{});
+  return p?String(s).replace(/\{(\w+)\}/g,(m,x)=>p[x]!=null?p[x]:''):s;
+}
+const num=n=>LANG==='fr'?Math.round(n).toLocaleString('fr-FR'):Math.round(n).toLocaleString('en-US');
+const fmt=n=>(n<0?'−':'')+num(Math.abs(n))+(LANG==='ar'?' درهم':' DH');
+/* names */
+const SP_FR={6:'Médina bleue',14:'Tannerie Chouara',26:'Tour Hassan',30:'Allez à 3okacha',35:'Gare de Marrakech',39:'Aïn Diab'};
+const CITY_FR={red:'Tanger'};
+const spN=i=>{const s=SP[i]; if(!s) return ''; if(LANG==='ar') return s.ar; if(LANG==='fr'&&SP_FR[i]) return SP_FR[i]; return s.name;};
+const cityN=g=>LANG==='ar'?GROUPS[g].ar:(LANG==='fr'&&CITY_FR[g])||GROUPS[g].city;
+const TOK_FR=['Petit taxi rouge','Petit taxi bleu','Al Boraq','Chameau','Koutoubia','Théière berrad','Ferry','Scooter de la poste','Scooter coursier','Barque de pêche'];
+const TOK_AR=['طاكسي صغير أحمر','طاكسي صغير أزرق','البراق','جمل','الكتبية','برّاد الشاي','عبّارة','دراجة البريد','دراجة التوصيل','قارب صيد'];
+const tokN=k=>LANG==='fr'?TOK_FR[k]:LANG==='ar'?TOK_AR[k]:TOKENS[k].name;
+const NOTE_FR={1:'Voisine historique de Rabat, face au Bouregreg.',3:'Rues résidentielles calmes et étals du marché.',6:'Les ruelles bleues emblématiques du Rif.',8:'Forteresse historique au cœur de la médina.',9:'La source et la cascade au-dessus de la ville.',11:'L’ancienne médina, un labyrinthe de souks.',13:'La plus ancienne université encore en activité au monde.',14:'Les cuves de teinture vues depuis les terrasses.',16:'Le plus grand marché de la ville.',18:'Quartier central de cafés et d’avenues de palmiers.',19:'La kasbah perchée au-dessus de la baie.',21:'Quartier historique de villas au-dessus du détroit.',23:'Front de mer moderne sur la baie de Tanger.',24:'Élégantes avenues résidentielles bordées d’arbres.',26:'Le minaret inachevé et son esplanade.',27:'Cafés, tramway et verdure.',29:'Ministères, ambassades et avenues de palmiers.',31:'Le minaret et ses jardins au coucher du soleil.',32:'La place la nuit : lanternes, musiciens, foule.',34:'Boulevards de palmiers, cafés art déco et boutiques.',37:'Le Twin Center et le quartier des affaires.',39:'La corniche au coucher du soleil.',12:'Électricité et eau',28:'Télécommunications'};
+const NOTE_AR={1:'الجارة التاريخية للرباط، مطلّة على أبي رقراق.',3:'أزقة سكنية هادئة وطاولات السوق.',6:'الأزقة الزرقاء الشهيرة في الريف.',8:'قلعة تاريخية في قلب المدينة القديمة.',9:'العين والشلال فوق المدينة.',11:'المدينة العتيقة، متاهة من الأسواق.',13:'أقدم جامعة ما زالت تعمل في العالم.',14:'أحواض الصباغة كما تُرى من السطوح.',16:'أكبر سوق في المدينة.',18:'حي مركزي بمقاهيه وشوارع النخيل.',19:'القصبة المطلّة على الخليج.',21:'حي تاريخي من الفيلات فوق المضيق.',23:'واجهة بحرية حديثة على خليج طنجة.',24:'شوارع سكنية أنيقة تحفّها الأشجار.',26:'الصومعة غير المكتملة وساحتها.',27:'مقاهٍ وترامواي ومساحات خضراء.',29:'وزارات وسفارات وشوارع نخيل.',31:'الصومعة وحدائقها عند الغروب.',32:'الساحة ليلًا: فوانيس وموسيقيون وجموع.',34:'شوارع النخيل ومقاهي الآرت ديكو والمتاجر.',37:'التوين سنتر وحي الأعمال.',39:'الكورنيش عند الغروب.',12:'الكهرباء والماء',28:'الاتصالات'};
+const noteN=i=>LANG==='fr'?NOTE_FR[i]:LANG==='ar'?NOTE_AR[i]:(SP[i].note||SP[i].kind||'');
+const CARD_TX={
+ mektoub:{
+  fr:['Avancez jusqu’à Al Inṭilāq. Recevez 2 000 DH.','Grand taxi pour Marrakech. Avancez jusqu’à Jemaa el-Fna.','Week-end à Tanger. Avancez jusqu’à Marshan.','Prenez Al Boraq. Avancez jusqu’à la gare la plus proche et payez le double du loyer au propriétaire.','Prenez Al Boraq. Avancez jusqu’à la gare la plus proche et payez le double du loyer au propriétaire.','L’été sur la corniche. Avancez jusqu’à Aïn Diab.','Coupure de courant. Avancez jusqu’au service public le plus proche. S’il a un propriétaire, payez 100 × les dés.','Radar sur l’autoroute. Payez une amende de 300 DH.','Vous avez oublié votre CIN à la maison. Reculez de 3 cases.','Allez directement à 3okacha. Ne passez pas par Al Inṭilāq.','Votre cousin est avocat. Vous êtes libéré de 3okacha.','Vous avez revendu vos billets pour Mawazine. Recevez 500 DH.','Votre étal au souk a fait une belle saison. Recevez 1 500 DH.','La commune repeint la médina. Payez 250 DH par dar et 1 000 DH par riad.','Vous êtes élu président de l’association du quartier. Payez 200 DH à chaque joueur.','Un touriste a payé votre tapis au prix fort. Recevez 1 000 DH.'],
+  ar:['تقدّم إلى الانطلاق. احصل على 2,000 درهم.','طاكسي كبير إلى مراكش. تقدّم إلى جامع الفنا.','عطلة نهاية الأسبوع في طنجة. تقدّم إلى مرشان.','اركب البراق. تقدّم إلى أقرب محطة وادفع للمالك ضعف الكراء.','اركب البراق. تقدّم إلى أقرب محطة وادفع للمالك ضعف الكراء.','الصيف على الكورنيش. تقدّم إلى عين الذياب.','انقطع الضوء. تقدّم إلى أقرب مرفق. إن كان له مالك، ادفع 100 × مجموع النرد.','رادار في الطريق السيار. ادفع غرامة 300 درهم.','نسيت البطاقة الوطنية في الدار. ارجع 3 خانات.','اذهب مباشرة إلى عكاشة. لا تمرّ بالانطلاق.','ابن عمك محامٍ. اخرج من عكاشة مجانًا.','بعت تذاكر موازين. احصل على 500 درهم.','حانوتك في السوق عرف موسمًا ممتازًا. احصل على 1,500 درهم.','الجماعة تعيد صباغة المدينة القديمة. ادفع 250 درهمًا عن كل دار و1,000 درهم عن كل رياض.','انتُخبت رئيسًا لجمعية الحي. ادفع 200 درهم لكل لاعب.','سائح اشترى زربيتك بثمنها الكامل. احصل على 1,000 درهم.']},
+ baraka:{
+  fr:['La baraka de votre grand-mère. Recevez 2 000 DH.','Votre cousin à l’étranger envoie de l’argent. Recevez 1 000 DH.','Aïd al-Adha. Achetez le mouton. Payez 1 500 DH.','Soirée du henné pour votre sœur. Payez 500 DH.','C’est votre anniversaire. Chaque joueur vous donne 100 DH.','Votre coopérative d’argan a vendu sa récolte. Recevez 1 000 DH.','Hammam et gommage. Payez 100 DH.','Frais de médecin. Payez 500 DH.','Erreur de la banque en votre faveur. Recevez 2 000 DH.','Votre oncle connaît le juge. Vous êtes libéré de 3okacha.','Allez directement à 3okacha. Ne passez pas par Al Inṭilāq.','Avancez jusqu’à Al Inṭilāq. Recevez 2 000 DH.','Ftour pour toute la famille. Payez 400 DH.','Couscous du vendredi chez vous. Chaque joueur apporte 150 DH.','Remboursement d’impôts. Recevez 200 DH.','Réparation du toit après la pluie. Payez 400 DH par dar et 1 150 DH par riad.'],
+  ar:['بركة جدّتك. احصل على 2,000 درهم.','ابن عمك في الخارج أرسل حوالة. احصل على 1,000 درهم.','عيد الأضحى. اشترِ الحولي. ادفع 1,500 درهم.','ليلة الحناء لأختك. ادفع 500 درهم.','عيد ميلادك. كل لاعب يعطيك 100 درهم.','تعاونية الأركان باعت المحصول. احصل على 1,000 درهم.','حمّام وتكسال. ادفع 100 درهم.','مصاريف الطبيب. ادفع 500 درهم.','خطأ بنكي لصالحك. احصل على 2,000 درهم.','عمّك يعرف القاضي. اخرج من عكاشة مجانًا.','اذهب مباشرة إلى عكاشة. لا تمرّ بالانطلاق.','تقدّم إلى الانطلاق. احصل على 2,000 درهم.','فطور رمضان للعائلة كلها. ادفع 400 درهم.','كسكس الجمعة عندك. كل لاعب يجلب 150 درهمًا.','استرجاع الضريبة. احصل على 200 درهم.','إصلاح السطح بعد الأمطار. ادفع 400 درهم عن كل دار و1,150 درهمًا عن كل رياض.']}
+};
+function cardText(deck,id,fallback){
+  if(id==null) return fallback||'';
+  if(LANG==='en') return ((deck==='mektoub'?MEKTOUB:BARAKA)[id]||{}).text||fallback||'';
+  return (CARD_TX[deck][LANG]||[])[id]||fallback||'';
+}
+/* render a structured log entry [key, params] in the viewer's language */
+function tl(e){
+  if(!e) return ''; if(typeof e==='string') return e;
+  const [k,p0]=e; const p=Object.assign({},p0||{});
+  if(p.a!=null) p.a=fmt(p.a);
+  if(p.s!=null) p.s=spN(p.s);
+  if(p.to!=null) p.to=p.to==='@daret'?t('w.daret'):p.to==='@bank'?t('w.bank'):p.to;
+  if(p.why!=null) p.why=t('why.'+p.why,{s:p.s,d:p.d,r:p.r});
+  if(p.deck!=null) p.deckN=t('deck.'+p.deck);
+  if(p.card!=null) p.card=cardText(p.card[0],p.card[1],p.cardEn);
+  return t('log.'+k,p);
+}
+
+/* ---------- log lines ---------- */
+S('log.start','Bismillah. {n} players set off from Al Inṭilāq with {a} each.','Bismillah. {n} joueurs partent d’Al Inṭilāq avec {a} chacun.','بسم الله. ينطلق {n} لاعبين من الانطلاق، ومع كل واحد {a}.');
+S('log.collect','{p} collects {a}.','{p} reçoit {a}.','{p} يحصل على {a}.');
+S('log.pay','{p} pays {a} to {to} for {why}.','{p} paie {a} à {to} pour {why}.','{p} يدفع {a} إلى {to} مقابل {why}.');
+S('w.bank','the bank','la banque','البنك'); S('w.daret','the Daret','la Daret','الدارت');
+S('why.rent','rent at {s}','le loyer de {s}','كراء {s}');
+S('why.incomeTax','income tax','l’impôt sur le revenu','الضريبة على الدخل');
+S('why.wedding','wedding season','la saison des mariages','موسم الأعراس');
+S('why.speeding','a speeding fine','un excès de vitesse','مخالفة السرعة');
+S('why.eid','the Eid sheep','le mouton de l’Aïd','حولي العيد');
+S('why.henna','henna night','la soirée du henné','ليلة الحناء');
+S('why.birthday','a birthday gift','un cadeau d’anniversaire','هدية عيد الميلاد');
+S('why.hammam','the hammam','le hammam','الحمّام');
+S('why.doctor','doctor’s fees','les frais de médecin','مصاريف الطبيب');
+S('why.ftour','ftour','le ftour','الفطور');
+S('why.couscous','Friday couscous','le couscous du vendredi','كسكس الجمعة');
+S('why.assoc','association dues','la cotisation de l’association','واجب الجمعية');
+S('why.jail','release from 3okacha','sortir de 3okacha','الخروج من عكاشة');
+S('why.repairs','{d} dar and {r} riad repairs','les réparations ({d} dar, {r} riad)','إصلاح {d} دار و{r} رياض');
+S('log.passGo','{p} passes Al Inṭilāq and collects {a}.','{p} passe par Al Inṭilāq et reçoit {a}.','{p} يمرّ بالانطلاق ويحصل على {a}.');
+S('log.toJail','{p} is sent to 3okacha.','{p} est envoyé à 3okacha.','{p} يُرسَل إلى عكاشة.');
+S('log.forSale','{p} lands on {s}. It is for sale at {a}.','{p} arrive sur {s}, à vendre pour {a}.','{p} يصل إلى {s}. معروض للبيع بـ {a}.');
+S('log.home','{p} is home at {s}.','{p} est chez lui à {s}.','{p} في ملكه: {s}.');
+S('log.mortNoRent','{s} is mortgaged, so {o} collects no rent.','{s} est hypothéqué : {o} ne touche pas de loyer.','{s} مرهون، فلا يقبض {o} أي كراء.');
+S('log.daret','{p} sits down at the Qahwa and takes the Daret: {a}.','{p} s’assoit à la Qahwa et rafle la Daret : {a}.','{p} يجلس في القهوة ويأخذ الدارت: {a}.');
+S('log.tea','{p} takes a mint tea break at the Qahwa.','{p} prend un thé à la menthe à la Qahwa.','{p} يستريح مع كأس أتاي في القهوة.');
+S('log.landGo','{p} lands on Al Inṭilāq.','{p} s’arrête sur Al Inṭilāq.','{p} يتوقف عند الانطلاق.');
+S('log.visit','{p} is just visiting 3okacha.','{p} est en simple visite à 3okacha.','{p} في زيارة فقط لعكاشة.');
+S('log.draw','{p} draws {deckN}: {card}','{p} tire {deckN} : {card}','{p} يسحب {deckN}: {card}');
+S('deck.mektoub','Mektoub','Mektoub','مكتوب'); S('deck.baraka','Baraka','Baraka','بركة');
+S('log.noBuild','{p} owns no buildings and pays nothing.','{p} n’a aucun bâtiment et ne paie rien.','{p} لا يملك أي بناء ولا يدفع شيئًا.');
+S('log.bankTo','{p} is bankrupt. Everything goes to {o}.','{p} fait faillite. Tout revient à {o}.','{p} أفلس. كل ممتلكاته تذهب إلى {o}.');
+S('log.bankBank','{p} is bankrupt. Their properties return to the bank.','{p} fait faillite. Ses propriétés reviennent à la banque.','{p} أفلس. ممتلكاته تعود إلى البنك.');
+S('log.win','{p} wins Moropoly with a net worth of {a}. Mabrouk!','{p} remporte Moropoly avec une fortune de {a}. Mabrouk !','{p} يفوز بموروبولي بثروة قدرها {a}. مبروك!');
+S('log.turn','{p}’s turn.','Au tour de {p}.','دور {p}.');
+S('log.jailDouble','{p} rolls a double and walks out of 3okacha.','{p} fait un double et sort de 3okacha.','{p} يرمي دوبل ويخرج من عكاشة.');
+S('log.jailStay','{p} rolls {d1} and {d2} and stays in 3okacha ({n} of 3).','{p} fait {d1} et {d2} et reste à 3okacha ({n} sur 3).','{p} يرمي {d1} و{d2} ويبقى في عكاشة ({n} من 3).');
+S('log.threeDoubles','{p} rolls three doubles in a row.','{p} fait trois doubles d’affilée.','{p} يرمي ثلاث دوبلات متتالية.');
+S('log.rolls','{p} rolls {d1} and {d2}.','{p} fait {d1} et {d2}.','{p} يرمي {d1} و{d2}.');
+S('log.buys','{p} buys {s} for {a}.','{p} achète {s} pour {a}.','{p} يشتري {s} بـ {a}.');
+S('log.dlalaOpen','The dlal opens the auction for {s}.','Le dlal ouvre les enchères pour {s}.','الدلّال يفتح المزاد على {s}.');
+S('log.passOn','{p} passes on {s}.','{p} laisse passer {s}.','{p} يتخلى عن {s}.');
+S('log.bids','{p} bids {a} for {s}.','{p} enchérit {a} pour {s}.','{p} يزايد بـ {a} على {s}.');
+S('log.leaveAuc','{p} leaves the auction.','{p} quitte les enchères.','{p} ينسحب من المزاد.');
+S('log.sold','Sold! {p} takes {s} at the Dlala for {a}.','Adjugé ! {p} remporte {s} à la Dlala pour {a}.','بيع! {p} يأخذ {s} في الدلالة بـ {a}.');
+S('log.noBids','Nobody bids. {s} stays with the bank.','Personne n’enchérit. {s} reste à la banque.','لا أحد زايد. {s} يبقى عند البنك.');
+S('log.useCard','{p} uses a get-out card and leaves 3okacha.','{p} utilise sa carte et sort de 3okacha.','{p} يستعمل بطاقة الخروج ويغادر عكاشة.');
+S('log.buildDar','{p} builds a dar on {s}.','{p} construit une dar sur {s}.','{p} يبني دارًا في {s}.');
+S('log.buildRiad','{p} builds a riad on {s}.','{p} construit un riad sur {s}.','{p} يبني رياضًا في {s}.');
+S('log.sellB','{p} sells a building on {s} for {a}.','{p} vend un bâtiment sur {s} pour {a}.','{p} يبيع بناءً في {s} بـ {a}.');
+S('log.mort','{p} mortgages {s} (rahn) for {a}.','{p} hypothèque {s} (rahn) pour {a}.','{p} يرهن {s} مقابل {a}.');
+S('log.unmort','{p} lifts the mortgage on {s}.','{p} lève l’hypothèque sur {s}.','{p} يفكّ رهن {s}.');
+S('log.botBuild',p=>`${p.p} builds ${p.n} ${p.n==1?'building':'buildings'}.`,p=>`${p.p} construit ${p.n} bâtiment${p.n>1?'s':''}.`,p=>`${p.p} يبني ${p.n} ${p.n==1?'بناية':'بنايات'}.`);
+S('log.offer','{p} offers {o} a trade.','{p} propose un échange à {o}.','{p} يعرض على {o} تبادلًا.');
+S('log.deal','Tbadel! {p} and {o} shake hands on a trade.','Tbadel ! {p} et {o} topent pour un échange.','تبادل! {p} و{o} يتصافحان على الصفقة.');
+S('log.tradeVoid','The trade no longer adds up and is cancelled.','L’échange n’est plus possible : il est annulé.','لم تعد الصفقة ممكنة فأُلغيت.');
+S('log.refuse','{p} refuses the trade.','{p} refuse l’échange.','{p} يرفض التبادل.');
+S('log.withdraw','{p} withdraws the offer.','{p} retire son offre.','{p} يسحب عرضه.');
+S('log.tableSet','The table is set. Waiting for players.','La table est prête. En attente des joueurs.','الطاولة جاهزة. في انتظار اللاعبين.');
+S('log.joins','{p} joins the table.','{p} rejoint la table.','{p} ينضم إلى الطاولة.');
+S('log.back','{p} is back at the table.','{p} est de retour à la table.','{p} عاد إلى الطاولة.');
+S('log.botPlays','The computer plays for {p} for now.','L’ordinateur joue pour {p} pour l’instant.','الحاسوب يلعب مكان {p} مؤقتًا.');
+
+/* ---------- board ---------- */
+S('b.goLat','AL INṬILĀQ','AL INṬILĀQ',''); S('b.goTiny','Collect 2,000 DH','Recevez 2 000 DH','احصل على 2,000 درهم');
+S('b.jailLat','3OKACHA','3OKACHA',''); S('b.jailTiny','Ziyara · just visiting','Ziyara · simple visite','زيارة فقط');
+S('b.parkLat','QAHWA','QAHWA',''); S('b.parkTiny','Daret pot','Cagnotte Daret','صندوق الدارت');
+S('b.gojailLat','GO TO 3OKACHA','ALLEZ À 3OKACHA',''); S('b.gojailTiny','No salary','Pas de salaire','بدون راتب');
+S('b.mektoub','Mektoub','Mektoub',''); S('b.baraka','Baraka','Baraka','');
+S('b.pay','Pay {n}','Payez {n}','ادفع {n}');
+S('ev.double',' Double!',' Double !',' دوبل!');
+S('ev.draws','{p} draws {deckN}','{p} tire {deckN}','{p} يسحب {deckN}');
+S('ev.dlala','The dlal opens the auction','Le dlal ouvre les enchères','الدلّال يفتح المزاد');
+S('fl.sold','SOLD','VENDU','مُباع'); S('fl.daret','DARET','DARET','الدارت'); S('fl.deal','TBADEL','TBADEL','تبادل'); S('fl.bankrupt','BANKRUPT','FAILLITE','إفلاس');
+S('fl.jail','3okacha!','3okacha !','عكاشة!');
+S('fate.mektoub','Mektoub · fate','Mektoub · le destin','مكتوب · القدر'); S('fate.baraka','Baraka · blessing','Baraka · la bénédiction','بركة · الخير');
+
+/* ---------- turn card ---------- */
+S('tc.wins','<b>{p}</b> wins Moropoly. Mabrouk!','<b>{p}</b> remporte Moropoly. Mabrouk !','<b>{p}</b> يفوز بموروبولي. مبروك!');
+S('btn.results','Results','Résultats','النتائج');
+S('tc.offered','<b>{p}</b> offered <b>{o}</b> a trade.','<b>{p}</b> propose un échange à <b>{o}</b>.','<b>{p}</b> عرض على <b>{o}</b> تبادلًا.');
+S('btn.seeOffer','See the offer','Voir l’offre','اطّلع على العرض'); S('btn.withdraw','Withdraw offer','Retirer l’offre','اسحب العرض');
+S('tc.dlala','Dlala for <b>{s}</b>: {a}{by}.','Dlala pour <b>{s}</b> : {a}{by}.','الدلالة على <b>{s}</b>: {a}{by}.');
+S('tc.by',' by {p}',' par {p}',' لصالح {p}');
+S('btn.openAuc','Open the auction','Ouvrir les enchères','افتح المزاد');
+S('tc.owes','{p} owes {a}. Sell buildings or mortgage in My deeds, trade, or declare bankruptcy.','{p} doit {a}. Vendez des bâtiments ou hypothéquez dans Mes titres, échangez, ou déclarez faillite.','{p} مدين بـ {a}. بع بنايات أو ارهن من «ممتلكاتي»، أو تبادل، أو أعلن الإفلاس.');
+S('btn.myDeeds','My deeds','Mes titres','ممتلكاتي'); S('btn.tbadel','Tbadel','Tbadel','تبادل'); S('btn.bankrupt','Declare bankruptcy','Déclarer faillite','أعلن الإفلاس');
+S('tc.forSale','For sale: <b>{s}</b>{c}','À vendre : <b>{s}</b>{c}','للبيع: <b>{s}</b>{c}');
+S('btn.buy','Buy for {a}','Acheter pour {a}','اشترِ بـ {a}'); S('btn.dlala','Send to the Dlala','Mettre à la Dlala','إلى الدلالة'); S('btn.pass','Pass','Passer','تخلَّ');
+S('tc.inJail','{p} is in 3okacha (try {n} of 3). Roll a double, pay {a} or use a card.','{p} est à 3okacha (essai {n} sur 3). Faites un double, payez {a} ou utilisez une carte.','{p} في عكاشة (المحاولة {n} من 3). ارمِ دوبل أو ادفع {a} أو استعمل بطاقة.');
+S('tc.again','Double! Roll again.','Double ! Rejouez.','دوبل! ارمِ مرة أخرى.'); S('tc.toRoll','{p} to roll.','À {p} de lancer.','دور {p} في رمي النرد.');
+S('btn.roll','🎲 Roll the dice','🎲 Lancer les dés','🎲 ارمِ النرد'); S('btn.payFine','Pay {a}','Payer {a}','ادفع {a}'); S('btn.useCard','Use get-out card','Utiliser la carte','استعمل بطاقة الخروج');
+S('btn.end','End turn','Fin du tour','أنهِ الدور'); S('btn.build','Build','Construire','ابنِ');
+S('pv.rentProp','Rent {a}, or {b} with all of {c}','Loyer {a}, ou {b} avec tout {c}','الكراء {a}، أو {b} مع كل {c}');
+S('pv.rentRail','Station rent 250 to 2,000 DH','Loyer de gare : 250 à 2 000 DH','كراء المحطة من 250 إلى 2,000 درهم');
+S('pv.rentUtil','Rent 40 or 100 × the dice','Loyer : 40 ou 100 × les dés','الكراء 40 أو 100 × النرد');
+S('btn.viewDeed','View deed','Voir le titre','اعرض العقد');
+S('tc.waiting','Waiting for {p}…','En attente de {p}…','في انتظار {p}…'); S('tc.thinking','Computer player is thinking…','L’ordinateur réfléchit…','الحاسوب يفكر…');
+S('lbl.computer','computer','ordinateur','حاسوب'); S('lbl.you','you','vous','أنت'); S('lbl.host','host','hôte','المضيف');
+/* tabs */
+S('tab.players','Players','Joueurs','اللاعبون'); S('tab.deeds','My deeds','Mes titres','ممتلكاتي'); S('tab.log','Journal','Journal','السجل'); S('tab.book','Rules','Règles','القواعد');
+S('btn.letBot','Let computer play','Laisser l’ordinateur jouer','دع الحاسوب يلعب'); S('btn.handBack','Hand back to player','Rendre au joueur','أعِده إلى اللاعب');
+S('st.bankrupt','Bankrupt','En faillite','مفلس'); S('st.inJail','In 3okacha','À 3okacha','في عكاشة'); S('st.goojf','get-out card','carte de sortie','بطاقة خروج'); S('st.worth','worth {a}','fortune {a}','الثروة {a}');
+S('dd.watching','You are watching this game.','Vous regardez cette partie.','أنت تتابع هذه اللعبة.');
+S('dd.none','{p} owns no property yet. Buy a free tile when you land on it, or win one at the Dlala.','{p} n’a encore aucune propriété. Achetez une case libre en vous y arrêtant, ou gagnez-en une à la Dlala.','{p} لا يملك أي عقار بعد. اشترِ خانة حرة عندما تصل إليها، أو اربح واحدة في الدلالة.');
+S('dd.help','Own a whole city to build a dar (house), then a riad (hotel). Build evenly across the city.','Possédez toute une ville pour construire une dar (maison), puis un riad (hôtel). Construisez de façon égale dans la ville.','امتلك مدينة كاملة لتبني دارًا ثم رياضًا. ابنِ بالتساوي في كل المدينة.');
+S('dd.notTurn','You can build, sell and mortgage on {p}’s turn.','Vous pouvez construire, vendre et hypothéquer pendant le tour de {p}.','يمكنك البناء والبيع والرهن خلال دور {p}.');
+S('lv.station','Station','Gare','محطة'); S('lv.utility','Utility','Service public','مرفق'); S('lv.riad','Riad','Riad','رياض'); S('lv.dar','{n} dar','{n} dar','{n} دار'); S('lv.none','No buildings','Aucun bâtiment','بلا بنايات'); S('lv.mort','Mortgaged','Hypothéqué','مرهون');
+S('dd.rent','rent {a}','loyer {a}','الكراء {a}'); S('btn.addRiad','+ Riad','+ Riad','+ رياض'); S('btn.addDar','+ Dar','+ Dar','+ دار'); S('btn.sell','Sell','Vendre','بع'); S('btn.lift','Lift {a}','Lever {a}','فكّ {a}'); S('btn.rahn','Rahn +{a}','Rahn +{a}','رهن +{a}');
+/* deed */
+S('dm.labels',()=>['Rent','With 1 dar','With 2 dars','With 3 dars','With 4 dars','With a riad'],()=>['Loyer','Avec 1 dar','Avec 2 dars','Avec 3 dars','Avec 4 dars','Avec un riad'],()=>['الكراء','مع دار واحدة','مع داريْن','مع 3 دور','مع 4 دور','مع رياض']);
+S('dm.price','Price','Prix','الثمن'); S('dm.allCity','All of {c}, no buildings','Tout {c}, sans bâtiment','كل {c} بلا بنايات'); S('dm.each','Each dar or riad','Chaque dar ou riad','كل دار أو رياض'); S('dm.rahn','Rahn (mortgage)','Rahn (hypothèque)','الرهن');
+S('dm.stations',p=>`Owner has ${p.n} station${p.n>1?'s':''}`,p=>`Le propriétaire a ${p.n} gare${p.n>1?'s':''}`,p=>`المالك لديه ${p.n==1?'محطة واحدة':p.n==2?'محطتان':p.n+' محطات'}`);
+S('dm.railNote','Al Boraq and the national line, Tangier to Marrakech.','Al Boraq et la ligne nationale, de Tanger à Marrakech.','البراق والخط الوطني، من طنجة إلى مراكش.');
+S('dm.util1','Owner has 1 utility','Le propriétaire a 1 service','المالك لديه مرفق واحد'); S('dm.util2','Owner has both','Le propriétaire a les deux','المالك لديه الاثنان');
+S('dm.x40','40 × dice','40 × les dés','40 × النرد'); S('dm.x100','100 × dice','100 × les dés','100 × النرد');
+S('info.go','Collect 2,000 DH every time you pass.','Recevez 2 000 DH à chaque passage.','احصل على 2,000 درهم كلما مررت من هنا.');
+S('info.jail','Leave 3okacha by rolling a double, paying 500 DH, or using a get-out card. After three failed rolls you pay and move.','Sortez de 3okacha en faisant un double, en payant 500 DH ou avec une carte de sortie. Après trois essais ratés, vous payez et avancez.','اخرج من عكاشة برمي دوبل، أو بدفع 500 درهم، أو ببطاقة خروج. بعد ثلاث محاولات فاشلة تدفع وتتقدّم.');
+S('info.parking','Mint tea at the café. With the Daret rule on, you take everything in the pot.','Un thé à la menthe au café. Avec la règle de la Daret, vous raflez toute la cagnotte.','أتاي في المقهى. مع قاعدة الدارت، تأخذ كل ما في الصندوق.');
+S('info.gojail','Go directly to 3okacha. Do not pass Al Inṭilāq, do not collect 2,000 DH.','Allez directement à 3okacha. Ne passez pas par Al Inṭilāq, ne recevez pas 2 000 DH.','اذهب مباشرة إلى عكاشة. لا تمرّ بالانطلاق ولا تأخذ 2,000 درهم.');
+S('info.tax','Pay {a}{d}.','Payez {a}{d}.','ادفع {a}{d}.'); S('info.taxDaret',' into the Daret pot',' dans la cagnotte Daret',' في صندوق الدارت');
+S('info.mektoub','Mektoub, what is written: draw a fate card.','Mektoub, ce qui est écrit : tirez une carte du destin.','مكتوب، ما هو مقدَّر: اسحب بطاقة القدر.');
+S('info.baraka','Baraka: blessings and family life. Draw a Baraka card.','Baraka : bénédictions et vie de famille. Tirez une carte Baraka.','بركة: الخير والحياة العائلية. اسحب بطاقة بركة.');
+S('dm.owned','Owned by {p}{m}','Appartient à {p}{m}','ملك {p}{m}'); S('dm.mortSuffix',' · mortgaged',' · hypothéqué',' · مرهون'); S('dm.forSale','For sale','À vendre','للبيع');
+S('aria.close','Close','Fermer','إغلاق');
+/* auction */
+S('au.title','Dlala · {s}','Dlala · {s}','الدلالة · {s}');
+S('au.help','The dlal calls out the price. Raise the bid or leave. The last one standing buys.','Le dlal annonce le prix. Surenchérissez ou retirez-vous. Le dernier en lice achète.','الدلّال ينادي بالثمن. زِد في المزايدة أو انسحب. آخر من يبقى يشتري.');
+S('au.held','held by {p}','tenue par {p}','لصالح {p}'); S('au.none','no bids yet','aucune enchère','لا مزايدة بعد'); S('au.list','list price {a}','prix affiché {a}','الثمن الأصلي {a}');
+S('au.yourBid',', your bid. You have {a}.',', à vous d’enchérir. Vous avez {a}.',' ، دورك في المزايدة. لديك {a}.'); S('au.deciding',' is deciding…',' réfléchit…',' يفكر…');
+S('btn.leaveAuc','Leave auction','Quitter les enchères','انسحب من المزاد');
+/* bankrupt */
+S('bk.title','Declare bankruptcy?','Déclarer faillite ?','إعلان الإفلاس؟');
+S('bk.body','{p} owes {a}. Everything {p} owns goes to {o}, and {p} leaves the game. This cannot be undone.','{p} doit {a}. Tout ce que possède {p} revient à {o}, et {p} quitte la partie. C’est définitif.','{p} مدين بـ {a}. كل ما يملكه {p} يذهب إلى {o}، ويغادر {p} اللعبة. لا يمكن التراجع.');
+S('btn.keep','Keep playing','Continuer à jouer','واصل اللعب');
+/* trade */
+S('tr.title','Tbadel · trade','Tbadel · échange','تبادل'); S('tr.with','Trade with','Échanger avec','تبادل مع'); S('tr.gives','{p} gives','{p} donne','{p} يعطي'); S('tr.cash','Cash','Argent','نقدًا');
+S('tr.nothing','Nothing tradeable','Rien à échanger','لا شيء للتبادل'); S('btn.cancel','Cancel','Annuler','إلغاء'); S('btn.send','Send offer','Envoyer l’offre','أرسل العرض');
+S('tr.pick','Pick something to trade.','Choisissez quelque chose à échanger.','اختر شيئًا للتبادل.'); S('tr.noCash','One side does not have that much cash.','L’un des deux n’a pas assez d’argent.','أحد الطرفين لا يملك هذا المبلغ.');
+S('tr.sent','Offer sent to {p}.','Offre envoyée à {p}.','أُرسل العرض إلى {p}.'); S('tr.thinking','{p} is thinking it over…','{p} réfléchit…','{p} يفكر في العرض…');
+S('trr.title','Tbadel offer for {p}','Offre de Tbadel pour {p}','عرض تبادل إلى {p}'); S('trr.pass','Pass the screen to <b>{p}</b>.','Passez l’écran à <b>{p}</b>.','سلّم الشاشة إلى <b>{p}</b>.');
+S('trr.receive','You receive:','Vous recevez :','تحصل على:'); S('trr.give','You give:','Vous donnez :','تعطي:'); S('trr.from','Offer from {p}.','Offre de {p}.','عرض من {p}.'); S('tr.nothingW','nothing','rien','لا شيء');
+S('btn.refuse','Refuse','Refuser','ارفض'); S('btn.accept','Accept','Accepter','اقبل');
+/* game over */
+S('go.title','Mabrouk, {p}!','Mabrouk, {p} !','مبروك يا {p}!'); S('go.props',p=>`${p.n} properties`,p=>`${p.n} propriété${p.n>1?'s':''}`,p=>`${p.n} عقارات`); S('go.nw','net worth','fortune','الثروة');
+S('btn.look','Look at the board','Voir le plateau','انظر إلى اللوحة'); S('btn.backHome','Back to home','Retour à l’accueil','العودة إلى الرئيسية');
+/* lobby */
+S('back','← Home','← Accueil','→ الرئيسية'); S('chip.game','GAME {c}','PARTIE {c}','اللعبة {c}');
+S('lb.hosting','You are hosting','Vous êtes l’hôte','أنت المضيف'); S('lb.invited','You are invited','Vous êtes invité','أنت مدعو'); S('lb.h2','The table is set','La table est prête','الطاولة جاهزة');
+S('lb.invite','Invite players','Inviter des joueurs','ادعُ اللاعبين');
+S('lb.send','Send this link on WhatsApp or anywhere. Everyone who opens it picks a name and a token here.','Envoyez ce lien par WhatsApp ou ailleurs. Chacun choisit ici un nom et un pion.','أرسل هذا الرابط عبر واتساب أو أي تطبيق. كل من يفتحه يختار هنا اسمًا وقطعة.');
+S('lb.claude',' They need access to this page on Claude: share it with them from the Share menu.',' Ils doivent avoir accès à cette page sur Claude : partagez-la depuis le menu Partager.',' يحتاجون إلى صلاحية فتح هذه الصفحة على Claude: شاركها معهم من قائمة المشاركة.');
+S('lb.keepOpen',' Keep this tab open while you play: your browser runs the game.',' Gardez cet onglet ouvert pendant la partie : c’est votre navigateur qui la fait tourner.',' أبقِ هذه الصفحة مفتوحة أثناء اللعب: متصفحك هو من يدير اللعبة.');
+S('btn.copy','Copy link','Copier le lien','انسخ الرابط'); S('lb.atTable','At the table · {n} of 8','À table · {n} sur 8','على الطاولة · {n} من 8');
+S('btn.remove','Remove','Retirer','أزِل'); S('lb.nobody','Nobody has sat down yet.','Personne n’est encore assis.','لم يجلس أحد بعد.'); S('btn.addBot','+ Computer player','+ Joueur ordinateur','+ لاعب حاسوب');
+S('lb.yourSeat','Your seat','Votre place','مقعدك'); S('lb.takeSeat','Take a seat','Prenez place','اجلس'); S('lb.name','Your name','Votre nom','اسمك'); S('lb.namePh','Name shown on the board','Nom affiché sur le plateau','الاسم الذي يظهر في اللوحة'); S('lb.token','Your token','Votre pion','قطعتك');
+S('btn.update','Update my seat','Mettre à jour ma place','حدّث مقعدي'); S('btn.sit','Sit down','S’asseoir','اجلس'); S('btn.leaveTable','Leave the table','Quitter la table','غادر الطاولة');
+S('sec.rules','House rules','Règles maison','قواعد اللعب'); S('btn.start','Start the game','Lancer la partie','ابدأ اللعبة');
+S('lb.need2','At least 2 players needed.','Il faut au moins 2 joueurs.','يلزم لاعبان على الأقل.'); S('lb.ready',p=>`${p.n} players ready.`,p=>`${p.n} joueurs prêts.`,p=>`${p.n} لاعبين جاهزون.`);
+S('lb.hostStarts','The host starts the game when everyone is seated.','L’hôte lance la partie quand tout le monde est assis.','المضيف يبدأ اللعبة عندما يجلس الجميع.'); S('lb.waitHost','Waiting for the host to come back.','En attente du retour de l’hôte.','في انتظار عودة المضيف.');
+S('toast.copied','Invite link copied.','Lien d’invitation copié.','نُسخ رابط الدعوة.'); S('toast.ctrlC','Press Ctrl+C to copy.','Appuyez sur Ctrl+C pour copier.','اضغط Ctrl+C للنسخ.');
+S('toast.name','Type your name first.','Saisissez d’abord votre nom.','اكتب اسمك أولًا.'); S('toast.saved','Seat saved.','Place enregistrée.','حُفظ المقعد.'); S('toast.sitting','Sitting down…','Installation…','جارٍ الجلوس…');
+/* options */
+S('opt.daret','Daret pot','Cagnotte Daret','صندوق الدارت'); S('opt.daretD','Taxes and fines pool at the Qahwa.','Taxes et amendes s’accumulent à la Qahwa.','الضرائب والغرامات تتجمع في القهوة.');
+S('opt.dlala','Dlala auctions','Enchères Dlala','مزادات الدلالة'); S('opt.dlalaD','Unbought property goes to auction.','Une propriété non achetée part aux enchères.','العقار غير المُشترى يذهب إلى المزاد.');
+S('opt.len','Game length','Durée de la partie','مدة اللعبة'); S('opt.lenD','Richest player wins at the limit.','Le plus riche gagne à la fin.','الأغنى يفوز عند النهاية.');
+S('opt.until','Until one player is left','Jusqu’au dernier joueur','حتى يبقى لاعب واحد'); S('opt.rounds','{n} rounds','{n} tours','{n} جولة');
+S('opt.fast','Fast animations','Animations rapides','حركات سريعة'); S('opt.fastD','Quicker dice and token moves.','Dés et pions plus rapides.','نرد وقطع أسرع.');
+/* setup */
+S('setup.eyebrow','Play on this device','Jouer sur cet appareil','العب على هذا الجهاز'); S('setup.h2','Who’s playing?','Qui joue ?','من يلعب؟');
+S('setup.p','Pass the screen around. Turn seats on or off, and let the computer take any empty chair.','Faites passer l’écran. Activez ou désactivez des places, et laissez l’ordinateur occuper les chaises vides.','مرّروا الشاشة بينكم. فعّلوا المقاعد أو عطّلوها، ودعوا الحاسوب يشغل أي كرسي فارغ.');
+S('btn.startGame','Start game','Commencer','ابدأ'); S('btn.demo','Watch 8 computer players','Regarder 8 joueurs ordinateur','شاهد 8 لاعبين من الحاسوب'); S('btn.resume','Resume saved game','Reprendre la partie','تابع اللعبة المحفوظة');
+S('setup.need2','Turn on at least 2 seats.','Activez au moins 2 places.','فعّل مقعدين على الأقل.'); S('setup.count','{n} players · {h} human','{n} joueurs · {h} humain(s)','{n} لاعبين · {h} بشر');
+S('seg.human','Human','Humain','إنسان'); S('seg.computer','Computer','Ordinateur','حاسوب');
+S('tok.choose','Choose a token','Choisir un pion','اختر قطعة'); S('tok.swap','Picking a token another seat has swaps the two.','Choisir le pion d’une autre place les échange.','اختيار قطعة مقعد آخر يبدّل بينهما.');
+S('aria.seatTok','Choose token for seat {n}','Choisir le pion de la place {n}','اختر قطعة المقعد {n}'); S('aria.seatOn','Seat {n} playing','Place {n} active','المقعد {n} يلعب'); S('aria.seatName','Seat {n} name','Nom de la place {n}','اسم المقعد {n}');
+/* home */
+S('home.players','2–8 players · online or one screen','2 à 8 joueurs · en ligne ou sur un écran','من 2 إلى 8 لاعبين · عبر الإنترنت أو على شاشة واحدة');
+S('home.eyebrow','لعبة العقارات المغربية · The Moroccan property game','لعبة العقارات المغربية · Le jeu immobilier marocain','لعبة العقارات المغربية');
+S('home.h1','<span class="s">Buy Morocco,</span><br>from <span class="r">Salé</span> to <span class="g">Ain Diab</span>.','<span class="s">Achetez le Maroc,</span><br>de <span class="r">Salé</span> à <span class="g">Aïn Diab</span>.','<span class="s">اشترِ المغرب،</span><br>من <span class="r">سلا</span> إلى <span class="g">عين الذياب</span>.');
+S('home.lead','Host a game, send the invite link, and your friends join from their own screens. Each player picks a name and one of the ten silver tokens, then the dice decide.','Créez une partie, envoyez le lien d’invitation, et vos amis vous rejoignent depuis leur propre écran. Chacun choisit un nom et l’un des dix pions argentés, puis les dés décident.','أنشئ لعبة، وأرسل رابط الدعوة، فينضم أصدقاؤك من شاشاتهم. يختار كل لاعب اسمًا وواحدة من القطع الفضية العشر، ثم يقرر النرد.');
+S('home.host','Host an online game','Créer une partie en ligne','استضف لعبة عبر الإنترنت'); S('home.local','Play on this device','Jouer sur cet appareil','العب على هذا الجهاز'); S('home.install','Install the app','Installer l’application','ثبّت التطبيق');
+S('home.code','Game code','Code de la partie','رمز اللعبة'); S('home.join','Join','Rejoindre','انضم'); S('home.checking','Checking online play…','Vérification du jeu en ligne…','جارٍ التحقق من اللعب عبر الإنترنت…');
+S('home.resume','Resume game {c} · {w}','Reprendre la partie {c} · {w}','تابع اللعبة {c} · {w}'); S('home.lobby','lobby','salon','الانتظار'); S('home.round','round {n}','tour {n}','الجولة {n}');
+S('note.claudeOn','Online play is on. Players join with your invite link and need access to this page on Claude.','Le jeu en ligne est activé. Les joueurs rejoignent avec votre lien et doivent avoir accès à cette page sur Claude.','اللعب عبر الإنترنت مفعّل. ينضم اللاعبون برابط دعوتك، ويحتاجون إلى صلاحية فتح هذه الصفحة على Claude.');
+S('note.claudeHostNo',' You can join games here, but hosting needs edit access.',' Vous pouvez rejoindre des parties ici, mais il faut un accès en modification pour en créer.',' يمكنك الانضمام إلى الألعاب هنا، لكن الاستضافة تتطلب صلاحية التعديل.');
+S('note.claudeOff','Online play is not available in this view. You can still play on this device.','Le jeu en ligne n’est pas disponible ici. Vous pouvez quand même jouer sur cet appareil.','اللعب عبر الإنترنت غير متاح هنا. يمكنك مع ذلك اللعب على هذا الجهاز.');
+S('note.peer','Online play connects the players’ browsers directly. Keep the host’s tab open while you play.','Le jeu en ligne relie directement les navigateurs des joueurs. Gardez l’onglet de l’hôte ouvert pendant la partie.','اللعب عبر الإنترنت يربط متصفحات اللاعبين مباشرة. أبقِ صفحة المضيف مفتوحة أثناء اللعب.');
+S('feat.dlala','DLALA','DLALA','المزاد'); S('feat.dlalaP','Nobody buys a property? The souk auctioneer sells it to the highest bidder.','Personne n’achète une propriété ? Le crieur du souk la vend au plus offrant.','لم يشترِ أحد العقار؟ دلّال السوق يبيعه لمن يدفع أكثر.');
+S('feat.daret','DARET','DARET','دارت'); S('feat.daretP','Taxes and fines pool into the Daret. Stop at the Qahwa and take it all.','Taxes et amendes alimentent la Daret. Arrêtez-vous à la Qahwa et raflez tout.','الضرائب والغرامات تتجمع في الدارت. توقّف في القهوة وخذها كلها.');
+S('feat.cards','MEKTOUB & BARAKA','MEKTOUB & BARAKA','مكتوب وبركة'); S('feat.cardsP','Grand taxis, radars, the Eid sheep, Friday couscous and grandma’s baraka.','Grands taxis, radars, mouton de l’Aïd, couscous du vendredi et baraka de grand-mère.','الطاكسي الكبير، الرادار، حولي العيد، كسكس الجمعة وبركة الجدة.');
+S('feat.jail','3OKACHA','3OKACHA','عكاشة'); S('feat.jailP','Roll a double, pay 500 DH, or hope your cousin really is a lawyer.','Faites un double, payez 500 DH, ou espérez que votre cousin soit vraiment avocat.','ارمِ دوبل، أو ادفع 500 درهم، أو تمنَّ أن يكون ابن عمك محاميًا فعلًا.');
+S('sk.eyebrow','From the sketchbook','Le carnet de croquis','من دفتر الرسومات'); S('sk.h2','Every tile has its own painting','Chaque case a sa propre peinture','لكل خانة لوحتها الخاصة');
+S('sk.p','22 property cards painted for Moropoly, from the riverside homes of Sidi Moussa to the Twin Center in Maarif, plus the 3okacha gate and ten silver tokens. They all appear in the game: on the board, in the deed cards and in the reveal when you land.','22 cartes de propriété peintes pour Moropoly, des maisons au bord du fleuve à Sidi Moussa jusqu’au Twin Center de Maarif, plus la porte de 3okacha et dix pions argentés. Toutes apparaissent dans le jeu : sur le plateau, dans les titres et quand vous vous arrêtez sur une case.','22 بطاقة عقار رُسمت لموروبولي، من بيوت سيدي موسى على ضفة النهر إلى التوين سنتر في المعاريف، إضافة إلى بوابة عكاشة وعشر قطع فضية. كلها تظهر في اللعبة: على اللوحة، وفي بطاقات العقود، وعند وصولك إلى الخانة.');
+S('aria.map','Map of Morocco with the game’s cities','Carte du Maroc avec les villes du jeu','خريطة المغرب مع مدن اللعبة'); S('aria.flag','Flag of Morocco','Drapeau du Maroc','علم المغرب');
+/* network */
+S('err.lib','Could not load the connection library. Check your internet connection.','Impossible de charger la bibliothèque de connexion. Vérifiez votre connexion internet.','تعذّر تحميل مكتبة الاتصال. تحقق من اتصالك بالإنترنت.');
+S('err.inUse','That game is already open in another tab or browser.','Cette partie est déjà ouverte dans un autre onglet ou navigateur.','هذه اللعبة مفتوحة في نافذة أو متصفح آخر.');
+S('err.browser','This browser cannot make direct connections. Try Chrome, Edge, Firefox or Safari.','Ce navigateur ne peut pas établir de connexion directe. Essayez Chrome, Edge, Firefox ou Safari.','هذا المتصفح لا يدعم الاتصال المباشر. جرّب Chrome أو Edge أو Firefox أو Safari.');
+S('err.conn','Could not connect. Check your internet connection and try again.','Connexion impossible. Vérifiez votre connexion internet et réessayez.','تعذّر الاتصال. تحقق من اتصالك بالإنترنت وحاول مجددًا.');
+S('toast.noHost','Hosting is not available here.','Impossible de créer une partie ici.','الاستضافة غير متاحة هنا.'); S('toast.code','Game codes are 6 letters and numbers.','Les codes de partie font 6 lettres et chiffres.','رمز اللعبة من 6 حروف وأرقام.');
+S('toast.noOnline','Online play is not available in this view.','Le jeu en ligne n’est pas disponible ici.','اللعب عبر الإنترنت غير متاح هنا.'); S('toast.noGame','No game found with code {c}.','Aucune partie trouvée avec le code {c}.','لا توجد لعبة بالرمز {c}.');
+S('conn.opening','Opening your table…','Ouverture de votre table…','جارٍ فتح طاولتك…'); S('conn.reopen','Reopening your table…','Réouverture de votre table…','جارٍ إعادة فتح طاولتك…'); S('conn.connecting','Connecting to the host…','Connexion à l’hôte…','جارٍ الاتصال بالمضيف…');
+S('conn.hint','The host needs to have the game open. This page keeps trying on its own.','L’hôte doit avoir la partie ouverte. Cette page réessaie toute seule.','يجب أن تكون اللعبة مفتوحة عند المضيف. هذه الصفحة تواصل المحاولة تلقائيًا.');
+S('toast.hostOff','The host is offline. Your move will be sent when they are back.','L’hôte est hors ligne. Votre coup sera envoyé à son retour.','المضيف غير متصل. ستُرسل حركتك عند عودته.');
+S('toast.taken','That token is taken.','Ce pion est déjà pris.','هذه القطعة مأخوذة.'); S('toast.noMove','That move is not possible right now.','Ce coup n’est pas possible pour l’instant.','هذه الحركة غير ممكنة الآن.');
+S('banner.paused','Can’t reach the host, so the game is paused. It reconnects on its own when the host’s game is open again.','Impossible de joindre l’hôte : la partie est en pause. Elle se reconnecte toute seule quand l’hôte rouvre la partie.','تعذّر الوصول إلى المضيف، فاللعبة متوقفة مؤقتًا. ستعود تلقائيًا عندما يفتح المضيف اللعبة من جديد.');
+S('meta.round','Round {n}{of} · Daret {a}','Tour {n}{of} · Daret {a}','الجولة {n}{of} · الدارت {a}'); S('meta.of',' of {m}',' sur {m}',' من {m}');
+S('btn.leave','Leave','Quitter','غادر');
+/* pwa */
+S('pwa.installed','Moropoly is on your home screen.','Moropoly est sur votre écran d’accueil.','موروبولي الآن على شاشتك الرئيسية.'); S('pwa.title','Install Moropoly','Installer Moropoly','ثبّت موروبولي');
+S('pwa.ios','<b>iPhone or iPad (Safari):</b> tap the Share button, then <b>Add to Home Screen</b>.','<b>iPhone ou iPad (Safari) :</b> touchez Partager, puis <b>Sur l’écran d’accueil</b>.','<b>آيفون أو آيباد (Safari):</b> اضغط زر المشاركة، ثم <b>إضافة إلى الشاشة الرئيسية</b>.');
+S('pwa.android','<b>Android (Chrome):</b> open the ⋮ menu, then <b>Install app</b> or <b>Add to Home screen</b>.','<b>Android (Chrome) :</b> ouvrez le menu ⋮, puis <b>Installer l’application</b> ou <b>Ajouter à l’écran d’accueil</b>.','<b>أندرويد (Chrome):</b> افتح القائمة ⋮، ثم <b>تثبيت التطبيق</b> أو <b>إضافة إلى الشاشة الرئيسية</b>.');
+S('pwa.note','It opens full screen like an app, and invite links still work.','Il s’ouvre en plein écran comme une application, et les liens d’invitation fonctionnent toujours.','يفتح بملء الشاشة مثل التطبيق، وتبقى روابط الدعوة تعمل.');
+/* dock */
+S('dk.music','Music','Musique','الموسيقى'); S('dk.loop','Plays on a loop','En boucle','تُعاد باستمرار'); S('dk.vol','Volume','Volume','الصوت'); S('dk.sfx','Sound effects','Effets sonores','المؤثرات الصوتية');
+S('dk.m','Press M to turn the music on or off.','Appuyez sur M pour activer ou couper la musique.','اضغط M لتشغيل الموسيقى أو إيقافها.'); S('toast.musicOn','Music on','Musique activée','الموسيقى تعمل'); S('toast.musicOff','Music off','Musique coupée','الموسيقى متوقفة');
+S('dk.aria','Open music controls','Ouvrir les réglages de la musique','افتح إعدادات الموسيقى'); S('dk.ariaOn','Music playing. Open music controls','Musique en cours. Ouvrir les réglages','الموسيقى تعمل. افتح الإعدادات');
+S('lang.aria','Language','Langue','اللغة');
+/* rules page */
+S('book',
+`<div class="book"><h3>How a turn works</h3><p>Roll, move, then buy what you land on or send it to the Dlala. Pay rent on other players’ property. Own a whole city to build dars, then a riad. Doubles roll again; three doubles send you to 3okacha.</p>
+<h3>Moroccan rules</h3><div class="tw"><table><tr><th>Classic</th><th>Moropoly</th><th>What it does</th></tr>
+<tr><td>GO</td><td><span class="k">الانطلاق</span> Al Inṭilāq</td><td>Collect 2,000 DH each pass</td></tr>
+<tr><td>Jail</td><td><span class="k">عكاشة</span> 3okacha</td><td>Double, 500 DH, or a get-out card</td></tr>
+<tr><td>Free Parking</td><td><span class="k">القهوة</span> Qahwa</td><td>Take the Daret pot</td></tr>
+<tr><td>Chance</td><td><span class="k">مكتوب</span> Mektoub</td><td>Fate cards</td></tr>
+<tr><td>Community Chest</td><td><span class="k">بركة</span> Baraka</td><td>Family and blessing cards</td></tr>
+<tr><td>Auction</td><td><span class="k">الدلالة</span> Dlala</td><td>Bids in turn, last one standing buys</td></tr>
+<tr><td>House · Hotel</td><td><span class="k">دار · رياض</span></td><td>Four dars, then a riad</td></tr>
+<tr><td>Mortgage</td><td><span class="k">رهن</span> Rahn</td><td>Half the price, lift it for 55%</td></tr>
+<tr><td>Trade</td><td><span class="k">تبادل</span> Tbadel</td><td>Properties and cash</td></tr></table></div>
+<h3>Playing online</h3><ul><li>The host’s screen runs the game. If the host closes it, the game pauses and continues when they open it again from the home page.</li><li>If a player drops out, the host can let the computer play for them from the Players tab.</li></ul></div>`,
+`<div class="book"><h3>Déroulement d’un tour</h3><p>Lancez les dés, avancez, puis achetez la case où vous tombez ou mettez-la à la Dlala. Payez un loyer sur les propriétés des autres. Possédez toute une ville pour construire des dars, puis un riad. Un double fait rejouer ; trois doubles vous envoient à 3okacha.</p>
+<h3>Les règles marocaines</h3><div class="tw"><table><tr><th>Classique</th><th>Moropoly</th><th>Effet</th></tr>
+<tr><td>Départ</td><td><span class="k">الانطلاق</span> Al Inṭilāq</td><td>Recevez 2 000 DH à chaque passage</td></tr>
+<tr><td>Prison</td><td><span class="k">عكاشة</span> 3okacha</td><td>Double, 500 DH ou carte de sortie</td></tr>
+<tr><td>Parc gratuit</td><td><span class="k">القهوة</span> Qahwa</td><td>Raflez la cagnotte Daret</td></tr>
+<tr><td>Chance</td><td><span class="k">مكتوب</span> Mektoub</td><td>Cartes du destin</td></tr>
+<tr><td>Caisse de communauté</td><td><span class="k">بركة</span> Baraka</td><td>Cartes de famille et de bénédiction</td></tr>
+<tr><td>Enchères</td><td><span class="k">الدلالة</span> Dlala</td><td>On enchérit à tour de rôle, le dernier achète</td></tr>
+<tr><td>Maison · Hôtel</td><td><span class="k">دار · رياض</span></td><td>Quatre dars, puis un riad</td></tr>
+<tr><td>Hypothèque</td><td><span class="k">رهن</span> Rahn</td><td>La moitié du prix, levée pour 55 %</td></tr>
+<tr><td>Échange</td><td><span class="k">تبادل</span> Tbadel</td><td>Propriétés et argent</td></tr></table></div>
+<h3>Jouer en ligne</h3><ul><li>C’est l’écran de l’hôte qui fait tourner la partie. S’il le ferme, la partie se met en pause et reprend quand il la rouvre depuis l’accueil.</li><li>Si un joueur décroche, l’hôte peut laisser l’ordinateur jouer pour lui depuis l’onglet Joueurs.</li></ul></div>`,
+`<div class="book"><h3>كيف يجري الدور</h3><p>ارمِ النرد وتقدّم، ثم اشترِ الخانة التي وصلتها أو أرسلها إلى الدلالة. ادفع الكراء في عقارات الآخرين. امتلك مدينة كاملة لتبني دورًا ثم رياضًا. الدوبل يمنحك رمية أخرى، وثلاثة دوبلات ترسلك إلى عكاشة.</p>
+<h3>القواعد المغربية</h3><div class="tw"><table><tr><th>الأصل</th><th>موروبولي</th><th>ماذا تفعل</th></tr>
+<tr><td>البداية</td><td><span class="k">الانطلاق</span></td><td>احصل على 2,000 درهم في كل مرور</td></tr>
+<tr><td>السجن</td><td><span class="k">عكاشة</span></td><td>دوبل، أو 500 درهم، أو بطاقة خروج</td></tr>
+<tr><td>موقف مجاني</td><td><span class="k">القهوة</span></td><td>خذ صندوق الدارت</td></tr>
+<tr><td>الحظ</td><td><span class="k">مكتوب</span></td><td>بطاقات القدر</td></tr>
+<tr><td>صندوق الجماعة</td><td><span class="k">بركة</span></td><td>بطاقات العائلة والخير</td></tr>
+<tr><td>المزاد</td><td><span class="k">الدلالة</span></td><td>مزايدة بالدور، وآخر من يبقى يشتري</td></tr>
+<tr><td>بيت · فندق</td><td><span class="k">دار · رياض</span></td><td>أربع دور ثم رياض</td></tr>
+<tr><td>الرهن</td><td><span class="k">رهن</span></td><td>نصف الثمن، ويُفكّ بـ 55%</td></tr>
+<tr><td>التبادل</td><td><span class="k">تبادل</span></td><td>عقارات ونقود</td></tr></table></div>
+<h3>اللعب عبر الإنترنت</h3><ul><li>شاشة المضيف هي التي تدير اللعبة. إن أغلقها توقفت اللعبة مؤقتًا، وتستأنف عندما يعيد فتحها من الصفحة الرئيسية.</li><li>إذا انقطع لاعب، يمكن للمضيف أن يترك الحاسوب يلعب مكانه من تبويب اللاعبين.</li></ul></div>`);
+
+/* apply language to static markup and the document */
+function applyLang(){
+  const html=document.documentElement; html.lang=LANG; html.dir=LANG==='ar'?'rtl':'ltr';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.innerHTML=t(el.dataset.i18n);});
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=t(el.dataset.i18nPh);});
+  document.querySelectorAll('[data-i18n-aria]').forEach(el=>{el.setAttribute('aria-label',t(el.dataset.i18nAria));});
+  document.querySelectorAll('.langsw').forEach(renderLangSwitch);
+}
+S('store.full','The game store is full. Finish an old game first.','Le stockage des parties est plein. Terminez d’abord une ancienne partie.','مخزن الألعاب ممتلئ. أنهِ لعبة قديمة أولًا.');
+S('store.retry','Could not save the game online. Retrying on the next move.','Impossible d’enregistrer la partie en ligne. Nouvel essai au prochain coup.','تعذّر حفظ اللعبة على الإنترنت. ستُعاد المحاولة في الحركة التالية.');
+const _t=(k,p)=>t(k,p);
+function renderLangSwitch(box){
+  box.setAttribute('role','group'); box.setAttribute('aria-label',t('lang.aria'));
+  box.innerHTML=LANGS.map(([k,s,n])=>`<button type="button" data-lang="${k}" aria-pressed="${LANG===k}" title="${n}" lang="${k}">${s}</button>`).join('');
+  box.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
+}
+
 
 /* ============================================================
    ENGINE (pure on G; runs on the authority only)
    ============================================================ */
 function A(G,o){G.seq=(G.seq||0)+1; o.n=G.seq; G.anims.push(o); if(G.anims.length>50) G.anims.splice(0,G.anims.length-50);}
-function log(G,msg){G.log.unshift(msg); if(G.log.length>60) G.log.length=60; G.event=msg;}
+function log(G,k,p){const e=[k,p||{}]; G.log.unshift(e); if(G.log.length>60) G.log.length=60; G.event=e;}
 function freshGame(seats,settings,extra){
   extra=extra||{};
   const G={gid:rid(10),status:'play',mode:extra.mode||'local',code:extra.code||null,hostCid:extra.hostCid||null,
@@ -636,17 +974,17 @@ function freshGame(seats,settings,extra){
     decks:{mektoub:shuffle(range(MEKTOUB.length)),baraka:shuffle(range(BARAKA.length))},
     pending:null,auction:null,trade:null,card:null,event:'',winner:null,over:false,landed:-1,seq:0,anims:[],ack:extra.ack||{}};
   SP.forEach((s,i)=>{if(isOwnable(i)) G.props[i]={owner:-1,houses:0,mort:false};});
-  log(G,`Bismillah. ${G.players.length} players set off from Al Inṭilāq with ${fmt(START_CASH)} each.`);
+  log(G,'start',{n:G.players.length,a:START_CASH});
   return G;
 }
-function gain(G,p,amt){p.cash+=amt; log(G,`${p.name} collects ${fmt(amt)}.`); A(G,{k:'fx',f:'gain',pid:p.id,amt});}
-function payTax(G,p,amt,why){pay(G,p,G.settings.daret?'daret':-1,amt,why);}
-function pay(G,p,to,amt,why){
+function gain(G,p,amt){p.cash+=amt; log(G,'collect',{p:p.name,a:amt}); A(G,{k:'fx',f:'gain',pid:p.id,amt});}
+function payTax(G,p,amt,why,extra){pay(G,p,G.settings.daret?'daret':-1,amt,why,extra);}
+function pay(G,p,to,amt,why,extra){
   if(amt<=0) return;
-  p.cash-=amt; let dest='the bank';
-  if(to==='daret'){G.daret+=amt; dest='the Daret';}
+  p.cash-=amt; let dest='@bank';
+  if(to==='daret'){G.daret+=amt; dest='@daret';}
   else if(typeof to==='number'&&to>=0){G.players[to].cash+=amt; dest=G.players[to].name;}
-  log(G,`${p.name} pays ${fmt(amt)} to ${dest} for ${why}.`);
+  log(G,'pay',Object.assign({p:p.name,a:amt,to:dest,why},extra||{}));
   A(G,{k:'fx',f:'pay',pid:p.id,to:typeof to==='number'?to:-1,amt});
   if(p.cash<0) p.owes=to;
 }
@@ -660,46 +998,46 @@ function rentFor(G,i,opts){
 function moveBy(G,p,n){
   if(n<=0) return; const from=p.pos; p.pos=(from+n)%40;
   A(G,{k:'move',pid:p.id,from,steps:n});
-  if(from+n>=40){p.cash+=SALARY; log(G,`${p.name} passes Al Inṭilāq and collects ${fmt(SALARY)}.`); A(G,{k:'fx',f:'go',pid:p.id,amt:SALARY});}
+  if(from+n>=40){p.cash+=SALARY; log(G,'passGo',{p:p.name,a:SALARY}); A(G,{k:'fx',f:'go',pid:p.id,amt:SALARY});}
   G.landed=p.pos;
 }
 function moveTo(G,p,t){moveBy(G,p,(t-p.pos+40)%40);}
 function jumpTo(G,p,t,f){p.pos=t; G.landed=t; A(G,{k:'jump',pid:p.id,to:t,f:f||''});}
-function sendToJail(G,p){jumpTo(G,p,10,'jail'); p.inJail=true; p.jailTurns=0; G.rollAgain=false; G.doubles=0; log(G,`${p.name} is sent to 3okacha.`);}
+function sendToJail(G,p){jumpTo(G,p,10,'jail'); p.inJail=true; p.jailTurns=0; G.rollAgain=false; G.doubles=0; log(G,'toJail',{p:p.name});}
 function land(G,p,opts){
   const i=p.pos,s=SP[i]; G.landed=i;
   switch(s.t){
     case 'prop':case 'rail':case 'util':{
       const pr=G.props[i];
-      if(pr.owner===-1){G.pending={type:'buy',idx:i}; log(G,`${p.name} lands on ${s.name}. It is for sale at ${fmt(s.price)}.`); A(G,{k:'fx',f:'deed',pid:p.id,idx:i});}
-      else if(pr.owner===p.id) log(G,`${p.name} is home at ${s.name}.`);
-      else if(pr.mort) log(G,`${s.name} is mortgaged, so ${G.players[pr.owner].name} collects no rent.`);
-      else pay(G,p,pr.owner,rentFor(G,i,opts),`rent at ${s.name}`);
+      if(pr.owner===-1){G.pending={type:'buy',idx:i}; log(G,'forSale',{p:p.name,s:i,a:s.price}); A(G,{k:'fx',f:'deed',pid:p.id,idx:i});}
+      else if(pr.owner===p.id) log(G,'home',{p:p.name,s:i});
+      else if(pr.mort) log(G,'mortNoRent',{s:i,o:G.players[pr.owner].name});
+      else pay(G,p,pr.owner,rentFor(G,i,opts),'rent',{s:i});
       break;}
     case 'tax': payTax(G,p,s.amount,s.why); break;
     case 'mektoub':case 'baraka': drawCard(G,p,s.t); break;
     case 'gojail': sendToJail(G,p); break;
     case 'parking':
-      if(G.settings.daret&&G.daret>0){const a=G.daret; G.daret=0; p.cash+=a; log(G,`${p.name} sits down at the Qahwa and takes the Daret: ${fmt(a)}.`); A(G,{k:'fx',f:'daret',pid:p.id,amt:a});}
-      else log(G,`${p.name} takes a mint tea break at the Qahwa.`);
+      if(G.settings.daret&&G.daret>0){const a=G.daret; G.daret=0; p.cash+=a; log(G,'daret',{p:p.name,a}); A(G,{k:'fx',f:'daret',pid:p.id,amt:a});}
+      else log(G,'tea',{p:p.name});
       break;
-    case 'go': log(G,`${p.name} lands on Al Inṭilāq.`); break;
-    case 'jail': log(G,`${p.name} is just visiting 3okacha.`); break;
+    case 'go': log(G,'landGo',{p:p.name}); break;
+    case 'jail': log(G,'visit',{p:p.name}); break;
   }
 }
 function drawCard(G,p,deck){
   const d=G.decks[deck]; if(!d.length) return;
   const id=d.shift(), card=(deck==='mektoub'?MEKTOUB:BARAKA)[id];
   if(card.goojf) p.goojf.push({deck,id}); else d.push(id);
-  G.card={deck,text:card.text};
-  log(G,`${p.name} draws ${deck==='mektoub'?'Mektoub':'Baraka'}: ${card.text}`);
-  A(G,{k:'card',deck,text:card.text,pid:p.id});
+  G.card={deck,id};
+  log(G,'draw',{p:p.name,deck,card:[deck,id]});
+  A(G,{k:'card',deck,id,pid:p.id});
   if(card.act) card.act(G,p);
 }
 function repairs(G,p,perDar,perRiad){
   let d=0,r=0; ownedBy(G,p.id).forEach(i=>{const h=G.props[i].houses; if(h===5) r++; else d+=h;});
   const amt=d*perDar+r*perRiad;
-  if(amt>0) payTax(G,p,amt,`${d} dar and ${r} riad repairs`); else log(G,`${p.name} owns no buildings and pays nothing.`);
+  if(amt>0) payTax(G,p,amt,'repairs',{d,r}); else log(G,'noBuild',{p:p.name});
 }
 function netWorth(G,p){let w=p.cash; ownedBy(G,p.id).forEach(i=>{const pr=G.props[i]; w+=pr.mort?SP[i].price/2:SP[i].price; if(pr.houses) w+=pr.houses*houseCost(i);}); return w;}
 function canBuild(G,i,pid){const s=SP[i],pr=G.props[i]; if(s.t!=='prop'||pr.owner!==pid||pr.houses>=5||!ownsGroup(G,pid,s.g)) return false; const gi=groupIdx(s.g); if(gi.some(j=>G.props[j].mort)) return false; if(pr.houses>Math.min(...gi.map(j=>G.props[j].houses))) return false; return G.players[pid].cash>=houseCost(i);}
@@ -723,12 +1061,12 @@ function goBankrupt(G,p){
     const c=G.players[cred]; c.cash+=p.cash;
     ownedBy(G,p.id).forEach(i=>{const pr=G.props[i]; if(pr.houses){c.cash+=pr.houses*houseCost(i)/2; pr.houses=0;} pr.owner=cred;});
     p.goojf.forEach(g=>c.goojf.push(g));
-    log(G,`${p.name} is bankrupt. Everything goes to ${c.name}.`);
+    log(G,'bankTo',{p:p.name,o:c.name});
   } else {
     if(cred==='daret') G.daret=Math.max(0,G.daret+p.cash);
     ownedBy(G,p.id).forEach(i=>{G.props[i]={owner:-1,houses:0,mort:false};});
     p.goojf.forEach(g=>G.decks[g.deck].push(g.id));
-    log(G,`${p.name} is bankrupt. Their properties return to the bank.`);
+    log(G,'bankBank',{p:p.name});
   }
   A(G,{k:'fx',f:'bankrupt',pid:p.id});
   p.cash=0; p.goojf=[]; p.bankrupt=true; p.inJail=false;
@@ -741,7 +1079,7 @@ function finishGame(G){
   G.over=true; G.phase='over';
   const rank=[...G.players].sort((a,b)=>(a.bankrupt-b.bankrupt)||netWorth(G,b)-netWorth(G,a));
   G.winner=rank[0].id;
-  log(G,`${rank[0].name} wins Moropoly with a net worth of ${fmt(netWorth(G,rank[0]))}. Mabrouk!`);
+  log(G,'win',{p:rank[0].name,a:netWorth(G,rank[0])});
   A(G,{k:'fx',f:'win',pid:rank[0].id});
 }
 function settle(G){
@@ -764,7 +1102,7 @@ function nextTurn(G){
   for(let s=0;s<n;s++){k=(k+1)%n; if(!G.players[k].bankrupt) break;}
   if(k<=G.cur){G.round++; if(G.settings.rounds&&G.round>G.settings.rounds){G.round=G.settings.rounds; finishGame(G); return;}}
   G.cur=k; G.turn++; G.phase='roll'; G.landed=-1;
-  G.event=`${G.players[k].name}’s turn.`;
+  G.event=['turn',{p:G.players[k].name}];
   A(G,{k:'turn',pid:k});
 }
 function actorOf(G){
@@ -785,21 +1123,21 @@ function apply(G,seat,a){
       A(G,{k:'dice',d:[d1,d2],pid:p.id});
       if(p.inJail){
         G.rollAgain=false;
-        if(dbl){p.inJail=false;p.jailTurns=0;log(G,`${p.name} rolls a double and walks out of 3okacha.`);moveBy(G,p,d1+d2);land(G,p);}
+        if(dbl){p.inJail=false;p.jailTurns=0;log(G,'jailDouble',{p:p.name});moveBy(G,p,d1+d2);land(G,p);}
         else{p.jailTurns++;
-          if(p.jailTurns>=3){p.inJail=false;p.jailTurns=0;payTax(G,p,JAIL_FINE,'release from 3okacha');moveBy(G,p,d1+d2);land(G,p);}
-          else log(G,`${p.name} rolls ${d1} and ${d2} and stays in 3okacha (${p.jailTurns} of 3).`);}
+          if(p.jailTurns>=3){p.inJail=false;p.jailTurns=0;payTax(G,p,JAIL_FINE,'jail');moveBy(G,p,d1+d2);land(G,p);}
+          else log(G,'jailStay',{p:p.name,d1,d2,n:p.jailTurns});}
       } else {
-        if(dbl){G.doubles++; if(G.doubles>=3){log(G,`${p.name} rolls three doubles in a row.`); sendToJail(G,p); settle(G); return true;}}
+        if(dbl){G.doubles++; if(G.doubles>=3){log(G,'threeDoubles',{p:p.name}); sendToJail(G,p); settle(G); return true;}}
         else G.doubles=0;
-        G.rollAgain=dbl; log(G,`${p.name} rolls ${d1} and ${d2}.`); moveBy(G,p,d1+d2); land(G,p);
+        G.rollAgain=dbl; log(G,'rolls',{p:p.name,d1,d2}); moveBy(G,p,d1+d2); land(G,p);
       }
       settle(G); return true;}
     case 'buy':{
       if(!isCur||G.phase!=='buy'||!G.pending) return false;
       const i=G.pending.idx,s=SP[i]; if(p.cash<s.price) return false;
       p.cash-=s.price; G.props[i].owner=p.id; G.pending=null;
-      log(G,`${p.name} buys ${s.name} for ${fmt(s.price)}.`); A(G,{k:'fx',f:'buy',pid:p.id,idx:i});
+      log(G,'buys',{p:p.name,s:i,a:s.price}); A(G,{k:'fx',f:'buy',pid:p.id,idx:i});
       settle(G); return true;}
     case 'decline':{
       if(!isCur||G.phase!=='buy'||!G.pending) return false;
@@ -807,16 +1145,16 @@ function apply(G,seat,a){
       if(G.settings.dlala){
         const n=G.players.length,order=[]; for(let s=1;s<=n;s++){const k=(G.cur+s)%n; if(!G.players[k].bankrupt) order.push(k);}
         G.auction={idx:i,bidders:order,turn:0,high:0,highBidder:-1};
-        log(G,`The dlal opens the auction for ${SP[i].name}.`); A(G,{k:'fx',f:'dlala',idx:i});
-      } else log(G,`${p.name} passes on ${SP[i].name}.`);
+        log(G,'dlalaOpen',{s:i}); A(G,{k:'fx',f:'dlala',idx:i});
+      } else log(G,'passOn',{p:p.name,s:i});
       settle(G); return true;}
     case 'bid':case 'pass':{
       const au=G.auction; if(!au||au.bidders[au.turn]!==seat) return false;
-      if(a.t==='bid'){const inc=[100,500,1000].includes(a.inc)?a.inc:100; const amt=au.high+inc; if(amt>p.cash) return false; au.high=amt; au.highBidder=seat; au.turn=(au.turn+1)%au.bidders.length; log(G,`${p.name} bids ${fmt(amt)} for ${SP[au.idx].name}.`);}
-      else{au.bidders.splice(au.turn,1); if(au.turn>=au.bidders.length) au.turn=0; log(G,`${p.name} leaves the auction.`);}
+      if(a.t==='bid'){const inc=[100,500,1000].includes(a.inc)?a.inc:100; const amt=au.high+inc; if(amt>p.cash) return false; au.high=amt; au.highBidder=seat; au.turn=(au.turn+1)%au.bidders.length; log(G,'bids',{p:p.name,a:amt,s:au.idx});}
+      else{au.bidders.splice(au.turn,1); if(au.turn>=au.bidders.length) au.turn=0; log(G,'leaveAuc',{p:p.name});}
       if(au.bidders.length===0||(au.bidders.length===1&&au.highBidder===au.bidders[0])){
-        if(au.highBidder>=0){const w=G.players[au.highBidder]; w.cash-=au.high; G.props[au.idx].owner=w.id; log(G,`Sold! ${w.name} takes ${SP[au.idx].name} at the Dlala for ${fmt(au.high)}.`); A(G,{k:'fx',f:'buy',pid:w.id,idx:au.idx});}
-        else log(G,`Nobody bids. ${SP[au.idx].name} stays with the bank.`);
+        if(au.highBidder>=0){const w=G.players[au.highBidder]; w.cash-=au.high; G.props[au.idx].owner=w.id; log(G,'sold',{p:w.name,s:au.idx,a:au.high}); A(G,{k:'fx',f:'buy',pid:w.id,idx:au.idx});}
+        else log(G,'noBids',{s:au.idx});
         G.auction=null;
       }
       settle(G); return true;}
@@ -825,16 +1163,16 @@ function apply(G,seat,a){
       nextTurn(G); return true;}
     case 'fine':{
       if(!isCur||!free||!p.inJail||G.phase!=='roll'||p.cash<JAIL_FINE) return false;
-      payTax(G,p,JAIL_FINE,'release from 3okacha'); p.inJail=false; p.jailTurns=0; return true;}
+      payTax(G,p,JAIL_FINE,'jail'); p.inJail=false; p.jailTurns=0; return true;}
     case 'card':{
       if(!isCur||!free||!p.inJail||G.phase!=='roll'||!p.goojf.length) return false;
-      const c=p.goojf.pop(); G.decks[c.deck].push(c.id); p.inJail=false; p.jailTurns=0; log(G,`${p.name} uses a get-out card and leaves 3okacha.`); return true;}
+      const c=p.goojf.pop(); G.decks[c.deck].push(c.id); p.inJail=false; p.jailTurns=0; log(G,'useCard',{p:p.name}); return true;}
     case 'build':case 'sell':case 'mort':case 'unmort':{
       const i=+a.i; if(!isCur||!free||!isOwnable(i)) return false;
-      if(a.t==='build'){if(!canBuild(G,i,seat)) return false; p.cash-=houseCost(i); G.props[i].houses++; log(G,`${p.name} builds ${G.props[i].houses===5?'a riad':'a dar'} on ${SP[i].name}.`); A(G,{k:'fx',f:'build',idx:i,pid:seat});}
-      if(a.t==='sell'){if(!canSell(G,i,seat)) return false; G.props[i].houses--; p.cash+=houseCost(i)/2; log(G,`${p.name} sells a building on ${SP[i].name} for ${fmt(houseCost(i)/2)}.`);}
-      if(a.t==='mort'){if(!canMort(G,i,seat)) return false; G.props[i].mort=true; p.cash+=SP[i].price/2; log(G,`${p.name} mortgages ${SP[i].name} (rahn) for ${fmt(SP[i].price/2)}.`);}
-      if(a.t==='unmort'){if(!canUnmort(G,i,seat)) return false; p.cash-=unmortCost(i); G.props[i].mort=false; log(G,`${p.name} lifts the mortgage on ${SP[i].name}.`);}
+      if(a.t==='build'){if(!canBuild(G,i,seat)) return false; p.cash-=houseCost(i); G.props[i].houses++; log(G,G.props[i].houses===5?'buildRiad':'buildDar',{p:p.name,s:i}); A(G,{k:'fx',f:'build',idx:i,pid:seat});}
+      if(a.t==='sell'){if(!canSell(G,i,seat)) return false; G.props[i].houses--; p.cash+=houseCost(i)/2; log(G,'sellB',{p:p.name,s:i,a:houseCost(i)/2});}
+      if(a.t==='mort'){if(!canMort(G,i,seat)) return false; G.props[i].mort=true; p.cash+=SP[i].price/2; log(G,'mort',{p:p.name,s:i,a:SP[i].price/2});}
+      if(a.t==='unmort'){if(!canUnmort(G,i,seat)) return false; p.cash-=unmortCost(i); G.props[i].mort=false; log(G,'unmort',{p:p.name,s:i});}
       if(p.cash>=0) p.owes=-1;
       return true;}
     case 'manage':{ // computer players only: unmortgage and build in one go
@@ -844,7 +1182,7 @@ function apply(G,seat,a){
       ownedBy(G,p.id).filter(i=>G.props[i].mort).forEach(i=>{if(p.cash-unmortCost(i)>res*2){p.cash-=unmortCost(i);G.props[i].mort=false;}});
       let built=0,guard=60;
       while(guard-->0){const o=Object.keys(G.props).map(Number).filter(i=>canBuild(G,i,p.id)&&p.cash-houseCost(i)>=res).sort((x,y)=>G.props[x].houses-G.props[y].houses||SP[y].price-SP[x].price); if(!o.length) break; const i=o[0]; p.cash-=houseCost(i); G.props[i].houses++; built++; A(G,{k:'fx',f:'build',idx:i,pid:p.id});}
-      if(built) log(G,`${p.name} builds ${built} ${built===1?'building':'buildings'}.`);
+      if(built) log(G,'botBuild',{p:p.name,n:built});
       return true;}
     case 'bankrupt':{
       if(!isCur||p.cash>=0) return false;
@@ -859,18 +1197,18 @@ function apply(G,seat,a){
       if(cg>Math.max(0,p.cash)||ct>Math.max(0,b.cash)) return false;
       if(!give.length&&!get.length&&!cg&&!ct) return false;
       G.trade={from:seat,to,give,get,cashGive:cg,cashGet:ct};
-      log(G,`${p.name} offers ${b.name} a trade.`); return true;}
+      log(G,'offer',{p:p.name,o:b.name}); return true;}
     case 'tradeReply':{
       const t=G.trade; if(!t||t.to!==seat) return false;
       if(a.accept){
         const A1=G.players[t.from],B1=G.players[t.to];
         const ok=t.give.every(i=>G.props[i].owner===A1.id)&&t.get.every(i=>G.props[i].owner===B1.id)&&t.cashGive<=Math.max(0,A1.cash)&&t.cashGet<=Math.max(0,B1.cash);
-        if(ok){t.give.forEach(i=>G.props[i].owner=B1.id); t.get.forEach(i=>G.props[i].owner=A1.id); A1.cash+=t.cashGet-t.cashGive; B1.cash+=t.cashGive-t.cashGet; log(G,`Tbadel! ${A1.name} and ${B1.name} shake hands on a trade.`); A(G,{k:'fx',f:'deal',pid:A1.id,to:B1.id});}
-        else log(G,'The trade no longer adds up and is cancelled.');
-      } else log(G,`${p.name} refuses the trade.`);
+        if(ok){t.give.forEach(i=>G.props[i].owner=B1.id); t.get.forEach(i=>G.props[i].owner=A1.id); A1.cash+=t.cashGet-t.cashGive; B1.cash+=t.cashGive-t.cashGet; log(G,'deal',{p:A1.name,o:B1.name}); A(G,{k:'fx',f:'deal',pid:A1.id,to:B1.id});}
+        else log(G,'tradeVoid');
+      } else log(G,'refuse',{p:p.name});
       G.trade=null; settle(G); return true;}
     case 'tradeCancel':{
-      if(!G.trade||G.trade.from!==seat) return false; G.trade=null; log(G,`${p.name} withdraws the offer.`); return true;}
+      if(!G.trade||G.trade.from!==seat) return false; G.trade=null; log(G,'withdraw',{p:p.name}); return true;}
   }
   return false;
 }
@@ -916,6 +1254,7 @@ let V=null;              // view state (what is on screen)
 let lastSeen=0, PEND=null, Q=[], playing=false;
 let myCid=null;
 let NET={T:null,code:null,myQ:[],mySeq:0};
+let LANG_DIRTY=false;
 let tab='players', modal=null, botTimer=null, dpos={}, shownOver=null, lobbyDraft={name:'',token:-1};
 let CAPS=null; // claude capabilities, resolved once
 const inClaude=()=>!!(window.claude&&typeof window.claude.use==='function');
@@ -963,7 +1302,7 @@ function ClaudeT(){
     t.pending=g; if(t.writing){t.dirty=true; return;}
     t.writing=true;
     try{do{t.dirty=false; await t.docRef.set(clone(t.pending));}while(t.dirty);}
-    catch(e){toast(e&&e.code==='quota_exceeded'?'The game store is full. Finish an old game first.':'Could not save the game online. Retrying on the next move.');}
+    catch(e){toast(_t(e&&e.code==='quota_exceeded'?'store.full':'store.retry'));}
     t.writing=false;
   };
   t.join=async(code,onState)=>{
@@ -1056,15 +1395,15 @@ async function initNet(){
 function setOnlineNote(T){
   const n=$('onlineNote');
   if(T.kind==='claude'){
-    if(T.ready()){n.textContent='Online play is on. Players join with your invite link and need access to this page on Claude.'; $('hostBtn').disabled=!T.canHost(); if(!T.canHost()) n.textContent+=' You can join games here, but hosting needs edit access.';}
-    else{n.textContent='Online play is not available in this view. You can still play on this device.'; $('hostBtn').disabled=true;}
-  } else {n.textContent='Online play connects the players’ browsers directly. Keep the host’s tab open while you play.'; $('hostBtn').disabled=false;}
+    if(T.ready()){n.textContent=t('note.claudeOn')+(T.canHost()?'':t('note.claudeHostNo')); $('hostBtn').disabled=!T.canHost();}
+    else{n.textContent=t('note.claudeOff'); $('hostBtn').disabled=true;}
+  } else {n.textContent=t('note.peer'); $('hostBtn').disabled=false;}
 }
 async function listMyGames(){
   try{
     const T=newTransport(); if(!T.ready()) return;
     const games=(await T.listMine()).filter(g=>g&&!g.over&&g.hostCid===myCid).sort((a,b)=>(b.updated||0)-(a.updated||0)).slice(0,4);
-    $('myGames').innerHTML=games.map(g=>`<button class="btn sm" data-resume="${esc(g.code)}">Resume game ${esc(String(g.code).toUpperCase())} · ${g.status==='lobby'?'lobby':'round '+g.round}</button>`).join('');
+    $('myGames').innerHTML=games.map(g=>`<button class="btn sm" data-resume="${esc(g.code)}">${esc(t('home.resume',{c:String(g.code).toUpperCase(),w:g.status==='lobby'?t('home.lobby'):t('home.round',{n:g.round})}))}</button>`).join('');
     $('myGames').querySelectorAll('[data-resume]').forEach(b=>b.onclick=()=>joinGame(b.dataset.resume));
   }catch(e){}
 }
@@ -1112,7 +1451,7 @@ function lobbyJoin(cid,a){
   if(mine){mine.name=name; mine.token=tok; return true;}
   if(G.players.length>=8) return false;
   G.players.push({cid,name,token:tok,human:true});
-  log(G,`${name} joins the table.`);
+  log(G,'joins',{p:name});
   return true;
 }
 function sendIntent(it){
@@ -1126,15 +1465,15 @@ function dispatch(a,seat){
   if(seat==null) seat=actorOf(V);
   if(MODE==='local'||MODE==='host'){
     if(MODE==='host'&&G.status==='play'&&!(G.players[seat]&&(G.players[seat].cid===myCid))) return;
-    if(apply(G,seat,a)) commit(); else toast('That move is not possible right now.');
+    if(apply(G,seat,a)) commit(); else toast(t('toast.noMove'));
   } else {
-    if(NET.T&&!NET.T.hostOnline()){toast('The host is offline. Your move will be sent when they are back.');}
+    if(NET.T&&!NET.T.hostOnline()){toast(t('toast.hostOff'));}
     sendIntent({seat,a});
   }
 }
 function lobbyAct(a){
   if(MODE==='host'){
-    if(a.t==='join'){if(lobbyJoin(myCid,a)) commit(); else toast('That token is taken.');}
+    if(a.t==='join'){if(lobbyJoin(myCid,a)) commit(); else toast(t('toast.taken'));}
     else if(a.t==='leave'){G.players=G.players.filter(p=>p.cid!==myCid); commit();}
   } else sendIntent({a});
 }
@@ -1142,45 +1481,45 @@ function lobbyAct(a){
 /* ============================================================
    ONLINE: host / join
    ============================================================ */
-const netErr=e=>{const t=e&&e.type; if(t==='lib') return 'Could not load the connection library. Check your internet connection.'; if(t==='unavailable-id') return 'That game is already open in another tab or browser.'; if(t==='browser-incompatible') return 'This browser cannot make direct connections. Try Chrome, Edge, Firefox or Safari.'; return 'Could not connect. Check your internet connection and try again.';};
+const netErr=e=>{const k=e&&e.type; return t(k==='lib'?'err.lib':k==='unavailable-id'?'err.inUse':k==='browser-incompatible'?'err.browser':'err.conn');};
 async function hostGame(){
   ensureCid(); teardownNet();
-  const T=newTransport(); if(!T.canHost()){toast('Hosting is not available here.'); return;}
+  const T=newTransport(); if(!T.canHost()){toast(t('toast.noHost')); return;}
   const code=rid(6);
   MODE='host';
   G={gid:rid(10),status:'lobby',mode:'online',code,hostCid:myCid,players:[],settings:{daret:true,dlala:true,rounds:25,fast:false},seq:0,anims:[],ack:{},log:[],event:'',updated:Date.now()};
-  log(G,'The table is set. Waiting for players.');
+  log(G,'tableSet');
   NET.T=T; NET.code=code;
-  showConnecting(code,'Opening your table…');
+  showConnecting(code,'conn.opening');
   try{await T.host(code,hostHandle);}catch(e){toast(netErr(e)); goHome(); return;}
   try{history.replaceState(null,'','#'+code);}catch(e){}
   lobbyDraft={name:'',token:0};
   commit();
 }
 async function joinGame(code){
-  code=String(code||'').toLowerCase().trim(); if(!/^[a-z0-9]{4,8}$/.test(code)){toast('Game codes are 6 letters and numbers.'); return;}
+  code=String(code||'').toLowerCase().trim(); if(!/^[a-z0-9]{4,8}$/.test(code)){toast(t('toast.code')); return;}
   ensureCid(); teardownNet();
-  const T=newTransport(); if(!T.ready()){toast('Online play is not available in this view.'); return;}
+  const T=newTransport(); if(!T.ready()){toast(t('toast.noOnline')); return;}
   let saved=null; try{saved=await T.load(code);}catch(e){}
   NET.T=T; NET.code=code;
   try{history.replaceState(null,'','#'+code);}catch(e){}
   if(saved&&saved.hostCid===myCid){
     MODE='host'; G=clone(saved);
-    showConnecting(code,'Reopening your table…');
+    showConnecting(code,'conn.reopen');
     try{await T.host(code,hostHandle);}catch(e){toast(netErr(e)); goHome(); return;}
     V=null; commit(); return;
   }
-  if(T.kind==='claude'&&!saved){toast(`No game found with code ${code.toUpperCase()}.`); teardownNet(); return;}
+  if(T.kind==='claude'&&!saved){toast(t('toast.noGame',{c:code.toUpperCase()})); teardownNet(); return;}
   MODE='guest'; G=null; V=null;
-  showConnecting(code,'Connecting to the host…');
+  showConnecting(code,'conn.connecting');
   try{await T.join(code,d=>onState(clone(d)));}catch(e){toast(netErr(e)); goHome(); return;}
   if(saved) onState(clone(saved));
 }
-function showConnecting(code,msg){
+function showConnecting(code,msgKey){
   show('lobby');
-  $('lobby').innerHTML=`<div class="bar-top"><button class="btn ghost sm" data-home>← Home</button><div class="sp"></div><span class="chipcode">GAME ${esc(code.toUpperCase())}</span></div>
-   <div class="card" style="max-width:560px;margin:40px auto;text-align:center"><div class="parade" style="margin:6px 0 18px">${[0,2,3].map((k,i)=>`<div class="coin" style="animation-delay:${i*.3}s">${`<img src="${TOKENS[k].img}" alt="">`}</div>`).join('')}</div>
-   <h2 class="h2">${esc(msg)}</h2><p class="muted" id="connHint">The host needs to have the game open. This page keeps trying on its own.</p></div>`;
+  $('lobby').innerHTML=`<div class="bar-top"><button class="btn ghost sm" data-home>${t('back')}</button><div class="sp"></div><span class="chipcode" dir="ltr">${esc(t('chip.game',{c:code.toUpperCase()}))}</span></div>
+   <div class="card" style="max-width:560px;margin:40px auto;text-align:center"><div class="parade" style="margin:6px 0 18px">${[0,2,3].map((k,i)=>`<div class="coin" style="animation-delay:${i*.3}s"><img src="${TOKENS[k].img}" alt=""></div>`).join('')}</div>
+   <h2 class="h2">${esc(t(msgKey))}</h2><p class="muted" id="connHint">${esc(t('conn.hint'))}</p></div>`;
   $('lobby').querySelector('[data-home]').onclick=goHome;
 }
 function teardownNet(){
@@ -1207,10 +1546,10 @@ function initPWA(){
   if(standalone) return;
   addEventListener('beforeinstallprompt',e=>{e.preventDefault(); deferredPrompt=e; $('installBtn').hidden=false;});
   if(/iphone|ipad|ipod/i.test(navigator.userAgent)) $('installBtn').hidden=false;
-  addEventListener('appinstalled',()=>{$('installBtn').hidden=true; toast('Moropoly is on your home screen.');});
+  addEventListener('appinstalled',()=>{$('installBtn').hidden=true; toast(t('pwa.installed'));});
   $('installBtn').onclick=async()=>{
     if(deferredPrompt){deferredPrompt.prompt(); try{await deferredPrompt.userChoice;}catch(e){} deferredPrompt=null; $('installBtn').hidden=true; return;}
-    openModal('inst',`<div class="hd"><h2>Install Moropoly</h2><button class="x" data-close aria-label="Close">×</button></div><div class="bd"><p><b>iPhone or iPad (Safari):</b> tap the Share button, then <b>Add to Home Screen</b>.</p><p><b>Android (Chrome):</b> open the ⋮ menu, then <b>Install app</b> or <b>Add to Home screen</b>.</p><p class="muted">It opens full screen like an app, and invite links still work.</p></div>`);
+    openModal('inst',`<div class="hd"><h2>${t('pwa.title')}</h2><button class="x" data-close aria-label="${t('aria.close')}">×</button></div><div class="bd"><p>${t('pwa.ios')}</p><p>${t('pwa.android')}</p><p class="muted">${t('pwa.note')}</p></div>`);
   };
 }
 function onState(ns){
@@ -1233,6 +1572,7 @@ async function play(){
   while(Q.length){const a=Q.shift(); try{await runAnim(a);}catch(e){}}
   playing=false;
   if(PEND){V=PEND; PEND=null;}
+  if(LANG_DIRTY){LANG_DIRTY=false; buildBoard();}
   syncDpos(); renderAll(); afterRender();
 }
 function afterRender(){autoModals(); scheduleBot();}
@@ -1251,31 +1591,32 @@ const sideOf=i=>i<10?'b':i<20?'l':i<30?'t':'r';
 const STAR_PATH='M0,-0.95L0.56,0.77L-0.9,-0.29H0.9L-0.56,0.77Z';
 function buildBoard(){
   const b=$('board'); b.innerHTML='';
+  const ar=LANG==='ar';
   SP.forEach((s,i)=>{
     const [r,c]=pos2grid(i), el=document.createElement('div');
-    el.className='cell'; el.dataset.t=s.t; el.id='c'+i; el.style.gridArea=`${r}/${c}`; el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label',s.name);
+    el.className='cell'; el.dataset.t=s.t; el.id='c'+i; el.style.gridArea=`${r}/${c}`; el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label',spN(i));
     if(i%10===0){
       el.classList.add('corner');
-      if(s.t==='go'){el.classList.add('c-go'); el.innerHTML=`<div class="big">${s.ar}</div><div class="lat">AL INṬILĀQ</div><div class="arrow">←</div><div class="tiny">Collect 2,000 DH</div>`;}
-      if(s.t==='jail'){el.classList.add('c-jail'); el.innerHTML=`<div class="big">${s.ar}</div><div class="bars"><img src="${s.art}" alt=""></div><div class="lat">3OKACHA</div><div class="tiny">Ziyara · just visiting</div>`;}
-      if(s.t==='parking'){el.classList.add('c-park'); el.innerHTML=`<div class="big">${s.ar}</div><div class="lat">QAHWA</div><div class="pot" id="pot">0 DH</div><div class="tiny">Daret pot</div>`;}
-      if(s.t==='gojail'){el.classList.add('c-gojail'); el.innerHTML=`<div class="big">${s.ar}</div><div class="lat">GO TO 3OKACHA</div><div class="tiny">No salary</div>`;}
+      if(s.t==='go'){el.classList.add('c-go'); el.innerHTML=`<div class="big">${s.ar}</div><div class="lat">${t('b.goLat')}</div><div class="arrow">←</div><div class="tiny">${t('b.goTiny')}</div>`;}
+      if(s.t==='jail'){el.classList.add('c-jail'); el.innerHTML=`<div class="big">${s.ar}</div><div class="bars"><img src="${s.art}" alt=""></div><div class="lat">${t('b.jailLat')}</div><div class="tiny">${t('b.jailTiny')}</div>`;}
+      if(s.t==='parking'){el.classList.add('c-park'); el.innerHTML=`<div class="big">${s.ar}</div><div class="lat">${t('b.parkLat')}</div><div class="pot" id="pot">0</div><div class="tiny">${t('b.parkTiny')}</div>`;}
+      if(s.t==='gojail'){el.classList.add('c-gojail'); el.innerHTML=`<div class="big">${s.ar}</div><div class="lat">${t('b.gojailLat')}</div><div class="tiny">${t('b.gojailTiny')}</div>`;}
     } else {
       el.classList.add('s-'+sideOf(i));
       let h='';
-      if(s.t==='prop') h=`<div class="bar" style="background:${GROUPS[s.g].color}" id="h${i}"></div><div class="art"><img src="${s.art}" alt="" loading="lazy"></div><div class="body"><div class="nm">${esc(s.name)}</div><div class="pr">${s.price.toLocaleString('en-US')}</div></div>`;
-      else if(s.t==='rail') h=`<div class="body"><div class="glyph">🚄</div><div class="nm">${esc(s.name)}</div><div class="pr">${s.price.toLocaleString('en-US')}</div></div>`;
-      else if(s.t==='util') h=`<div class="body"><div class="glyph">${s.glyph}</div><div class="nm">${esc(s.name)}</div><div class="pr">${s.price.toLocaleString('en-US')}</div></div>`;
-      else if(s.t==='mektoub') h=`<div class="body" style="background:linear-gradient(180deg,#fff,#f6d9da)"><div class="ico" style="color:var(--red)">مكتوب</div><div class="nm">Mektoub</div></div>`;
-      else if(s.t==='baraka') h=`<div class="body" style="background:linear-gradient(180deg,#fff,#d5efe1)"><div class="ico" style="color:var(--green)">بركة</div><div class="nm">Baraka</div></div>`;
-      else if(s.t==='tax') h=`<div class="body"><div class="ico" style="font-size:1.6cqi">${s.ar}</div><div class="nm">${esc(s.name)}</div><div class="pr">Pay ${s.amount.toLocaleString('en-US')}</div></div>`;
+      if(s.t==='prop') h=`<div class="bar" style="background:${GROUPS[s.g].color}" id="h${i}"></div><div class="art"><img src="${s.art}" alt="" loading="lazy"></div><div class="body"><div class="nm">${esc(spN(i))}</div><div class="pr">${num(s.price)}</div></div>`;
+      else if(s.t==='rail') h=`<div class="body"><div class="glyph">🚄</div><div class="nm">${esc(spN(i))}</div><div class="pr">${num(s.price)}</div></div>`;
+      else if(s.t==='util') h=`<div class="body"><div class="glyph">${s.glyph}</div><div class="nm">${esc(spN(i))}</div><div class="pr">${num(s.price)}</div></div>`;
+      else if(s.t==='mektoub') h=`<div class="body" style="background:linear-gradient(180deg,#fff,#f6d9da)"><div class="ico" style="color:var(--red)">مكتوب</div><div class="nm">${t('b.mektoub')}</div></div>`;
+      else if(s.t==='baraka') h=`<div class="body" style="background:linear-gradient(180deg,#fff,#d5efe1)"><div class="ico" style="color:var(--green)">بركة</div><div class="nm">${t('b.baraka')}</div></div>`;
+      else if(s.t==='tax') h=`<div class="body"><div class="ico" style="font-size:1.6cqi">${s.ar}</div><div class="nm">${ar?'':esc(spN(i))}</div><div class="pr">${t('b.pay',{n:num(s.amount)})}</div></div>`;
       el.innerHTML=h+`<div class="own" id="o${i}"></div>`;
     }
     el.addEventListener('click',()=>openDeed(i));
     el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDeed(i);}});
     b.appendChild(el);
   });
-  const ctr=document.createElement('div'); ctr.className='center';
+  const ctr=document.createElement('div'); ctr.className='center'; ctr.dir=ar?'rtl':'ltr';
   ctr.innerHTML=`<svg class="star" viewBox="-1 -1 2 2" aria-hidden="true"><path d="${STAR_PATH}" fill="none" stroke-width=".05" stroke-linejoin="miter"/></svg>
     <div class="ttl"><div class="tif">ⵎⵓⵔⵓⴱⵓⵍⵉ</div><div class="ar">مُوروبولي</div><div class="lat">MOROPOLY</div></div>
     <div class="dice" id="dice">${[0,1].map(k=>`<div class="die" id="d${k}">${[1,2,3,4,5,6].map(f=>`<div class="face f${f}">${'<i></i>'.repeat(9)}</div>`).join('')}</div>`).join('')}</div>
@@ -1283,7 +1624,7 @@ function buildBoard(){
   b.appendChild(ctr);
   const PIPS={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
   b.querySelectorAll('.face').forEach(f=>{const v=+f.className.match(/f(\d)/)[1]; [...f.children].forEach((pip,j)=>pip.style.visibility=PIPS[v].includes(j)?'visible':'hidden');});
-  const stage=document.createElement('div'); stage.className='stage'; stage.id='stage'; b.appendChild(stage);
+  const stage=document.createElement('div'); stage.className='stage'; stage.id='stage'; stage.dir=ar?'rtl':'ltr'; b.appendChild(stage);
   const pl=document.createElement('div'); pl.className='pawnlayer'; pl.id='pawns'; b.appendChild(pl);
   setDice(V.dice||[3,4],false);
 }
@@ -1322,7 +1663,7 @@ async function runAnim(a){
   if(!$('board')) return;
   const sp=speed(), rm=reduceMotion();
   switch(a.k){
-    case 'dice':{sfx('dice'); setTimeout(()=>sfx('land'),rm?50:820*sp); setDice(a.d,!rm); setEvent(`${pname(a.pid)} rolls ${a.d[0]} and ${a.d[1]}${a.d[0]===a.d[1]?'. Double!':''}`); await sleep(rm?100:950*sp); break;}
+    case 'dice':{sfx('dice'); setTimeout(()=>sfx('land'),rm?50:820*sp); setDice(a.d,!rm); setEvent(tl(['rolls',{p:pname(a.pid),d1:a.d[0],d2:a.d[1]}])+(a.d[0]===a.d[1]?t('ev.double'):'')); await sleep(rm?100:950*sp); break;}
     case 'move':{
       const el=$('pw'+a.pid); if(!el){dpos[a.pid]=(a.from+a.steps)%40; break;}
       el.style.zIndex=4;
@@ -1339,20 +1680,20 @@ async function runAnim(a){
       const el=$('pw'+a.pid); const from=el?slotXY(a.pid,dpos[a.pid]):null; dpos[a.pid]=a.to; const to=slotXY(a.pid,a.to);
       if(el&&!rm){el.style.zIndex=4; await el.animate([{transform:`translate(${from.x}px,${from.y}px) scale(1)`},{transform:`translate(${(from.x+to.x)/2}px,${(from.y+to.y)/2-pawnSize()*3}px) scale(1.5)`,offset:.5},{transform:`translate(${to.x}px,${to.y}px) scale(1)`}],{duration:700*sp+200,easing:'ease-in-out'}).finished; el.style.zIndex='';}
       layoutPawns(); highlight(a.to);
-      if(a.f==='jail'){jailBars(); await revealArt(SP[30].art,'3okacha!',1300*sp);}
+      if(a.f==='jail'){jailBars(); await revealArt(SP[30].art,t('fl.jail'),1300*sp);}
       break;}
-    case 'card':{sfx('card'); setEvent(`${pname(a.pid)} draws ${a.deck==='mektoub'?'Mektoub':'Baraka'}`); await showFate(a.deck,a.text,rm?1200:2300*sp); break;}
-    case 'turn':{setEvent(`${pname(a.pid)}’s turn`); if(MODE!=='local'&&iControl(a.pid)){sfx('myturn'); try{navigator.vibrate&&navigator.vibrate([60,40,60]);}catch(e){}} break;}
+    case 'card':{sfx('card'); setEvent(t('ev.draws',{p:pname(a.pid),deckN:t('deck.'+a.deck)})); await showFate(a.deck,cardText(a.deck,a.id,a.text),rm?1200:2300*sp); break;}
+    case 'turn':{setEvent(tl(['turn',{p:pname(a.pid)}])); if(MODE!=='local'&&iControl(a.pid)){sfx('myturn'); try{navigator.vibrate&&navigator.vibrate([60,40,60]);}catch(e){}} break;}
     case 'fx':{
-      if(a.f==='deed'){sfx('deed'); await revealArt(SP[a.idx].art||null,`${SP[a.idx].name} · ${fmt(SP[a.idx].price)}`,1300*sp,SP[a.idx]);}
-      else if(a.f==='buy'){sfx('buy'); floatAt(a.pid,'SOLD','gold'); confettiAt(cellBox(a.idx)); await sleep(500*sp);}
+      if(a.f==='deed'){sfx('deed'); await revealArt(SP[a.idx].art||null,`${spN(a.idx)} · ${fmt(SP[a.idx].price)}`,1300*sp,SP[a.idx]);}
+      else if(a.f==='buy'){sfx('buy'); floatAt(a.pid,t('fl.sold'),'gold'); confettiAt(cellBox(a.idx)); await sleep(500*sp);}
       else if(a.f==='pay'){sfx('pay'); floatAt(a.pid,'−'+fmt(a.amt),'minus'); if(a.to>=0) setTimeout(()=>floatAt(a.to,'+'+fmt(a.amt),'plus'),300); await sleep(450*sp);}
       else if(a.f==='gain'||a.f==='go'){sfx('coin'); floatAt(a.pid,'+'+fmt(a.amt),'plus'); await sleep(350*sp);}
-      else if(a.f==='daret'){sfx('coins'); floatAt(a.pid,'DARET +'+fmt(a.amt),'gold'); confettiAt(cellBox(20)); await sleep(700*sp);}
+      else if(a.f==='daret'){sfx('coins'); floatAt(a.pid,t('fl.daret')+' +'+fmt(a.amt),'gold'); confettiAt(cellBox(20)); await sleep(700*sp);}
       else if(a.f==='build'){sfx('build'); const h=$('h'+a.idx); if(h){const p=PEND||V; const pr=p.props[a.idx]; h.innerHTML=houseHTML(pr.houses); h.lastElementChild&&h.lastElementChild.classList.add('pop');} await sleep(220*sp);}
-      else if(a.f==='deal'){sfx('deal'); floatAt(a.pid,'TBADEL','gold'); floatAt(a.to,'TBADEL','gold'); await sleep(500*sp);}
-      else if(a.f==='dlala'){sfx('gavel'); setEvent('The dlal opens the auction'); await sleep(400);}
-      else if(a.f==='bankrupt'){sfx('sad'); floatAt(a.pid,'BANKRUPT','minus'); await sleep(800*sp);}
+      else if(a.f==='deal'){sfx('deal'); floatAt(a.pid,t('fl.deal'),'gold'); floatAt(a.to,t('fl.deal'),'gold'); await sleep(500*sp);}
+      else if(a.f==='dlala'){sfx('gavel'); setEvent(t('ev.dlala')); await sleep(400);}
+      else if(a.f==='bankrupt'){sfx('sad'); floatAt(a.pid,t('fl.bankrupt'),'minus'); await sleep(800*sp);}
       else if(a.f==='win'){sfx('zaghrouta'); confettiAt(null,260); await sleep(1200);}
       break;}
   }
@@ -1379,13 +1720,13 @@ function jailBars(){
 }
 async function revealArt(src,cap,ms,s){
   const st=$('stage'); if(!st) return;
-  const head=s&&!src?`<div style="height:22%;background:${colorOf(SP.indexOf(s))}"></div><div style="padding:2cqi;color:var(--ink);text-align:center;font-weight:700;font-size:2.2cqi">${esc(s.name)}<div style="font-family:var(--f-ar);font-size:2cqi;color:var(--ink-dim)">${s.ar}</div></div>`:'';
+  const head=s&&!src?`<div style="height:22%;background:${colorOf(SP.indexOf(s))}"></div><div style="padding:2cqi;color:var(--ink);text-align:center;font-weight:700;font-size:2.2cqi">${esc(spN(SP.indexOf(s)))}<div style="font-family:var(--f-ar);font-size:2cqi;color:var(--ink-dim)">${LANG==='ar'?'':s.ar}</div></div>`:'';
   st.innerHTML=`<div class="reveal">${src?`<img src="${src}" alt="">`:head}<div class="cap">${esc(cap)}</div></div>`;
   await sleep(ms); const r=st.firstElementChild; if(r){r.classList.add('out'); await sleep(420);} st.innerHTML='';
 }
 async function showFate(deck,text,ms){
   const st=$('stage'); if(!st) return;
-  st.innerHTML=`<div class="fate ${deck}"><div class="k">${deck==='mektoub'?'مكتوب':'بركة'}</div><div class="kl">${deck==='mektoub'?'Mektoub · fate':'Baraka · blessing'}</div><div class="tx">${esc(text)}</div></div>`;
+  st.innerHTML=`<div class="fate ${deck}"><div class="k">${deck==='mektoub'?'مكتوب':'بركة'}</div><div class="kl">${t('fate.'+deck)}</div><div class="tx">${esc(text)}</div></div>`;
   await sleep(ms); const r=st.firstElementChild; if(r){r.classList.add('out'); await sleep(420);} st.innerHTML='';
 }
 
@@ -1405,32 +1746,32 @@ function renderAll(){
     if(isOwnable(i)){const pr=V.props[i]; $('o'+i).style.background=pr.owner>=0?V.players[pr.owner].color:'transparent'; cell.classList.toggle('mort',pr.mort); const h=$('h'+i); if(h) h.innerHTML=houseHTML(pr.houses);}
   });
   const pot=$('pot'); if(pot) pot.textContent=fmt(V.daret);
-  setDice(V.dice,false); layoutPawns(); setEvent(V.event||'');
-  $('roundMeta').textContent=`Round ${V.round}${V.settings.rounds?` of ${V.settings.rounds}`:''} · Daret ${fmt(V.daret)}`;
-  const cc=$('codeChip'); cc.hidden=!V.code; if(V.code) cc.textContent='GAME '+V.code.toUpperCase();
+  setDice(V.dice,false); layoutPawns(); setEvent(tl(V.event));
+  $('roundMeta').textContent=t('meta.round',{n:V.round,of:V.settings.rounds?t('meta.of',{m:V.settings.rounds}):'',a:fmt(V.daret)});
+  const cc=$('codeChip'); cc.hidden=!V.code; if(V.code) cc.textContent=t('chip.game',{c:V.code.toUpperCase()});
   renderBanner(); renderTurn(); renderTab();
 }
 function renderBanner(){
   const s=$('bannerSlot'); if(!s) return;
-  s.innerHTML=(MODE==='guest'&&!hostOnline())?'<div class="banner" style="margin-bottom:12px">Can’t reach the host, so the game is paused. It reconnects on its own when the host’s game is open again.</div>':'';
+  s.innerHTML=(MODE==='guest'&&!hostOnline())?`<div class="banner" style="margin-bottom:12px">${esc(t('banner.paused'))}</div>`:'';
 }
 function renderTurn(){
   const el=$('turnCard'); if(!el||!V||V.status!=='play') return;
-  const p=V.players[V.cur]; const mine=iControl(V.cur)&&!playing&&!V.over;
+  const p=V.players[V.cur]; const mine=iControl(V.cur)&&!playing&&!V.over; const N=x=>esc(x);
   let status='',btns=[];
-  if(V.over){const w=V.players[V.winner]; status=`<b>${esc(w.name)}</b> wins Moropoly. Mabrouk!`; btns.push(`<button class="btn metal" data-act="results">Results</button>`);}
-  else if(playing){status=esc(V.event||'');}
-  else if(V.trade){const t=V.trade; status=`<b>${esc(V.players[t.from].name)}</b> offered <b>${esc(V.players[t.to].name)}</b> a trade.`; if(iControl(t.to)) btns.push(`<button class="btn red" data-act="reply">See the offer</button>`); if(iControl(t.from)) btns.push(`<button class="btn" data-act="tcancel">Withdraw offer</button>`);}
-  else if(V.auction){const a=V.auction; status=`Dlala for <b>${esc(SP[a.idx].name)}</b>: ${fmt(a.high)}${a.highBidder>=0?' by '+esc(V.players[a.highBidder].name):''}.`; btns.push(`<button class="btn red" data-act="auction">Open the auction</button>`);}
-  else if(p.cash<0){status=`<span class="status bad">${esc(p.name)} owes ${fmt(-p.cash)}. Sell buildings or mortgage in My deeds, trade, or declare bankruptcy.</span>`; if(mine) btns.push(`<button class="btn" data-act="deeds">My deeds</button>`,`<button class="btn" data-act="trade">Tbadel</button>`,`<button class="btn danger" data-act="bankrupt">Declare bankruptcy</button>`);}
-  else if(V.phase==='buy'){const s=SP[V.pending.idx]; status=`For sale: <b>${esc(s.name)}</b>${s.g?' · '+GROUPS[s.g].city:''}`; if(mine) btns.push(`<button class="btn red" data-act="buy" ${p.cash<s.price?'disabled':''}>Buy for ${fmt(s.price)}</button>`,`<button class="btn" data-act="decline">${V.settings.dlala?'Send to the Dlala':'Pass'}</button>`);}
-  else if(V.phase==='roll'){status=p.inJail?`${esc(p.name)} is in 3okacha (try ${p.jailTurns+1} of 3). Roll a double, pay ${fmt(JAIL_FINE)} or use a card.`:(V.rollAgain?'Double! Roll again.':`${esc(p.name)} to roll.`);
-    if(mine){btns.push(`<button class="btn red" data-act="roll">🎲 Roll the dice</button>`); if(p.inJail){btns.push(`<button class="btn" data-act="fine" ${p.cash<JAIL_FINE?'disabled':''}>Pay ${fmt(JAIL_FINE)}</button>`); if(p.goojf.length) btns.push(`<button class="btn" data-act="card">Use get-out card</button>`);} btns.push(`<button class="btn ghost" data-act="trade">Tbadel</button>`);}}
-  else if(V.phase==='end'){status=esc(V.event||''); if(mine) btns.push(`<button class="btn green" data-act="end">End turn</button>`,`<button class="btn" data-act="deeds">Build</button>`,`<button class="btn ghost" data-act="trade">Tbadel</button>`);}
+  if(V.over){const w=V.players[V.winner]; status=t('tc.wins',{p:N(w.name)}); btns.push(`<button class="btn metal" data-act="results">${t('btn.results')}</button>`);}
+  else if(playing){status=esc(tl(V.event));}
+  else if(V.trade){const tr=V.trade; status=t('tc.offered',{p:N(V.players[tr.from].name),o:N(V.players[tr.to].name)}); if(iControl(tr.to)) btns.push(`<button class="btn red" data-act="reply">${t('btn.seeOffer')}</button>`); if(iControl(tr.from)) btns.push(`<button class="btn" data-act="tcancel">${t('btn.withdraw')}</button>`);}
+  else if(V.auction){const a=V.auction; status=t('tc.dlala',{s:esc(spN(a.idx)),a:fmt(a.high),by:a.highBidder>=0?t('tc.by',{p:N(V.players[a.highBidder].name)}):''}); btns.push(`<button class="btn red" data-act="auction">${t('btn.openAuc')}</button>`);}
+  else if(p.cash<0){status=`<span class="status bad">${esc(t('tc.owes',{p:p.name,a:fmt(-p.cash)}))}</span>`; if(mine) btns.push(`<button class="btn" data-act="deeds">${t('btn.myDeeds')}</button>`,`<button class="btn" data-act="trade">${t('btn.tbadel')}</button>`,`<button class="btn danger" data-act="bankrupt">${t('btn.bankrupt')}</button>`);}
+  else if(V.phase==='buy'){const i=V.pending.idx,s=SP[i]; status=t('tc.forSale',{s:esc(spN(i)),c:s.g?' · '+esc(cityN(s.g)):''}); if(mine) btns.push(`<button class="btn red" data-act="buy" ${p.cash<s.price?'disabled':''}>${t('btn.buy',{a:fmt(s.price)})}</button>`,`<button class="btn" data-act="decline">${V.settings.dlala?t('btn.dlala'):t('btn.pass')}</button>`);}
+  else if(V.phase==='roll'){status=esc(p.inJail?t('tc.inJail',{p:p.name,n:p.jailTurns+1,a:fmt(JAIL_FINE)}):(V.rollAgain?t('tc.again'):t('tc.toRoll',{p:p.name})));
+    if(mine){btns.push(`<button class="btn red" data-act="roll">${t('btn.roll')}</button>`); if(p.inJail){btns.push(`<button class="btn" data-act="fine" ${p.cash<JAIL_FINE?'disabled':''}>${t('btn.payFine',{a:fmt(JAIL_FINE)})}</button>`); if(p.goojf.length) btns.push(`<button class="btn" data-act="card">${t('btn.useCard')}</button>`);} btns.push(`<button class="btn ghost" data-act="trade">${t('btn.tbadel')}</button>`);}}
+  else if(V.phase==='end'){status=esc(tl(V.event)); if(mine) btns.push(`<button class="btn green" data-act="end">${t('btn.end')}</button>`,`<button class="btn" data-act="deeds">${t('btn.build')}</button>`,`<button class="btn ghost" data-act="trade">${t('btn.tbadel')}</button>`);}
   let prev='';
-  if(V.phase==='buy'&&V.pending&&!playing){const i=V.pending.idx,s=SP[i]; prev=`<div class="preview">${s.art?`<img src="${s.art}" alt="">`:''}<div style="min-width:0"><div style="font-weight:700">${esc(s.name)} <span style="font-family:var(--f-ar);color:var(--dim)">${s.ar}</span></div><div class="muted" style="font-size:12.5px">${s.t==='prop'?`Rent ${fmt(s.rent[0])}, or ${fmt(s.rent[0]*2)} with all of ${GROUPS[s.g].city}`:s.t==='rail'?'Station rent 250 to 2,000 DH':'Rent 40 or 100 × the dice'}</div><button class="btn ghost sm" style="margin-top:6px" data-act="deed" data-i="${i}">View deed</button></div></div>`;}
-  const wait=!mine&&!V.over&&!playing&&!V.auction&&!V.trade?`<div class="muted" style="font-size:12.5px">${p.human?(MODE==='local'?'':`Waiting for ${esc(p.name)}…`):'Computer player is thinking…'}</div>`:'';
-  el.innerHTML=`<div class="who">${coinHTML(p.token)}<div style="flex:1;min-width:0"><div class="n">${esc(p.name)}</div><div class="muted" style="font-size:12px">${esc(TOKENS[p.token].name)}${p.human?'':' · computer'}${iControl(p.id)&&MODE!=='local'?' · you':''}</div></div><div class="cash">${fmt(p.cash)}</div></div>
+  if(V.phase==='buy'&&V.pending&&!playing){const i=V.pending.idx,s=SP[i]; prev=`<div class="preview">${s.art?`<img src="${s.art}" alt="">`:''}<div style="min-width:0"><div style="font-weight:700">${esc(spN(i))} ${LANG==='ar'?'':`<span style="font-family:var(--f-ar);color:var(--dim)">${s.ar}</span>`}</div><div class="muted" style="font-size:12.5px">${esc(s.t==='prop'?t('pv.rentProp',{a:fmt(s.rent[0]),b:fmt(s.rent[0]*2),c:cityN(s.g)}):s.t==='rail'?t('pv.rentRail'):t('pv.rentUtil'))}</div><button class="btn ghost sm" style="margin-top:6px" data-act="deed" data-i="${i}">${t('btn.viewDeed')}</button></div></div>`;}
+  const wait=!mine&&!V.over&&!playing&&!V.auction&&!V.trade?`<div class="muted" style="font-size:12.5px">${p.human?(MODE==='local'?'':esc(t('tc.waiting',{p:p.name}))):t('tc.thinking')}</div>`:'';
+  el.innerHTML=`<div class="who">${coinHTML(p.token)}<div style="flex:1;min-width:0"><div class="n">${esc(p.name)}</div><div class="muted" style="font-size:12px">${esc(tokN(p.token))}${p.human?'':' · '+t('lbl.computer')}${iControl(p.id)&&MODE!=='local'?' · '+t('lbl.you'):''}</div></div><div class="cash">${fmt(p.cash)}</div></div>
     <div class="status">${status}</div>${prev}<div class="actions">${btns.join('')}</div>${wait}`;
   el.querySelectorAll('[data-act]').forEach(b=>b.addEventListener('click',()=>act(b.dataset.act,b.dataset.i)));
 }
@@ -1448,32 +1789,32 @@ function setTab(t){tab=t; document.querySelectorAll('#tabs button').forEach(b=>b
 function renderTab(){
   const el=$('tabpanel'); if(!el||!V||V.status!=='play') return;
   const on=MODE==='local'?null:onlineCids();
+  const small=x=>`<span class="muted" style="font-size:11px">· ${x}</span>`;
   if(tab==='players'){
     el.innerHTML=`<div class="plist">${V.players.map(p=>{const owned=ownedBy(V,p.id).sort((a,b)=>a-b);
       const st=on&&p.human?`<span class="dotst ${on.has(p.cid)?'on':''}"></span>`:'';
-      const hostCtl=MODE==='host'&&p.cid!==myCid&&!p.bankrupt&&!V.over?`<button class="btn ghost sm" style="margin-top:4px" data-bot="${p.id}">${p.human?'Let computer play':'Hand back to player'}</button>`:'';
-      return `<div class="prow ${p.id===V.cur?'active':''} ${p.bankrupt?'out':''}">${coinHTML(p.token,`style="box-shadow:0 0 0 2px ${p.color}"`)}<div style="min-width:0"><div class="nm">${st}${esc(p.name)} ${p.human?'':'<span class="muted" style="font-size:11px">· computer</span>'}${iControl(p.id)&&MODE!=='local'?' <span class="muted" style="font-size:11px">· you</span>':''}</div>
-      <div class="sub">${p.bankrupt?'Bankrupt':p.inJail?'In 3okacha':esc(SP[p.pos].name)}${p.goojf.length?' · get-out card':''}</div>
-      <div class="chips">${owned.map(i=>`<span class="chip ${V.props[i].mort?'m':''}" title="${esc(SP[i].name)}" style="background:${colorOf(i)}"></span>`).join('')}</div>${hostCtl&&p.cid?hostCtl:''}</div>
-      <div class="money"><b>${fmt(p.cash)}</b><span class="sub">worth ${fmt(netWorth(V,p))}</span></div></div>`;}).join('')}</div>`;
-    el.querySelectorAll('[data-bot]').forEach(b=>b.onclick=()=>{const p=G.players[+b.dataset.bot]; if(!p) return; p.human=!p.human; log(G,p.human?`${p.name} is back at the table.`:`The computer plays for ${p.name} for now.`); commit();});
+      const hostCtl=MODE==='host'&&p.cid!==myCid&&!p.bankrupt&&!V.over?`<button class="btn ghost sm" style="margin-top:4px" data-bot="${p.id}">${p.human?t('btn.letBot'):t('btn.handBack')}</button>`:'';
+      return `<div class="prow ${p.id===V.cur?'active':''} ${p.bankrupt?'out':''}">${coinHTML(p.token,`style="box-shadow:0 0 0 2px ${p.color}"`)}<div style="min-width:0"><div class="nm">${st}${esc(p.name)} ${p.human?'':small(t('lbl.computer'))}${iControl(p.id)&&MODE!=='local'?' '+small(t('lbl.you')):''}</div>
+      <div class="sub">${p.bankrupt?t('st.bankrupt'):p.inJail?t('st.inJail'):esc(spN(p.pos))}${p.goojf.length?' · '+t('st.goojf'):''}</div>
+      <div class="chips">${owned.map(i=>`<span class="chip ${V.props[i].mort?'m':''}" title="${esc(spN(i))}" style="background:${colorOf(i)}"></span>`).join('')}</div>${hostCtl&&p.cid?hostCtl:''}</div>
+      <div class="money"><b>${fmt(p.cash)}</b><span class="sub">${t('st.worth',{a:fmt(netWorth(V,p))})}</span></div></div>`;}).join('')}</div>`;
+    el.querySelectorAll('[data-bot]').forEach(b=>b.onclick=()=>{const p=G.players[+b.dataset.bot]; if(!p) return; p.human=!p.human; log(G,p.human?'back':'botPlays',{p:p.name}); commit();});
   } else if(tab==='deeds'){
     const seats=mySeats(); const pid=seats.includes(V.cur)?V.cur:seats[0];
-    if(pid==null){el.innerHTML='<div class="muted">You are watching this game.</div>'; return;}
+    if(pid==null){el.innerHTML=`<div class="muted">${t('dd.watching')}</div>`; return;}
     const p=V.players[pid]; const owned=ownedBy(V,pid).sort((a,b)=>a-b);
-    if(!owned.length){el.innerHTML=`<div class="muted">${esc(p.name)} owns no property yet. Buy a free tile when you land on it, or win one at the Dlala.</div>`; return;}
+    if(!owned.length){el.innerHTML=`<div class="muted">${esc(t('dd.none',{p:p.name}))}</div>`; return;}
     const can=pid===V.cur&&!V.auction&&!V.trade&&!playing&&!V.over;
-    el.innerHTML=`<div class="muted" style="font-size:12.5px;margin-bottom:8px">${can?'Own a whole city to build a dar (house), then a riad (hotel). Build evenly across the city.':`You can build, sell and mortgage on ${esc(p.name)}’s turn.`}</div><div class="deeds">${owned.map(i=>{const s=SP[i],pr=V.props[i];
-      const lvl=s.t!=='prop'?(s.t==='rail'?'Station':'Utility'):pr.houses===5?'Riad':pr.houses?`${pr.houses} dar`:'No buildings';
-      return `<div class="drow"><div class="th">${s.art?`<img src="${s.art}" alt="">`:''}<i style="background:${colorOf(i)}"></i></div><div style="min-width:0"><button class="btn ghost sm" style="border:0;padding:0;font-weight:600" data-deed="${i}">${esc(s.name)}</button><div class="muted" style="font-size:12px">${pr.mort?'Mortgaged':lvl}${s.t==='prop'&&!pr.mort?` · rent ${fmt(rentFor(V,i))}`:''}</div></div>
-      <div class="acts">${s.t==='prop'?`<button class="btn sm" data-b="${i}" ${can&&canBuild(V,i,pid)?'':'disabled'}>+ ${pr.houses>=4?'Riad':'Dar'}</button><button class="btn sm" data-s="${i}" ${can&&canSell(V,i,pid)?'':'disabled'}>Sell</button>`:''}${pr.mort?`<button class="btn sm" data-u="${i}" ${can&&canUnmort(V,i,pid)?'':'disabled'}>Lift ${fmt(unmortCost(i))}</button>`:`<button class="btn sm" data-m="${i}" ${can&&canMort(V,i,pid)?'':'disabled'}>Rahn +${fmt(s.price/2)}</button>`}</div></div>`;}).join('')}</div>`;
-    const bind=(attr,t)=>el.querySelectorAll(`[data-${attr}]`).forEach(b=>b.onclick=()=>dispatch({t,i:+b.dataset[attr]},pid));
+    el.innerHTML=`<div class="muted" style="font-size:12.5px;margin-bottom:8px">${esc(can?t('dd.help'):t('dd.notTurn',{p:p.name}))}</div><div class="deeds">${owned.map(i=>{const s=SP[i],pr=V.props[i];
+      const lvl=s.t!=='prop'?(s.t==='rail'?t('lv.station'):t('lv.utility')):pr.houses===5?t('lv.riad'):pr.houses?t('lv.dar',{n:pr.houses}):t('lv.none');
+      return `<div class="drow"><div class="th">${s.art?`<img src="${s.art}" alt="">`:''}<i style="background:${colorOf(i)}"></i></div><div style="min-width:0"><button class="btn ghost sm" style="border:0;padding:0;font-weight:600" data-deed="${i}">${esc(spN(i))}</button><div class="muted" style="font-size:12px">${pr.mort?t('lv.mort'):lvl}${s.t==='prop'&&!pr.mort?' · '+t('dd.rent',{a:fmt(rentFor(V,i))}):''}</div></div>
+      <div class="acts">${s.t==='prop'?`<button class="btn sm" data-b="${i}" ${can&&canBuild(V,i,pid)?'':'disabled'}>${pr.houses>=4?t('btn.addRiad'):t('btn.addDar')}</button><button class="btn sm" data-s="${i}" ${can&&canSell(V,i,pid)?'':'disabled'}>${t('btn.sell')}</button>`:''}${pr.mort?`<button class="btn sm" data-u="${i}" ${can&&canUnmort(V,i,pid)?'':'disabled'}>${t('btn.lift',{a:fmt(unmortCost(i))})}</button>`:`<button class="btn sm" data-m="${i}" ${can&&canMort(V,i,pid)?'':'disabled'}>${t('btn.rahn',{a:fmt(s.price/2)})}</button>`}</div></div>`;}).join('')}</div>`;
+    const bind=(attr,ty)=>el.querySelectorAll(`[data-${attr}]`).forEach(b=>b.onclick=()=>dispatch({t:ty,i:+b.dataset[attr]},pid));
     bind('b','build'); bind('s','sell'); bind('m','mort'); bind('u','unmort');
     el.querySelectorAll('[data-deed]').forEach(b=>b.onclick=()=>openDeed(+b.dataset.deed));
-  } else if(tab==='log'){el.innerHTML=`<div class="log">${(V.log||[]).map(l=>`<div>${esc(l)}</div>`).join('')}</div>`;}
-  else el.innerHTML=BOOK;
+  } else if(tab==='log'){el.innerHTML=`<div class="log">${(V.log||[]).map(l=>`<div>${esc(tl(l))}</div>`).join('')}</div>`;}
+  else el.innerHTML=t('book');
 }
-
 /* ============================================================
    MODALS
    ============================================================ */
@@ -1495,19 +1836,20 @@ function autoModals(){
 }
 function openDeed(i){
   if(!V) return; const s=SP[i]; let head='',rows='',note='';
+  const ar=LANG==='ar', nm=spN(i);
   if(s.t==='prop'){const pr=V.props?V.props[i]:null, gr=GROUPS[s.g];
-    head=`<div class="head" style="background:${gr.color};color:${['lblue','yellow','pink'].includes(s.g)?'#15181d':'#fff'}"><div class="ar">${gr.ar} – ${s.ar}</div><div class="lt">${gr.city} · ${esc(s.name)}</div></div>`;
-    const lv=pr?pr.houses:-1, labels=['Rent','With 1 dar','With 2 dars','With 3 dars','With 4 dars','With a riad'];
-    rows=`<tr><td>Price</td><td>${fmt(s.price)}</td></tr>`+s.rent.map((r,k)=>`<tr class="${k===lv?'hit':''}"><td>${labels[k]}</td><td>${fmt(r)}</td></tr>`).join('')+`<tr><td>All of ${gr.city}, no buildings</td><td>${fmt(s.rent[0]*2)}</td></tr><tr><td>Each dar or riad</td><td>${fmt(gr.house)}</td></tr><tr><td>Rahn (mortgage)</td><td>${fmt(s.price/2)}</td></tr>`;
-    note=s.note;}
-  else if(s.t==='rail'){head=`<div class="head" style="background:#4a5059"><div class="ar">${s.ar}</div><div class="lt">🚄 ${esc(s.name)}</div></div>`; rows=`<tr><td>Price</td><td>${fmt(s.price)}</td></tr>`+RAIL_RENT.map((r,k)=>`<tr><td>Owner has ${k+1} station${k?'s':''}</td><td>${fmt(r)}</td></tr>`).join(''); note='Al Boraq and the national line, Tangier to Marrakech.';}
-  else if(s.t==='util'){head=`<div class="head" style="background:#7d8792"><div class="ar">${s.ar}</div><div class="lt">${s.glyph} ${esc(s.name)}</div></div>`; rows=`<tr><td>Price</td><td>${fmt(s.price)}</td></tr><tr><td>Owner has 1 utility</td><td>40 × dice</td></tr><tr><td>Owner has both</td><td>100 × dice</td></tr>`; note=s.kind;}
-  else{const info={go:'Collect 2,000 DH every time you pass.',jail:'Leave 3okacha by rolling a double, paying 500 DH, or using a get-out card. After three failed rolls you pay and move.',parking:'Mint tea at the café. With the Daret rule on, you take everything in the pot.',gojail:'Go directly to 3okacha. Do not pass Al Inṭilāq, do not collect 2,000 DH.',tax:`Pay ${fmt(s.amount||0)}${V.settings&&V.settings.daret?' into the Daret pot':''}.`,mektoub:'Mektoub, what is written: draw a fate card.',baraka:'Baraka: blessings and family life. Draw a Baraka card.'}[s.t];
-    head=`<div class="head" style="background:${s.t==='go'||s.t==='mektoub'||s.t==='gojail'?'var(--red)':'var(--green)'}"><div class="ar">${s.ar}</div><div class="lt">${esc(s.name)}</div></div>`; note=info;}
+    head=`<div class="head" style="background:${gr.color};color:${['lblue','yellow','pink'].includes(s.g)?'#15181d':'#fff'}"><div class="ar">${gr.ar} – ${s.ar}</div>${ar?'':`<div class="lt">${esc(cityN(s.g))} · ${esc(nm)}</div>`}</div>`;
+    const lv=pr?pr.houses:-1, labels=t('dm.labels');
+    rows=`<tr><td>${t('dm.price')}</td><td>${fmt(s.price)}</td></tr>`+s.rent.map((r,k)=>`<tr class="${k===lv?'hit':''}"><td>${labels[k]}</td><td>${fmt(r)}</td></tr>`).join('')+`<tr><td>${esc(t('dm.allCity',{c:cityN(s.g)}))}</td><td>${fmt(s.rent[0]*2)}</td></tr><tr><td>${t('dm.each')}</td><td>${fmt(gr.house)}</td></tr><tr><td>${t('dm.rahn')}</td><td>${fmt(s.price/2)}</td></tr>`;
+    note=noteN(i);}
+  else if(s.t==='rail'){head=`<div class="head" style="background:#4a5059"><div class="ar">${s.ar}</div>${ar?'':`<div class="lt">🚄 ${esc(nm)}</div>`}</div>`; rows=`<tr><td>${t('dm.price')}</td><td>${fmt(s.price)}</td></tr>`+RAIL_RENT.map((r,k)=>`<tr><td>${t('dm.stations',{n:k+1})}</td><td>${fmt(r)}</td></tr>`).join(''); note=t('dm.railNote');}
+  else if(s.t==='util'){head=`<div class="head" style="background:#7d8792"><div class="ar">${s.ar}</div>${ar?'':`<div class="lt">${s.glyph} ${esc(nm)}</div>`}</div>`; rows=`<tr><td>${t('dm.price')}</td><td>${fmt(s.price)}</td></tr><tr><td>${t('dm.util1')}</td><td>${t('dm.x40')}</td></tr><tr><td>${t('dm.util2')}</td><td>${t('dm.x100')}</td></tr>`; note=noteN(i);}
+  else{note=s.t==='tax'?t('info.tax',{a:fmt(s.amount||0),d:V.settings&&V.settings.daret?t('info.taxDaret'):''}):t('info.'+s.t);
+    head=`<div class="head" style="background:${s.t==='go'||s.t==='mektoub'||s.t==='gojail'?'var(--red)':'var(--green)'}"><div class="ar">${s.ar}</div>${ar?'':`<div class="lt">${esc(nm)}</div>`}</div>`;}
   const pr=V.props&&isOwnable(i)?V.props[i]:null;
-  const owner=pr?(pr.owner>=0?`Owned by ${esc(V.players[pr.owner].name)}${pr.mort?' · mortgaged':''}`:'For sale'):'';
-  openModal('deed',`<div class="hd"><h2>${esc(s.name)}</h2><button class="x" data-close aria-label="Close">×</button></div>
-   <div class="bd"><div class="deed">${s.art?`<div class="artbig"><img src="${s.art}" alt="${esc(s.name)} card art"></div>`:''}<div style="min-width:0;${s.art?'':'grid-column:1/-1'}">${head}${rows?`<table>${rows}</table>`:''}${note?`<p class="muted" style="font-size:13px">${esc(note)}</p>`:''}${owner?`<p style="font-size:13px">${owner}</p>`:''}</div></div></div>`);
+  const owner=pr?(pr.owner>=0?esc(t('dm.owned',{p:V.players[pr.owner].name,m:pr.mort?t('dm.mortSuffix'):''})):t('dm.forSale')):'';
+  openModal('deed',`<div class="hd"><h2>${esc(nm)}</h2><button class="x" data-close aria-label="${t('aria.close')}">×</button></div>
+   <div class="bd"><div class="deed">${s.art?`<div class="artbig"><img src="${s.art}" alt="${esc(nm)}"></div>`:''}<div style="min-width:0;${s.art?'':'grid-column:1/-1'}">${head}${rows?`<table>${rows}</table>`:''}${note?`<p class="muted" style="font-size:13px">${esc(note)}</p>`:''}${owner?`<p style="font-size:13px">${owner}</p>`:''}</div></div></div>`);
 }
 function openAuction(){openModal('auction','<div id="auc"></div>'); renderAuction();}
 let lastHigh=-1;
@@ -1515,55 +1857,54 @@ function renderAuction(){
   const box=$('auc'); if(!box) return; const a=V.auction; if(!a){closeModal(); return;}
   if(a.high!==lastHigh){if(a.high>0) sfx('gavel'); lastHigh=a.high;}
   const s=SP[a.idx], p=V.players[a.bidders[a.turn]], me=iControl(p.id)&&!playing;
-  box.innerHTML=`<div class="hd"><h2>Dlala · ${esc(s.name)}</h2></div><div class="bd">
-    <div style="display:flex;gap:14px;align-items:center">${s.art?`<img src="${s.art}" alt="" style="width:72px;height:108px;object-fit:cover;border-radius:8px">`:''}<div><div class="muted">The dlal calls out the price. Raise the bid or leave. The last one standing buys.</div>
-    <div class="bidbig">${fmt(a.high)}</div><div class="muted" style="font-size:12.5px">${a.highBidder>=0?'held by '+esc(V.players[a.highBidder].name):'no bids yet'} · list price ${fmt(s.price)}</div></div></div>
+  box.innerHTML=`<div class="hd"><h2>${esc(t('au.title',{s:spN(a.idx)}))}</h2></div><div class="bd">
+    <div style="display:flex;gap:14px;align-items:center">${s.art?`<img src="${s.art}" alt="" style="width:72px;height:108px;object-fit:cover;border-radius:8px">`:''}<div><div class="muted">${t('au.help')}</div>
+    <div class="bidbig">${fmt(a.high)}</div><div class="muted" style="font-size:12.5px">${a.highBidder>=0?esc(t('au.held',{p:V.players[a.highBidder].name})):t('au.none')} · ${t('au.list',{a:fmt(s.price)})}</div></div></div>
     <div class="bidders">${a.bidders.map((id,k)=>`<span class="${k===a.turn?'now':''}">${esc(V.players[id].name)}</span>`).join('')}</div>
-    <div><b>${esc(p.name)}</b>${me?`, your bid. You have ${fmt(p.cash)}.`:' is deciding…'}</div></div>
-    <div class="ft">${[100,500,1000].map(inc=>`<button class="btn ${inc===100?'red':''}" data-inc="${inc}" ${!me||a.high+inc>p.cash?'disabled':''}>+${inc.toLocaleString('en-US')}</button>`).join('')}<button class="btn ghost" data-pass ${me?'':'disabled'}>Leave auction</button></div>`;
+    <div><b>${esc(p.name)}</b>${me?t('au.yourBid',{a:fmt(p.cash)}):t('au.deciding')}</div></div>
+    <div class="ft">${[100,500,1000].map(inc=>`<button class="btn ${inc===100?'red':''}" data-inc="${inc}" ${!me||a.high+inc>p.cash?'disabled':''}>+${num(inc)}</button>`).join('')}<button class="btn ghost" data-pass ${me?'':'disabled'}>${t('btn.leaveAuc')}</button></div>`;
   box.querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>dispatch({t:'bid',inc:+b.dataset.inc},p.id));
   const pb=box.querySelector('[data-pass]'); if(pb) pb.onclick=()=>dispatch({t:'pass'},p.id);
 }
 function openConfirmBankrupt(){
   const p=V.players[V.cur];
-  openModal('bk',`<div class="hd"><h2>Declare bankruptcy?</h2><button class="x" data-close aria-label="Close">×</button></div><div class="bd"><p>${esc(p.name)} owes ${fmt(-p.cash)}. Everything ${esc(p.name)} owns goes to ${typeof p.owes==='number'&&p.owes>=0?esc(V.players[p.owes].name):'the bank'}, and ${esc(p.name)} leaves the game. This cannot be undone.</p></div><div class="ft"><button class="btn" data-close>Keep playing</button><button class="btn danger" id="bkYes">Declare bankruptcy</button></div>`);
+  openModal('bk',`<div class="hd"><h2>${t('bk.title')}</h2><button class="x" data-close aria-label="${t('aria.close')}">×</button></div><div class="bd"><p>${esc(t('bk.body',{p:p.name,a:fmt(-p.cash),o:typeof p.owes==='number'&&p.owes>=0?V.players[p.owes].name:t('w.bank')}))}</p></div><div class="ft"><button class="btn" data-close>${t('btn.keep')}</button><button class="btn danger" id="bkYes">${t('btn.bankrupt')}</button></div>`);
   $('bkYes').onclick=()=>{closeModal(); dispatch({t:'bankrupt'});};
 }
 function openTrade(){
   const me=V.players[V.cur]; if(!iControl(me.id)) return;
   const others=alive(V).filter(o=>o.id!==me.id); if(!others.length) return;
   let partner=others[0].id;
-  const list=(pid,name)=>{const t=tradeable(V,pid); return t.length?t.map(i=>`<label><input type="checkbox" name="${name}" value="${i}"><span class="chip" style="background:${colorOf(i)}"></span>${esc(SP[i].name)}${V.props[i].mort?' <span class="muted">(rahn)</span>':''}</label>`).join(''):'<div class="muted" style="font-size:12.5px">Nothing tradeable</div>';};
+  const list=(pid,name)=>{const tt=tradeable(V,pid); return tt.length?tt.map(i=>`<label><input type="checkbox" name="${name}" value="${i}"><span class="chip" style="background:${colorOf(i)}"></span>${esc(spN(i))}${V.props[i].mort?' <span class="muted">(rahn)</span>':''}</label>`).join(''):`<div class="muted" style="font-size:12.5px">${t('tr.nothing')}</div>`;};
   const draw=()=>{const them=V.players[partner];
-    $('trBody').innerHTML=`<label class="muted" style="display:flex;gap:8px;align-items:center">Trade with <select class="field" id="trWith" style="padding:6px">${others.map(o=>`<option value="${o.id}" ${o.id===partner?'selected':''}>${esc(o.name)}${o.human?'':' (computer)'}</option>`).join('')}</select></label>
-     <div class="trade-cols"><div><h4>${esc(me.name)} gives</h4>${list(me.id,'give')}<label class="muted" for="trCG" style="margin-top:6px">Cash</label><input class="field" type="number" id="trCG" min="0" step="100" value="0"></div>
-     <div><h4>${esc(them.name)} gives</h4>${list(them.id,'get')}<label class="muted" for="trCT" style="margin-top:6px">Cash</label><input class="field" type="number" id="trCT" min="0" step="100" value="0"></div></div><div id="trMsg" class="muted"></div>`;
+    $('trBody').innerHTML=`<label class="muted" style="display:flex;gap:8px;align-items:center">${t('tr.with')} <select class="field" id="trWith" style="padding:6px">${others.map(o=>`<option value="${o.id}" ${o.id===partner?'selected':''}>${esc(o.name)}${o.human?'':' ('+t('lbl.computer')+')'}</option>`).join('')}</select></label>
+     <div class="trade-cols"><div><h4>${esc(t('tr.gives',{p:me.name}))}</h4>${list(me.id,'give')}<label class="muted" for="trCG" style="margin-top:6px">${t('tr.cash')}</label><input class="field" type="number" id="trCG" min="0" step="100" value="0"></div>
+     <div><h4>${esc(t('tr.gives',{p:them.name}))}</h4>${list(them.id,'get')}<label class="muted" for="trCT" style="margin-top:6px">${t('tr.cash')}</label><input class="field" type="number" id="trCT" min="0" step="100" value="0"></div></div><div id="trMsg" class="muted"></div>`;
     $('trWith').onchange=e=>{partner=+e.target.value; draw();};};
-  openModal('trade',`<div class="hd"><h2>Tbadel · trade</h2><button class="x" data-close aria-label="Close">×</button></div><div class="bd" id="trBody"></div><div class="ft"><button class="btn" data-close>Cancel</button><button class="btn red" id="trGo">Send offer</button></div>`);
+  openModal('trade',`<div class="hd"><h2>${t('tr.title')}</h2><button class="x" data-close aria-label="${t('aria.close')}">×</button></div><div class="bd" id="trBody"></div><div class="ft"><button class="btn" data-close>${t('btn.cancel')}</button><button class="btn red" id="trGo">${t('btn.send')}</button></div>`);
   draw();
   $('trGo').onclick=()=>{
     const q=n=>[...document.querySelectorAll(`input[name=${n}]:checked`)].map(x=>+x.value);
-    const t={t:'trade',to:partner,give:q('give'),get:q('get'),cashGive:Math.max(0,Math.round(+$('trCG').value||0)),cashGet:Math.max(0,Math.round(+$('trCT').value||0))};
-    if(!t.give.length&&!t.get.length&&!t.cashGive&&!t.cashGet){$('trMsg').textContent='Pick something to trade.'; return;}
-    if(t.cashGive>Math.max(0,me.cash)||t.cashGet>Math.max(0,V.players[partner].cash)){$('trMsg').textContent='One side does not have that much cash.'; return;}
-    closeModal(); dispatch(t,me.id); toast(V.players[partner].human?`Offer sent to ${V.players[partner].name}.`:`${V.players[partner].name} is thinking it over…`);
+    const o={t:'trade',to:partner,give:q('give'),get:q('get'),cashGive:Math.max(0,Math.round(+$('trCG').value||0)),cashGet:Math.max(0,Math.round(+$('trCT').value||0))};
+    if(!o.give.length&&!o.get.length&&!o.cashGive&&!o.cashGet){$('trMsg').textContent=t('tr.pick'); return;}
+    if(o.cashGive>Math.max(0,me.cash)||o.cashGet>Math.max(0,V.players[partner].cash)){$('trMsg').textContent=t('tr.noCash'); return;}
+    closeModal(); dispatch(o,me.id); toast(V.players[partner].human?t('tr.sent',{p:V.players[partner].name}):t('tr.thinking',{p:V.players[partner].name}));
   };
 }
 function openTradeReply(){
-  const t=V.trade; if(!t) return; const a=V.players[t.from], b=V.players[t.to];
-  const sum=arr=>arr.map(i=>`<span class="chip" style="background:${colorOf(i)};display:inline-block;vertical-align:middle"></span> ${esc(SP[i].name)}`).join(', ')||'nothing';
-  openModal('treply',`<div class="hd"><h2>Tbadel offer for ${esc(b.name)}</h2></div><div class="bd">${MODE==='local'?`<p>Pass the screen to <b>${esc(b.name)}</b>.</p>`:''}
-    <div class="preview" style="flex-direction:column;align-items:flex-start;gap:6px"><div><b>You receive:</b> ${sum(t.give)}${t.cashGive?` + ${fmt(t.cashGive)}`:''}</div><div><b>You give:</b> ${sum(t.get)}${t.cashGet?` + ${fmt(t.cashGet)}`:''}</div></div>
-    <p class="muted">Offer from ${esc(a.name)}.</p></div><div class="ft"><button class="btn" id="trNo">Refuse</button><button class="btn green" id="trYes">Accept</button></div>`);
-  $('trNo').onclick=()=>{closeModal(); dispatch({t:'tradeReply',accept:false},t.to);};
-  $('trYes').onclick=()=>{closeModal(); dispatch({t:'tradeReply',accept:true},t.to);};
+  const tr=V.trade; if(!tr) return; const a=V.players[tr.from], b=V.players[tr.to];
+  const sum=arr=>arr.map(i=>`<span class="chip" style="background:${colorOf(i)};display:inline-block;vertical-align:middle"></span> ${esc(spN(i))}`).join(LANG==='ar'?'، ':', ')||t('tr.nothingW');
+  openModal('treply',`<div class="hd"><h2>${esc(t('trr.title',{p:b.name}))}</h2></div><div class="bd">${MODE==='local'?`<p>${t('trr.pass',{p:esc(b.name)})}</p>`:''}
+    <div class="preview" style="flex-direction:column;align-items:flex-start;gap:6px"><div><b>${t('trr.receive')}</b> ${sum(tr.give)}${tr.cashGive?` + ${fmt(tr.cashGive)}`:''}</div><div><b>${t('trr.give')}</b> ${sum(tr.get)}${tr.cashGet?` + ${fmt(tr.cashGet)}`:''}</div></div>
+    <p class="muted">${esc(t('trr.from',{p:a.name}))}</p></div><div class="ft"><button class="btn" id="trNo">${t('btn.refuse')}</button><button class="btn green" id="trYes">${t('btn.accept')}</button></div>`);
+  $('trNo').onclick=()=>{closeModal(); dispatch({t:'tradeReply',accept:false},tr.to);};
+  $('trYes').onclick=()=>{closeModal(); dispatch({t:'tradeReply',accept:true},tr.to);};
 }
 function openGameOver(){
   const rank=[...V.players].sort((a,b)=>(a.bankrupt-b.bankrupt)||netWorth(V,b)-netWorth(V,a));
-  openModal('over',`<div class="hd"><h2>Mabrouk, ${esc(rank[0].name)}!</h2><button class="x" data-close aria-label="Close">×</button></div><div class="bd"><div class="plist">${rank.map((p,k)=>`<div class="prow ${k===0?'active':''}">${coinHTML(p.token)}<div><div class="nm">${k+1}. ${esc(p.name)}</div><div class="sub">${p.bankrupt?'Bankrupt':ownedBy(V,p.id).length+' properties'}</div></div><div class="money"><b>${fmt(p.bankrupt?0:netWorth(V,p))}</b><span class="sub">net worth</span></div></div>`).join('')}</div></div><div class="ft"><button class="btn" data-close>Look at the board</button><button class="btn red" id="again">Back to home</button></div>`);
+  openModal('over',`<div class="hd"><h2>${esc(t('go.title',{p:rank[0].name}))}</h2><button class="x" data-close aria-label="${t('aria.close')}">×</button></div><div class="bd"><div class="plist">${rank.map((p,k)=>`<div class="prow ${k===0?'active':''}">${coinHTML(p.token)}<div><div class="nm">${k+1}. ${esc(p.name)}</div><div class="sub">${p.bankrupt?t('st.bankrupt'):t('go.props',{n:ownedBy(V,p.id).length})}</div></div><div class="money"><b>${fmt(p.bankrupt?0:netWorth(V,p))}</b><span class="sub">${t('go.nw')}</span></div></div>`).join('')}</div></div><div class="ft"><button class="btn" data-close>${t('btn.look')}</button><button class="btn red" id="again">${t('btn.backHome')}</button></div>`);
   $('again').onclick=()=>{closeModal(); goHome();};
 }
-
 /* ============================================================
    LOBBY (online)
    ============================================================ */
@@ -1575,40 +1916,42 @@ function renderLobby(){
   if(!lobbyDraft.name&&mine) lobbyDraft.name=mine.name;
   const link=inviteLink(V.code);
   const focusId=document.activeElement&&document.activeElement.id, selStart=focusId==='lbName'?document.activeElement.selectionStart:null;
-  el.innerHTML=`<div class="bar-top"><button class="btn ghost sm" data-home>← Home</button><div class="sp"></div><span class="chipcode">GAME ${esc(V.code.toUpperCase())}</span></div>
-   <div class="eyebrow">${isHost?'You are hosting':'You are invited'}</div><h2 class="h2">The table is set</h2>
+  const small=x=>` <span class="muted">· ${x}</span>`;
+  el.innerHTML=`<div class="bar-top"><button class="btn ghost sm" data-home>${t('back')}</button><div class="sp"></div><div class="langsw"></div><span class="chipcode" dir="ltr">${esc(t('chip.game',{c:V.code.toUpperCase()}))}</span></div>
+   <div class="eyebrow">${isHost?t('lb.hosting'):t('lb.invited')}</div><h2 class="h2">${t('lb.h2')}</h2>
    <div class="lobby">
     <div class="card">
-      <div class="eyebrow" style="margin-bottom:8px">Invite players</div>
+      <div class="eyebrow" style="margin-bottom:8px">${t('lb.invite')}</div>
       <div class="code">${esc(V.code.toUpperCase())}</div>
-      <p class="muted" style="font-size:13px">Send this link on WhatsApp or anywhere. Everyone who opens it picks a name and a token here.${inClaude()?' They need access to this page on Claude: share it with them from the Share menu.':' Keep this tab open while you play: your browser runs the game.'}</p>
-      <div class="invite"><input class="field" id="invLink" readonly value="${esc(link)}" aria-label="Invite link"><button class="btn sm metal" id="copyLink">Copy link</button></div>
-      <div class="sec" style="margin-top:18px">At the table · ${V.players.length} of 8</div>
-      <div class="roster">${V.players.length?V.players.map((p,k)=>`<div class="rrow">${coinHTML(p.token)}<div class="sp"><div class="n">${p.human&&on?`<span class="dotst ${on.has(p.cid)?'on':''}"></span>`:''}${esc(p.name)}${p.cid===myCid?' <span class="muted">· you</span>':''}${p.cid===V.hostCid?' <span class="muted">· host</span>':''}</div><div class="muted" style="font-size:12px">${esc(TOKENS[p.token].name)}${p.human?'':' · computer'}</div></div>${isHost&&p.cid!==myCid?`<button class="btn ghost sm" data-kick="${k}">Remove</button>`:''}</div>`).join(''):'<div class="muted">Nobody has sat down yet.</div>'}</div>
-      ${isHost?`<div class="ctas" style="margin-top:12px"><button class="btn sm" id="addBot" ${V.players.length>=8?'disabled':''}>+ Computer player</button></div>`:''}
+      <p class="muted" style="font-size:13px">${t('lb.send')}${inClaude()?t('lb.claude'):t('lb.keepOpen')}</p>
+      <div class="invite"><input class="field" id="invLink" readonly dir="ltr" value="${esc(link)}" aria-label="${t('lb.invite')}"><button class="btn sm metal" id="copyLink">${t('btn.copy')}</button></div>
+      <div class="sec" style="margin-top:18px">${t('lb.atTable',{n:V.players.length})}</div>
+      <div class="roster">${V.players.length?V.players.map((p,k)=>`<div class="rrow">${coinHTML(p.token)}<div class="sp"><div class="n">${p.human&&on?`<span class="dotst ${on.has(p.cid)?'on':''}"></span>`:''}${esc(p.name)}${p.cid===myCid?small(t('lbl.you')):''}${p.cid===V.hostCid?small(t('lbl.host')):''}</div><div class="muted" style="font-size:12px">${esc(tokN(p.token))}${p.human?'':' · '+t('lbl.computer')}</div></div>${isHost&&p.cid!==myCid?`<button class="btn ghost sm" data-kick="${k}">${t('btn.remove')}</button>`:''}</div>`).join(''):`<div class="muted">${t('lb.nobody')}</div>`}</div>
+      ${isHost?`<div class="ctas" style="margin-top:12px"><button class="btn sm" id="addBot" ${V.players.length>=8?'disabled':''}>${t('btn.addBot')}</button></div>`:''}
     </div>
     <div class="card">
-      <div class="eyebrow" style="margin-bottom:8px">${mine?'Your seat':'Take a seat'}</div>
-      <label class="muted" for="lbName" style="font-size:12.5px">Your name</label>
-      <input class="field" id="lbName" maxlength="16" placeholder="Name shown on the board" value="${esc(lobbyDraft.name)}" style="width:100%;box-sizing:border-box;margin:6px 0 14px">
-      <div class="muted" style="font-size:12.5px;margin-bottom:8px">Your token</div>
-      <div class="tokgrid">${TOKENS.map((t,k)=>{const taken=V.players.find(p=>p.token===k&&p.cid!==myCid); return `<button class="tok" data-tok="${k}" aria-pressed="${lobbyDraft.token===k}" ${taken?'disabled':''}>${coinHTML(k)}${taken?`<span class="taken">${esc(taken.name.slice(0,8))}</span>`:''}<span>${esc(t.name)}</span></button>`;}).join('')}</div>
-      <div class="ctas" style="margin-top:16px"><button class="btn ${mine?'':'red'}" id="takeSeat" ${V.players.length>=8&&!mine?'disabled':''}>${mine?'Update my seat':'Sit down'}</button>${mine?'<button class="btn ghost" id="leaveSeat">Leave the table</button>':''}</div>
-      ${isHost?`<div class="sec">House rules</div><div class="opts">${optsHTML(V.settings,'lb')}</div>
-        <div class="ctas" style="margin-top:16px"><button class="btn red" id="startOnline" ${V.players.length<2?'disabled':''}>Start the game</button><span class="muted" style="font-size:12.5px">${V.players.length<2?'At least 2 players needed.':`${V.players.length} players ready.`}</span></div>`:`<p class="muted" style="margin-top:18px">${hostOnline()?'The host starts the game when everyone is seated.':'Waiting for the host to come back.'}</p>`}
+      <div class="eyebrow" style="margin-bottom:8px">${mine?t('lb.yourSeat'):t('lb.takeSeat')}</div>
+      <label class="muted" for="lbName" style="font-size:12.5px">${t('lb.name')}</label>
+      <input class="field" id="lbName" maxlength="16" placeholder="${esc(t('lb.namePh'))}" value="${esc(lobbyDraft.name)}" style="width:100%;box-sizing:border-box;margin:6px 0 14px">
+      <div class="muted" style="font-size:12.5px;margin-bottom:8px">${t('lb.token')}</div>
+      <div class="tokgrid">${TOKENS.map((tk,k)=>{const taken=V.players.find(p=>p.token===k&&p.cid!==myCid); return `<button class="tok" data-tok="${k}" aria-pressed="${lobbyDraft.token===k}" ${taken?'disabled':''}>${coinHTML(k)}${taken?`<span class="taken">${esc(taken.name.slice(0,8))}</span>`:''}<span>${esc(tokN(k))}</span></button>`;}).join('')}</div>
+      <div class="ctas" style="margin-top:16px"><button class="btn ${mine?'':'red'}" id="takeSeat" ${V.players.length>=8&&!mine?'disabled':''}>${mine?t('btn.update'):t('btn.sit')}</button>${mine?`<button class="btn ghost" id="leaveSeat">${t('btn.leaveTable')}</button>`:''}</div>
+      ${isHost?`<div class="sec">${t('sec.rules')}</div><div class="opts">${optsHTML(V.settings,'lb')}</div>
+        <div class="ctas" style="margin-top:16px"><button class="btn red" id="startOnline" ${V.players.length<2?'disabled':''}>${t('btn.start')}</button><span class="muted" style="font-size:12.5px">${V.players.length<2?t('lb.need2'):t('lb.ready',{n:V.players.length})}</span></div>`:`<p class="muted" style="margin-top:18px">${hostOnline()?t('lb.hostStarts'):t('lb.waitHost')}</p>`}
     </div>
    </div>`;
+  el.querySelectorAll('.langsw').forEach(renderLangSwitch);
   if(focusId==='lbName'){const i=$('lbName'); i.focus(); if(selStart!=null) i.setSelectionRange(selStart,selStart);}
   el.querySelector('[data-home]').onclick=goHome;
-  $('copyLink').onclick=()=>{const inp=$('invLink'); const done=()=>toast('Invite link copied.'); try{navigator.clipboard.writeText(link).then(done,()=>{inp.select();toast('Press Ctrl+C to copy.');});}catch(e){inp.select();}};
+  $('copyLink').onclick=()=>{const inp=$('invLink'); const done=()=>toast(t('toast.copied')); try{navigator.clipboard.writeText(link).then(done,()=>{inp.select();toast(t('toast.ctrlC'));});}catch(e){inp.select();}};
   $('lbName').oninput=e=>{lobbyDraft.name=e.target.value;};
   el.querySelectorAll('[data-tok]').forEach(b=>b.onclick=()=>{lobbyDraft.token=+b.dataset.tok; el.querySelectorAll('[data-tok]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
-  $('takeSeat').onclick=()=>{const n=(lobbyDraft.name||'').trim(); if(!n){toast('Type your name first.'); $('lbName').focus(); return;} lobbyAct({t:'join',name:n,token:lobbyDraft.token}); toast(MODE==='host'?'Seat saved.':'Sitting down…');};
+  $('takeSeat').onclick=()=>{const n=(lobbyDraft.name||'').trim(); if(!n){toast(t('toast.name')); $('lbName').focus(); return;} lobbyAct({t:'join',name:n,token:lobbyDraft.token}); toast(MODE==='host'?t('toast.saved'):t('toast.sitting'));};
   const ls=$('leaveSeat'); if(ls) ls.onclick=()=>lobbyAct({t:'leave'});
   if(isHost){
     el.querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{G.players.splice(+b.dataset.kick,1); commit();});
     $('addBot').onclick=()=>{const used=new Set(G.players.map(p=>p.token)); const tok=range(10).find(k=>!used.has(k)); if(tok==null) return; const nm=BOT_NAMES.find(n=>!G.players.some(p=>p.name===n))||'Computer'; G.players.push({cid:null,name:nm,token:tok,human:false}); commit();};
-    bindOpts('lb',s=>{G.settings=Object.assign(G.settings,s); commit();});
+    bindOpts('lb',st=>{G.settings=Object.assign(G.settings,st); commit();});
     $('startOnline').onclick=startOnline;
   }
 }
@@ -1619,10 +1962,10 @@ function startOnline(){
   G=g; commit();
 }
 function optsHTML(s,pfx){
-  return `<label class="opt"><input type="checkbox" id="${pfx}Daret" ${s.daret?'checked':''}><div><b>Daret pot</b><span>Taxes and fines pool at the Qahwa.</span></div></label>
-   <label class="opt"><input type="checkbox" id="${pfx}Dlala" ${s.dlala?'checked':''}><div><b>Dlala auctions</b><span>Unbought property goes to auction.</span></div></label>
-   <label class="opt"><div style="flex:1"><b>Game length</b><span>Richest player wins at the limit.</span><div><select class="field" id="${pfx}Rounds">${[[0,'Until one player is left'],[15,'15 rounds'],[25,'25 rounds'],[40,'40 rounds']].map(([v,l])=>`<option value="${v}" ${+s.rounds===v?'selected':''}>${l}</option>`).join('')}</select></div></div></label>
-   <label class="opt"><input type="checkbox" id="${pfx}Fast" ${s.fast?'checked':''}><div><b>Fast animations</b><span>Quicker dice and token moves.</span></div></label>`;
+  return `<label class="opt"><input type="checkbox" id="${pfx}Daret" ${s.daret?'checked':''}><div><b>${t('opt.daret')}</b><span>${t('opt.daretD')}</span></div></label>
+   <label class="opt"><input type="checkbox" id="${pfx}Dlala" ${s.dlala?'checked':''}><div><b>${t('opt.dlala')}</b><span>${t('opt.dlalaD')}</span></div></label>
+   <label class="opt"><div style="flex:1"><b>${t('opt.len')}</b><span>${t('opt.lenD')}</span><div><select class="field" id="${pfx}Rounds">${[0,15,25,40].map(v=>`<option value="${v}" ${+s.rounds===v?'selected':''}>${v?t('opt.rounds',{n:v}):t('opt.until')}</option>`).join('')}</select></div></div></label>
+   <label class="opt"><input type="checkbox" id="${pfx}Fast" ${s.fast?'checked':''}><div><b>${t('opt.fast')}</b><span>${t('opt.fastD')}</span></div></label>`;
 }
 function readOpts(pfx){return {daret:$(pfx+'Daret').checked,dlala:$(pfx+'Dlala').checked,rounds:+$(pfx+'Rounds').value,fast:$(pfx+'Fast').checked};}
 function bindOpts(pfx,cb){['Daret','Dlala','Rounds','Fast'].forEach(k=>{const e=$(pfx+k); if(e) e.onchange=()=>cb(readOpts(pfx));});}
@@ -1633,20 +1976,20 @@ function bindOpts(pfx,cb){['Daret','Dlala','Rounds','Fast'].forEach(k=>{const e=
 let seats=['Hamza','Salma','Youssef','Imane','Karim','Nadia','Omar','Zineb'].map((n,i)=>({name:n,token:i,human:i===0,on:i<4}));
 let localOpts={daret:true,dlala:true,rounds:25,fast:false};
 function renderSetup(){
-  $('seats').innerHTML=seats.map((s,i)=>`<div class="seat ${s.on?'':'off'}"><button class="tok" data-pick="${i}" aria-label="Choose token for seat ${i+1}" style="width:56px">${coinHTML(s.token,`style="box-shadow:0 0 0 2px ${COLORS[i]}"`)}</button>
-    <div class="info"><div style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="on${i}" ${s.on?'checked':''} aria-label="Seat ${i+1} playing"><input class="field" id="nm${i}" value="${esc(s.name)}" maxlength="16" aria-label="Seat ${i+1} name" style="flex:1"></div>
-    <span class="seg"><button aria-pressed="${s.human}" data-h="${i}" data-v="1">Human</button><button aria-pressed="${!s.human}" data-h="${i}" data-v="0">Computer</button></span></div></div>`).join('');
+  $('seats').innerHTML=seats.map((s,i)=>`<div class="seat ${s.on?'':'off'}"><button class="tok" data-pick="${i}" aria-label="${esc(t('aria.seatTok',{n:i+1}))}" style="width:56px">${coinHTML(s.token,`style="box-shadow:0 0 0 2px ${COLORS[i]}"`)}</button>
+    <div class="info"><div style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="on${i}" ${s.on?'checked':''} aria-label="${esc(t('aria.seatOn',{n:i+1}))}"><input class="field" id="nm${i}" value="${esc(s.name)}" maxlength="16" aria-label="${esc(t('aria.seatName',{n:i+1}))}" style="flex:1"></div>
+    <span class="seg"><button aria-pressed="${s.human}" data-h="${i}" data-v="1">${t('seg.human')}</button><button aria-pressed="${!s.human}" data-h="${i}" data-v="0">${t('seg.computer')}</button></span></div></div>`).join('');
   seats.forEach((s,i)=>{$('on'+i).onchange=e=>{s.on=e.target.checked; renderSetup();}; $('nm'+i).oninput=e=>{s.name=e.target.value;};});
   document.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{seats[+b.dataset.h].human=b.dataset.v==='1'; renderSetup();});
   document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>openTokenPicker(+b.dataset.pick));
-  $('optsLocal').innerHTML=optsHTML(localOpts,'lo'); bindOpts('lo',s=>{localOpts=s;});
+  $('optsLocal').innerHTML=optsHTML(localOpts,'lo'); bindOpts('lo',st=>{localOpts=st;});
   const n=seats.filter(s=>s.on).length;
-  $('seatCount').textContent=n<2?'Turn on at least 2 seats.':`${n} players · ${seats.filter(s=>s.on&&s.human).length} human`;
+  $('seatCount').textContent=n<2?t('setup.need2'):t('setup.count',{n,h:seats.filter(s=>s.on&&s.human).length});
   $('startLocal').disabled=n<2;
   const sv=lsGet('moropoly.local.v2'); $('resumeLocal').hidden=!(sv&&sv.status==='play'&&!sv.over);
 }
 function openTokenPicker(i){
-  openModal('tok',`<div class="hd"><h2>Choose a token</h2><button class="x" data-close aria-label="Close">×</button></div><div class="bd"><div class="tokgrid">${TOKENS.map((t,k)=>{const o=seats.findIndex((s,j)=>j!==i&&s.token===k); return `<button class="tok" data-k="${k}" aria-pressed="${seats[i].token===k}">${coinHTML(k)}${o>=0?`<span class="taken">${esc(seats[o].name.slice(0,8))}</span>`:''}<span>${esc(t.name)}</span></button>`;}).join('')}</div><p class="muted" style="font-size:12.5px">Picking a token another seat has swaps the two.</p></div>`);
+  openModal('tok',`<div class="hd"><h2>${t('tok.choose')}</h2><button class="x" data-close aria-label="${t('aria.close')}">×</button></div><div class="bd"><div class="tokgrid">${TOKENS.map((tk,k)=>{const o=seats.findIndex((s,j)=>j!==i&&s.token===k); return `<button class="tok" data-k="${k}" aria-pressed="${seats[i].token===k}">${coinHTML(k)}${o>=0?`<span class="taken">${esc(seats[o].name.slice(0,8))}</span>`:''}<span>${esc(tokN(k))}</span></button>`;}).join('')}</div><p class="muted" style="font-size:12.5px">${t('tok.swap')}</p></div>`);
   document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=+b.dataset.k; const o=seats.findIndex((s,j)=>j!==i&&s.token===k); if(o>=0) seats[o].token=seats[i].token; seats[i].token=k; closeModal(); renderSetup();});
 }
 function startLocal(list,opts){
@@ -1682,7 +2025,7 @@ const COAST=[[-5.92,35.79],[-5.6,35.84],[-5.4,35.92],[-5.32,35.86],[-5.33,35.68]
  [-1.8,34.92],[-1.75,34.5],[-1.68,33.8],[-1.55,32.75],[-1.2,32.4],[-1.18,32.1],[-2.25,31.85],[-3.65,31.65],[-3.83,31.2],[-4.5,30.6],[-5.0,29.98],[-5.6,29.6],[-6.5,29.45],[-7.6,29.38],[-8.67,28.7],[-8.67,27.67],
  [-8.67,26.0],[-12.0,26.0],[-12.0,23.45],[-13.0,21.33],[-16.95,21.33],[-17.05,20.85],[-16.98,21.4],[-16.9,21.9],[-16.5,22.4],[-16.2,23.0],[-15.95,23.7],[-15.3,24.3],[-14.9,24.8],[-14.48,26.13],[-13.95,26.6],[-13.4,27.1],[-12.92,27.94],
  [-11.9,28.2],[-11.33,28.5],[-10.6,28.95],[-10.17,29.38],[-9.85,29.83],[-9.62,30.42],[-9.89,30.63],[-9.83,31.0],[-9.77,31.51],[-9.24,32.3],[-9.27,32.55],[-8.5,33.25],[-7.59,33.6],[-7.38,33.69],[-6.84,34.02],[-6.68,34.26],[-6.29,34.88],[-6.16,35.19],[-6.03,35.46],[-5.92,35.79]];
-const CITIES=[{n:'Tangier',a:'طنجة',p:[-5.81,35.77],dx:-58,dy:-8},{n:'Chefchaouen',a:'شفشاون',p:[-5.27,35.17],dx:9,dy:4},{n:'Fès',a:'فاس',p:[-5.0,34.03],dx:9,dy:4},{n:'Rabat · Salé',a:'الرباط',p:[-6.84,34.02],dx:-86,dy:-12},{n:'Casablanca',a:'الدار البيضاء',p:[-7.59,33.57],dx:-82,dy:18},{n:'Marrakech',a:'مراكش',p:[-7.99,31.63],dx:9,dy:4},{n:'Agadir',a:'أكادير',p:[-9.6,30.42],dx:-56,dy:6}];
+const CITIES=[{n:'Tangier',fr:'Tanger',a:'طنجة',p:[-5.81,35.77],dx:-58,dy:-8},{n:'Chefchaouen',a:'شفشاون',p:[-5.27,35.17],dx:9,dy:4},{n:'Fès',a:'فاس',p:[-5.0,34.03],dx:9,dy:4},{n:'Rabat · Salé',a:'الرباط',p:[-6.84,34.02],dx:-86,dy:-12},{n:'Casablanca',a:'الدار البيضاء',p:[-7.59,33.57],dx:-82,dy:18},{n:'Marrakech',a:'مراكش',p:[-7.99,31.63],dx:9,dy:4},{n:'Agadir',a:'أكادير',p:[-9.6,30.42],dx:-56,dy:6}];
 function proj([lo,la]){const k=27, c=Math.cos(29*Math.PI/180); return [((lo+17.3)*c)*k+14,(36.2-la)*k+10];}
 function drawMap(){
   const svg=$('map'); const d=COAST.map((pt,i)=>(i?'L':'M')+proj(pt).map(v=>v.toFixed(1)).join(',')).join('')+'Z';
@@ -1693,14 +2036,14 @@ function drawMap(){
     <rect x="0" y="0" width="420" height="450" fill="url(#glow)"/>
     <path class="map-land" pathLength="1" d="${d}"/>
     <path class="map-route" d="${rd}"/>
-    ${CITIES.map((c,i)=>{const [x,y]=proj(c.p); return `<g class="city" style="animation-delay:${1.6+i*.18}s"><circle class="pulse" cx="${x}" cy="${y}" r="5" style="animation-delay:${i*.35}s"/><circle class="dot" cx="${x}" cy="${y}" r="3.4"/><text x="${x+c.dx}" y="${y+c.dy}">${c.n}</text><text class="ar" x="${x+c.dx}" y="${y+c.dy+12}">${c.a}</text></g>`;}).join('')}
+    ${CITIES.map((c,i)=>{const [x,y]=proj(c.p); return `<g class="city" style="animation-delay:${1.6+i*.18}s"><circle class="pulse" cx="${x}" cy="${y}" r="5" style="animation-delay:${i*.35}s"/><circle class="dot" cx="${x}" cy="${y}" r="3.4"/>${LANG==='ar'?`<text x="${x+c.dx+(c.dx<0?30:0)}" y="${y+c.dy+6}" style="font-family:var(--f-ar);font-size:12.5px">${c.a}</text>`:`<text x="${x+c.dx}" y="${y+c.dy}">${(LANG==='fr'&&c.fr)||c.n}</text><text class="ar" x="${x+c.dx}" y="${y+c.dy+12}">${c.a}</text>`}</g>`;}).join('')}
     <g class="train"><circle r="7" fill="#f4f6f9" stroke="#e8474d" stroke-width="2.5"/><text text-anchor="middle" y="3.5" font-size="8">🚄</text>${reduceMotion()?'':`<animateMotion dur="7s" repeatCount="indefinite" path="${rd}" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="linear"/>`}</g>`;
   if(reduceMotion()){const g=svg.querySelector('.train'); const [x,y]=route[0]; g.setAttribute('transform',`translate(${x},${y})`);}
 }
 function homeArt(){
-  $('parade').innerHTML=TOKENS.map((t,k)=>`<div class="coin" style="animation-delay:${(k*.27).toFixed(2)}s" title="${esc(t.name)}"><img src="${t.img}" alt="${esc(t.name)}"><span>${esc(t.name)}</span></div>`).join('');
+  $('parade').innerHTML=TOKENS.map((tk,k)=>`<div class="coin" style="animation-delay:${(k*.27).toFixed(2)}s" title="${esc(tokN(k))}"><img src="${tk.img}" alt="${esc(tokN(k))}"><span>${esc(tokN(k))}</span></div>`).join('');
   const props=SP.map((s,i)=>({s,i})).filter(o=>o.s.t==='prop');
-  const card=o=>`<div class="mcard"><img src="${o.s.art}" alt="${esc(o.s.name)}" loading="lazy"><i class="bar" style="background:${GROUPS[o.s.g].color}"></i><div class="cap">${esc(o.s.name)} · ${GROUPS[o.s.g].city}</div></div>`;
+  const card=o=>`<div class="mcard"><img src="${o.s.art}" alt="${esc(spN(o.i))}" loading="lazy"><i class="bar" style="background:${GROUPS[o.s.g].color}"></i><div class="cap" dir="auto">${esc(spN(o.i))} · ${esc(cityN(o.s.g))}</div></div>`;
   const a=props.slice(0,11), b=props.slice(11);
   $('mq1').innerHTML=[...a,...a].map(card).join(''); $('mq2').innerHTML=[...b,...b].map(card).join('');
 }
@@ -1713,27 +2056,6 @@ function goHome(){
 /* ============================================================
    RULES TAB
    ============================================================ */
-const BOOK=`<div class="book">
-<h3>How a turn works</h3>
-<p>Roll, move, then buy what you land on or send it to the Dlala. Pay rent on other players’ property. Own a whole city to build dars, then a riad. Doubles roll again; three doubles send you to 3okacha.</p>
-<h3>Moroccan rules</h3>
-<div class="tw"><table>
-<tr><th>Classic</th><th>Moropoly</th><th>What it does</th></tr>
-<tr><td>GO</td><td><span class="k">الانطلاق</span> Al Inṭilāq</td><td>Collect 2,000 DH each pass</td></tr>
-<tr><td>Jail</td><td><span class="k">عكاشة</span> 3okacha</td><td>Double, 500 DH, or a get-out card</td></tr>
-<tr><td>Free Parking</td><td><span class="k">القهوة</span> Qahwa</td><td>Take the Daret pot</td></tr>
-<tr><td>Chance</td><td><span class="k">مكتوب</span> Mektoub</td><td>Fate cards</td></tr>
-<tr><td>Community Chest</td><td><span class="k">بركة</span> Baraka</td><td>Family and blessing cards</td></tr>
-<tr><td>Auction</td><td><span class="k">الدلالة</span> Dlala</td><td>Bids in turn, last one standing buys</td></tr>
-<tr><td>House · Hotel</td><td><span class="k">دار · رياض</span></td><td>Four dars, then a riad</td></tr>
-<tr><td>Mortgage</td><td><span class="k">رهن</span> Rahn</td><td>Half the price, lift it for 55%</td></tr>
-<tr><td>Trade</td><td><span class="k">تبادل</span> Tbadel</td><td>Properties and cash</td></tr>
-</table></div>
-<h3>Playing online</h3>
-<ul><li>The host’s screen runs the game. If the host closes it, the game pauses and continues when they open it again from the home page.</li>
-<li>If a player drops out, the host can let the computer play for them from the Players tab.</li>
-<li>Everyone you invite needs access to this page on Claude.</li></ul>
-</div>`;
 
 /* ============================================================
    MUSIC & SOUND (synthesised in the browser, nothing to download)
@@ -1860,13 +2182,13 @@ function sfx(name){
 function renderDock(){
   const d=$('dock'); if(!d) return;
   const on=AU.set.music&&AU.playing;
-  $('dockBtn').classList.toggle('on',on); $('dockBtn').setAttribute('aria-label',on?'Music playing. Open music controls':'Open music controls');
+  $('dockBtn').classList.toggle('on',on); $('dockBtn').setAttribute('aria-label',on?t('dk.ariaOn'):t('dk.aria'));
   const p=$('dockPanel'); if(p.hidden) return;
-  p.innerHTML=`<div class="dk-row"><b>Music</b><button class="sw" role="switch" aria-checked="${AU.set.music}" id="dkMusic" aria-label="Music"><i></i></button></div>
-    <div class="dk-track" aria-pressed="${on}"><span class="ar" style="min-width:auto">♫</span><span><b>${esc(MUSIC.title)}</b><small>Plays on a loop</small></span></div>
-    <label class="dk-row" for="dkVol"><span>Volume</span><input type="range" id="dkVol" min="0" max="1" step="0.05" value="${AU.set.vol}"><span class="muted" id="dkVolN" style="min-width:34px;text-align:end">${Math.round(AU.set.vol*100)}%</span></label>
-    <div class="dk-row"><b>Sound effects</b><button class="sw" role="switch" aria-checked="${AU.set.sfx}" id="dkSfx" aria-label="Sound effects"><i></i></button></div>
-    <div class="muted" style="font-size:11.5px">Press M to turn the music on or off.</div>`;
+  p.innerHTML=`<div class="dk-row"><b>${t('dk.music')}</b><button class="sw" role="switch" aria-checked="${AU.set.music}" id="dkMusic" aria-label="${t('dk.music')}"><i></i></button></div>
+    <div class="dk-track" aria-pressed="${on}"><span class="ar" style="min-width:auto">♫</span><span><b dir="ltr">${esc(MUSIC.title)}</b><small>${t('dk.loop')}</small></span></div>
+    <label class="dk-row" for="dkVol"><span>${t('dk.vol')}</span><input type="range" id="dkVol" min="0" max="1" step="0.05" value="${AU.set.vol}"><span class="muted" id="dkVolN" style="min-width:34px;text-align:end">${Math.round(AU.set.vol*100)}%</span></label>
+    <div class="dk-row"><b>${t('dk.sfx')}</b><button class="sw" role="switch" aria-checked="${AU.set.sfx}" id="dkSfx" aria-label="${t('dk.sfx')}"><i></i></button></div>
+    <div class="muted" style="font-size:11.5px">${t('dk.m')}</div>`;
   $('dkMusic').onclick=()=>toggleMusic();
   $('dkSfx').onclick=()=>{AU.set.sfx=!AU.set.sfx; saveAudio(); applyVolumes(); renderDock(); if(AU.set.sfx) sfx('coin');};
   $('dkVol').oninput=e=>{AU.set.vol=+e.target.value; $('dkVolN').textContent=Math.round(AU.set.vol*100)+'%'; saveAudio(); applyVolumes();};
@@ -1874,7 +2196,7 @@ function renderDock(){
 function initDock(){
   $('dockBtn').onclick=e=>{e.stopPropagation(); unlockAudio(); const p=$('dockPanel'); p.hidden=!p.hidden; renderDock();};
   document.addEventListener('click',e=>{const p=$('dockPanel'); if(!p.hidden&&!e.target.closest('#dock')){p.hidden=true;}});
-  addEventListener('keydown',e=>{if((e.key==='m'||e.key==='M')&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){unlockAudio(); toggleMusic(); toast(AU.set.music?'Music on':'Music off');}});
+  addEventListener('keydown',e=>{if((e.key==='m'||e.key==='M')&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){unlockAudio(); toggleMusic(); toast(AU.set.music?t('toast.musicOn'):t('toast.musicOff'));}});
   renderDock();
 }
 
@@ -1891,8 +2213,18 @@ $('resumeLocal').onclick=()=>{const sv=lsGet('moropoly.local.v2'); if(sv){teardo
 $('leaveBtn').onclick=goHome;
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-tab]'); if(b) setTab(b.dataset.tab);});
 addEventListener('hashchange',()=>{const h=(location.hash||'').replace('#','').toLowerCase(); if(/^[a-z0-9]{4,8}$/.test(h)&&h!==NET.code) joinGame(h);});
-drawMap(); homeArt(); flagAnim(); initDock(); initPWA();
+applyLang(); drawMap(); homeArt(); flagAnim(); initDock(); initPWA();
 initNet();
+function setLang(l){
+  if(!['en','fr','ar'].includes(l)||l===LANG) return;
+  LANG=l; lsSet('moropoly.lang',l); applyLang();
+  homeArt(); drawMap(); setOnlineNote(newTransport()); listMyGames();
+  if(!$('setup').hidden) renderSetup();
+  if(V&&V.status==='lobby'&&!$('lobby').hidden) renderLobby();
+  if(V&&V.status==='play'){if(playing) LANG_DIRTY=true; else {buildBoard(); syncDpos(); renderAll();}}
+  renderDock();
+  if(modal){const k=modal.kind; closeModal(); if(k==='auction'||k==='treply') autoModals();}
+}
 window.__moropoly={get AU(){return AU;},get G(){return G;},get V(){return V;},get playing(){return playing;},dispatch,apply,freshGame,botDecide};
 })();
 </script>
