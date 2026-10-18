@@ -245,6 +245,17 @@ h1,h2,h3{text-wrap:balance}
 .fate .kl{font-family:var(--f-display);letter-spacing:.2em;font-size:1.1cqi;text-transform:uppercase;opacity:.85;margin-top:.4cqi}
 .fate .tx{font-size:1.9cqi;margin-top:1.2cqi;line-height:1.3}
 .fate.out{animation:flipout .45s ease-in forwards}
+.fate{pointer-events:auto;cursor:pointer;position:relative;overflow:hidden;width:46cqi}.fate .tx{font-size:2.5cqi}
+.fate .tap{font-size:1.25cqi;opacity:.7;margin-top:1.4cqi}
+.fate .timer{position:absolute;left:0;bottom:0;height:.6cqi;width:100%;background:rgba(255,255,255,.75);transform-origin:left;animation:fatetime linear forwards}
+@keyframes fatetime{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media (max-width:700px){.fate{width:66cqi}.fate .tx{font-size:3.8cqi}.fate .tap{font-size:2.4cqi}.fate .kl{font-size:2cqi}}
+.btn.gold{border-color:rgba(227,179,74,.55);color:#f1cf7f}
+#modalRoot.min .veil{display:none}
+.modal-pill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:56;border:1px solid rgba(227,179,74,.6);background:linear-gradient(180deg,#2a2f37,#15181d);color:var(--text);padding:12px 18px;border-radius:999px;font-weight:700;box-shadow:0 14px 40px rgba(0,0,0,.6);max-width:calc(100% - 32px);animation:pillpulse 1.6s ease-in-out infinite}
+@keyframes pillpulse{0%,100%{box-shadow:0 14px 40px rgba(0,0,0,.6),0 0 0 0 rgba(227,179,74,.45)}50%{box-shadow:0 14px 40px rgba(0,0,0,.6),0 0 0 8px rgba(227,179,74,0)}}
+#modalRoot:not(.min) .modal-pill{display:none}
+@media (max-width:700px){body.ingame .modal-pill{bottom:calc(120px + env(safe-area-inset-bottom,0px))}}
 .pawnlayer{position:absolute;inset:0;pointer-events:none;z-index:6}
 .pawn{position:absolute;left:0;top:0;width:var(--ps);height:var(--ps);border-radius:50%;padding:.28cqi;box-sizing:border-box;background:var(--metal);box-shadow:0 .5cqi 1.2cqi rgba(0,0,0,.5);will-change:transform}
 .pawn img,.pawn .g{width:100%;height:100%;border-radius:50%;object-fit:cover;display:grid;place-items:center;font-size:2cqi;background:#222}
@@ -759,7 +770,7 @@ S('b.pay','Pay {n}','Payez {n}','ادفع {n}');
 S('ev.double',' Double!',' Double !',' دوبل!');
 S('ev.draws','{p} draws {deckN}','{p} tire {deckN}','{p} يسحب {deckN}');
 S('ev.dlala','The dlal opens the auction','Le dlal ouvre les enchères','الدلّال يفتح المزاد');
-S('fl.sold','SOLD','VENDU','مُباع'); S('fl.daret','DARET','DARET','الدارت'); S('fl.deal','TBADEL','TBADEL','تبادل'); S('fl.bankrupt','BANKRUPT','FAILLITE','إفلاس');
+S('fl.sold','SOLD','VENDU','مُباع'); S('fl.daret','DARET','DARET','الدارت'); S('fl.deal','TBADEL · TRADE','TBADEL · ÉCHANGE','تبادل'); S('fl.bankrupt','BANKRUPT','FAILLITE','إفلاس');
 S('fl.jail','3okacha!','3okacha !','عكاشة!');
 S('fate.mektoub','Mektoub · fate','Mektoub · le destin','مكتوب · القدر'); S('fate.baraka','Baraka · blessing','Baraka · la bénédiction','بركة · الخير');
 
@@ -772,12 +783,19 @@ S('tc.dlala','Dlala for <b>{s}</b>: {a}{by}.','Dlala pour <b>{s}</b> : {a}{by}.'
 S('tc.by',' by {p}',' par {p}',' لصالح {p}');
 S('btn.openAuc','Open the auction','Ouvrir les enchères','افتح المزاد');
 S('tc.owes','{p} owes {a}. Sell buildings or mortgage in My deeds, trade, or declare bankruptcy.','{p} doit {a}. Vendez des bâtiments ou hypothéquez dans Mes titres, échangez, ou déclarez faillite.','{p} مدين بـ {a}. بع بنايات أو ارهن من «ممتلكاتي»، أو تبادل، أو أعلن الإفلاس.');
-S('btn.myDeeds','My deeds','Mes titres','ممتلكاتي'); S('btn.tbadel','Tbadel','Tbadel','تبادل'); S('btn.bankrupt','Declare bankruptcy','Déclarer faillite','أعلن الإفلاس');
+S('btn.myDeeds','My deeds','Mes titres','ممتلكاتي'); S('btn.tbadel','Tbadel · Trade','Tbadel · Échange','تبادل'); S('btn.bankrupt','Declare bankruptcy','Déclarer faillite','أعلن الإفلاس');
 S('tc.forSale','For sale: <b>{s}</b>{c}','À vendre : <b>{s}</b>{c}','للبيع: <b>{s}</b>{c}');
 S('btn.buy','Buy for {a}','Acheter pour {a}','اشترِ بـ {a}'); S('btn.dlala','Send to the Dlala','Mettre à la Dlala','إلى الدلالة'); S('btn.pass','Pass','Passer','تخلَّ');
 S('tc.inJail','{p} is in 3okacha (try {n} of 3). Roll a double, pay {a} or use a card.','{p} est à 3okacha (essai {n} sur 3). Faites un double, payez {a} ou utilisez une carte.','{p} في عكاشة (المحاولة {n} من 3). ارمِ دوبل أو ادفع {a} أو استعمل بطاقة.');
 S('tc.again','Double! Roll again.','Double ! Rejouez.','دوبل! ارمِ مرة أخرى.'); S('tc.toRoll','{p} to roll.','À {p} de lancer.','دور {p} في رمي النرد.');
 S('btn.roll','🎲 Roll the dice','🎲 Lancer les dés','🎲 ارمِ النرد'); S('btn.payFine','Pay {a}','Payer {a}','ادفع {a}'); S('btn.useCard','Use get-out card','Utiliser la carte','استعمل بطاقة الخروج');
+S('btn.seeBoard','See board','Voir le plateau','اعرض اللوحة');
+S('pill.trade','Your trade offer · tap to finish','Votre offre d’échange · touchez pour finir','عرض التبادل · المس للإكمال');
+S('pill.treply','Tbadel (trade) offer for you · tap to answer','Offre de Tbadel (échange) pour vous · touchez pour répondre','عرض تبادل لك · المس للرد');
+S('pill.auction','Dlala (auction) · tap to open','Dlala (enchère) · touchez pour ouvrir','الدلالة · المس للفتح');
+S('btn.riadNow','Riad now · {a}','Riad direct · {a}','رياض مباشرة · {a}');
+S('log.riadNow','{p} builds a riad straight away on {s}.','{p} construit directement un riad sur {s}.','{p} يبني رياضًا مباشرة في {s}.');
+S('fate.tap','Tap to continue','Touchez pour continuer','المس للمتابعة');
 S('btn.end','End turn','Fin du tour','أنهِ الدور'); S('btn.build','Build','Construire','ابنِ');
 S('pv.rentProp','Rent {a}, or {b} with all of {c}','Loyer {a}, ou {b} avec tout {c}','الكراء {a}، أو {b} مع كل {c}');
 S('pv.rentRail','Station rent 250 to 2,000 DH','Loyer de gare : 250 à 2 000 DH','كراء المحطة من 250 إلى 2,000 درهم');
@@ -791,7 +809,7 @@ S('btn.letBot','Let computer play','Laisser l’ordinateur jouer','دع الحا
 S('st.bankrupt','Bankrupt','En faillite','مفلس'); S('st.inJail','In 3okacha','À 3okacha','في عكاشة'); S('st.goojf','get-out card','carte de sortie','بطاقة خروج'); S('st.worth','worth {a}','fortune {a}','الثروة {a}');
 S('dd.watching','You are watching this game.','Vous regardez cette partie.','أنت تتابع هذه اللعبة.');
 S('dd.none','{p} owns no property yet. Buy a free tile when you land on it, or win one at the Dlala.','{p} n’a encore aucune propriété. Achetez une case libre en vous y arrêtant, ou gagnez-en une à la Dlala.','{p} لا يملك أي عقار بعد. اشترِ خانة حرة عندما تصل إليها، أو اربح واحدة في الدلالة.');
-S('dd.help','Own a whole city to build a dar (house), then a riad (hotel). Build evenly across the city.','Possédez toute une ville pour construire une dar (maison), puis un riad (hôtel). Construisez de façon égale dans la ville.','امتلك مدينة كاملة لتبني دارًا ثم رياضًا. ابنِ بالتساوي في كل المدينة.');
+S('dd.help','Own a whole city to build a dar (house), then a riad (hotel). Build evenly across the city. Rich? “Riad now” builds the riad in one go.','Possédez toute une ville pour construire une dar (maison), puis un riad (hôtel). Construisez de façon égale dans la ville. Assez d’argent ? « Riad direct » construit le riad d’un coup.','امتلك مدينة كاملة لتبني دارًا ثم رياضًا. ابنِ بالتساوي في كل المدينة. لديك ما يكفي؟ «رياض مباشرة» يبني الرياض دفعة واحدة.');
 S('dd.notTurn','You can build, sell and mortgage on {p}’s turn.','Vous pouvez construire, vendre et hypothéquer pendant le tour de {p}.','يمكنك البناء والبيع والرهن خلال دور {p}.');
 S('lv.station','Station','Gare','محطة'); S('lv.utility','Utility','Service public','مرفق'); S('lv.riad','Riad','Riad','رياض'); S('lv.dar','{n} dar','{n} dar','{n} دار'); S('lv.none','No buildings','Aucun bâtiment','بلا بنايات'); S('lv.mort','Mortgaged','Hypothéqué','مرهون');
 S('dd.rent','rent {a}','loyer {a}','الكراء {a}'); S('btn.addRiad','+ Riad','+ Riad','+ رياض'); S('btn.addDar','+ Dar','+ Dar','+ دار'); S('btn.sell','Sell','Vendre','بع'); S('btn.lift','Lift {a}','Lever {a}','فكّ {a}'); S('btn.rahn','Rahn +{a}','Rahn +{a}','رهن +{a}');
@@ -822,11 +840,11 @@ S('bk.title','Declare bankruptcy?','Déclarer faillite ?','إعلان الإفل
 S('bk.body','{p} owes {a}. Everything {p} owns goes to {o}, and {p} leaves the game. This cannot be undone.','{p} doit {a}. Tout ce que possède {p} revient à {o}, et {p} quitte la partie. C’est définitif.','{p} مدين بـ {a}. كل ما يملكه {p} يذهب إلى {o}، ويغادر {p} اللعبة. لا يمكن التراجع.');
 S('btn.keep','Keep playing','Continuer à jouer','واصل اللعب');
 /* trade */
-S('tr.title','Tbadel · trade','Tbadel · échange','تبادل'); S('tr.with','Trade with','Échanger avec','تبادل مع'); S('tr.gives','{p} gives','{p} donne','{p} يعطي'); S('tr.cash','Cash','Argent','نقدًا');
+S('tr.title','Tbadel · Trade','Tbadel · Échange','تبادل'); S('tr.with','Trade with','Échanger avec','تبادل مع'); S('tr.gives','{p} gives','{p} donne','{p} يعطي'); S('tr.cash','Cash','Argent','نقدًا');
 S('tr.nothing','Nothing tradeable','Rien à échanger','لا شيء للتبادل'); S('btn.cancel','Cancel','Annuler','إلغاء'); S('btn.send','Send offer','Envoyer l’offre','أرسل العرض');
 S('tr.pick','Pick something to trade.','Choisissez quelque chose à échanger.','اختر شيئًا للتبادل.'); S('tr.noCash','One side does not have that much cash.','L’un des deux n’a pas assez d’argent.','أحد الطرفين لا يملك هذا المبلغ.');
 S('tr.sent','Offer sent to {p}.','Offre envoyée à {p}.','أُرسل العرض إلى {p}.'); S('tr.thinking','{p} is thinking it over…','{p} réfléchit…','{p} يفكر في العرض…');
-S('trr.title','Tbadel offer for {p}','Offre de Tbadel pour {p}','عرض تبادل إلى {p}'); S('trr.pass','Pass the screen to <b>{p}</b>.','Passez l’écran à <b>{p}</b>.','سلّم الشاشة إلى <b>{p}</b>.');
+S('trr.title','Tbadel (trade) offer for {p}','Offre de Tbadel (échange) pour {p}','عرض تبادل إلى {p}'); S('trr.pass','Pass the screen to <b>{p}</b>.','Passez l’écran à <b>{p}</b>.','سلّم الشاشة إلى <b>{p}</b>.');
 S('trr.receive','You receive:','Vous recevez :','تحصل على:'); S('trr.give','You give:','Vous donnez :','تعطي:'); S('trr.from','Offer from {p}.','Offre de {p}.','عرض من {p}.'); S('tr.nothingW','nothing','rien','لا شيء');
 S('btn.refuse','Refuse','Refuser','ارفض'); S('btn.accept','Accept','Accepter','اقبل');
 /* game over */
@@ -1064,6 +1082,8 @@ function repairs(G,p,perDar,perRiad){
 }
 function netWorth(G,p){let w=p.cash; ownedBy(G,p.id).forEach(i=>{const pr=G.props[i]; w+=pr.mort?SP[i].price/2:SP[i].price; if(pr.houses) w+=pr.houses*houseCost(i);}); return w;}
 function canBuild(G,i,pid){const s=SP[i],pr=G.props[i]; if(s.t!=='prop'||pr.owner!==pid||pr.houses>=5||!ownsGroup(G,pid,s.g)) return false; const gi=groupIdx(s.g); if(gi.some(j=>G.props[j].mort)) return false; if(pr.houses>Math.min(...gi.map(j=>G.props[j].houses))) return false; return G.players[pid].cash>=houseCost(i);}
+function riadCost(G,i){return (5-G.props[i].houses)*houseCost(i);}
+function canRiad(G,i,pid){const s=SP[i],pr=G.props[i]; if(s.t!=='prop'||pr.owner!==pid||pr.houses>=5||!ownsGroup(G,pid,s.g)) return false; if(groupIdx(s.g).some(j=>G.props[j].mort)) return false; return G.players[pid].cash>=riadCost(G,i);}
 function canSell(G,i,pid){const s=SP[i],pr=G.props[i]; if(s.t!=='prop'||pr.owner!==pid||pr.houses===0) return false; return pr.houses>=Math.max(...groupIdx(s.g).map(j=>G.props[j].houses));}
 function canMort(G,i,pid){const s=SP[i],pr=G.props[i]; if(pr.owner!==pid||pr.mort) return false; if(s.t==='prop'&&groupIdx(s.g).some(j=>G.props[j].houses>0)) return false; return true;}
 function canUnmort(G,i,pid){const pr=G.props[i]; return pr.owner===pid&&pr.mort&&G.players[pid].cash>=unmortCost(i);}
@@ -1190,8 +1210,9 @@ function apply(G,seat,a){
     case 'card':{
       if(!isCur||!free||!p.inJail||G.phase!=='roll'||!p.goojf.length) return false;
       const c=p.goojf.pop(); G.decks[c.deck].push(c.id); p.inJail=false; p.jailTurns=0; log(G,'useCard',{p:p.name}); return true;}
-    case 'build':case 'sell':case 'mort':case 'unmort':{
+    case 'build':case 'riad':case 'sell':case 'mort':case 'unmort':{
       const i=+a.i; if(!isCur||!free||!isOwnable(i)) return false;
+      if(a.t==='riad'){if(!canRiad(G,i,seat)) return false; p.cash-=riadCost(G,i); G.props[i].houses=5; log(G,'riadNow',{p:p.name,s:i}); A(G,{k:'fx',f:'build',idx:i,pid:seat});}
       if(a.t==='build'){if(!canBuild(G,i,seat)) return false; p.cash-=houseCost(i); G.props[i].houses++; log(G,G.props[i].houses===5?'buildRiad':'buildDar',{p:p.name,s:i}); A(G,{k:'fx',f:'build',idx:i,pid:seat});}
       if(a.t==='sell'){if(!canSell(G,i,seat)) return false; G.props[i].houses--; p.cash+=houseCost(i)/2; log(G,'sellB',{p:p.name,s:i,a:houseCost(i)/2});}
       if(a.t==='mort'){if(!canMort(G,i,seat)) return false; G.props[i].mort=true; p.cash+=SP[i].price/2; log(G,'mort',{p:p.name,s:i,a:SP[i].price/2});}
@@ -1913,7 +1934,7 @@ async function runAnim(a){
       layoutPawns(); highlight(a.to);
       if(a.f==='jail'){jailBars(); await revealArt(SP[30].art,t('fl.jail'),1300*sp);}
       break;}
-    case 'card':{sfx('card'); setEvent(t('ev.draws',{p:pname(a.pid),deckN:t('deck.'+a.deck)})); await showFate(a.deck,cardText(a.deck,a.id,a.text),rm?1200:2300*sp); break;}
+    case 'card':{sfx('card'); setEvent(t('ev.draws',{p:pname(a.pid),deckN:t('deck.'+a.deck)})); {const tx=cardText(a.deck,a.id,a.text); await showFate(a.deck,tx,(rm?2500:Math.min(9000,4000+tx.length*40))*(sp<1?.75:1));} break;}
     case 'turn':{setEvent(tl(['turn',{p:pname(a.pid)}])); if(MODE!=='local'&&iControl(a.pid)){sfx('myturn'); try{navigator.vibrate&&navigator.vibrate([60,40,60]);}catch(e){}} break;}
     case 'fx':{
       if(a.f==='deed'){sfx('deed'); await revealArt(SP[a.idx].art||null,`${spN(a.idx)} · ${fmt(SP[a.idx].price)}`,1300*sp,SP[a.idx]);}
@@ -1958,8 +1979,8 @@ async function revealArt(src,cap,ms,s){
 }
 async function showFate(deck,text,ms){
   const st=$('stage'); if(!st) return;
-  st.innerHTML=`<div class="fate ${deck}"><div class="k">${deck==='mektoub'?'مكتوب':'بركة'}</div><div class="kl">${t('fate.'+deck)}</div><div class="tx">${esc(text)}</div></div>`;
-  await sleep(ms); const r=st.firstElementChild; if(r){r.classList.add('out'); await sleep(420);} st.innerHTML='';
+  st.innerHTML=`<div class="fate ${deck}" role="button" tabindex="0"><div class="k">${deck==='mektoub'?'مكتوب':'بركة'}</div><div class="kl">${t('fate.'+deck)}</div><div class="tx">${esc(text)}</div><div class="tap">${t('fate.tap')}</div><i class="timer" style="animation-duration:${Math.round(ms)}ms"></i></div>`;
+  await new Promise(res=>{const tm=setTimeout(res,ms); const f=st.firstElementChild; const go=()=>{clearTimeout(tm); res();}; f.addEventListener('click',go,{once:true}); f.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ') go();});}); const r=st.firstElementChild; if(r){r.classList.add('out'); await sleep(420);} st.innerHTML='';
 }
 
 /* ---------- render ---------- */
@@ -2042,9 +2063,9 @@ function renderTab(){
     el.innerHTML=`<div class="muted" style="font-size:12.5px;margin-bottom:8px">${esc(can?t('dd.help'):t('dd.notTurn',{p:p.name}))}</div><div class="deeds">${owned.map(i=>{const s=SP[i],pr=V.props[i];
       const lvl=s.t!=='prop'?(s.t==='rail'?t('lv.station'):t('lv.utility')):pr.houses===5?t('lv.riad'):pr.houses?t('lv.dar',{n:pr.houses}):t('lv.none');
       return `<div class="drow"><div class="th">${s.art?`<img src="${s.art}" alt="">`:''}<i style="background:${colorOf(i)}"></i></div><div style="min-width:0"><button class="btn ghost sm" style="border:0;padding:0;font-weight:600" data-deed="${i}">${esc(spN(i))}</button><div class="muted" style="font-size:12px">${pr.mort?t('lv.mort'):lvl}${s.t==='prop'&&!pr.mort?' · '+t('dd.rent',{a:fmt(rentFor(V,i))}):''}</div></div>
-      <div class="acts">${s.t==='prop'?`<button class="btn sm" data-b="${i}" ${can&&canBuild(V,i,pid)?'':'disabled'}>${pr.houses>=4?t('btn.addRiad'):t('btn.addDar')}</button><button class="btn sm" data-s="${i}" ${can&&canSell(V,i,pid)?'':'disabled'}>${t('btn.sell')}</button>`:''}${pr.mort?`<button class="btn sm" data-u="${i}" ${can&&canUnmort(V,i,pid)?'':'disabled'}>${t('btn.lift',{a:fmt(unmortCost(i))})}</button>`:`<button class="btn sm" data-m="${i}" ${can&&canMort(V,i,pid)?'':'disabled'}>${t('btn.rahn',{a:fmt(s.price/2)})}</button>`}</div></div>`;}).join('')}</div>`;
+      <div class="acts">${s.t==='prop'?`<button class="btn sm" data-b="${i}" ${can&&canBuild(V,i,pid)?'':'disabled'}>${pr.houses>=4?t('btn.addRiad'):t('btn.addDar')}</button>${pr.houses<5&&!(pr.houses>=4&&canBuild(V,i,pid))&&ownsGroup(V,pid,s.g)?`<button class="btn sm gold" data-r="${i}" ${can&&canRiad(V,i,pid)?'':'disabled'}>${t('btn.riadNow',{a:fmt(riadCost(V,i))})}</button>`:''}<button class="btn sm" data-s="${i}" ${can&&canSell(V,i,pid)?'':'disabled'}>${t('btn.sell')}</button>`:''}${pr.mort?`<button class="btn sm" data-u="${i}" ${can&&canUnmort(V,i,pid)?'':'disabled'}>${t('btn.lift',{a:fmt(unmortCost(i))})}</button>`:`<button class="btn sm" data-m="${i}" ${can&&canMort(V,i,pid)?'':'disabled'}>${t('btn.rahn',{a:fmt(s.price/2)})}</button>`}</div></div>`;}).join('')}</div>`;
     const bind=(attr,ty)=>el.querySelectorAll(`[data-${attr}]`).forEach(b=>b.onclick=()=>dispatch({t:ty,i:+b.dataset[attr]},pid));
-    bind('b','build'); bind('s','sell'); bind('m','mort'); bind('u','unmort');
+    bind('b','build'); bind('r','riad'); bind('s','sell'); bind('m','mort'); bind('u','unmort');
     el.querySelectorAll('[data-deed]').forEach(b=>b.onclick=()=>openDeed(+b.dataset.deed));
   } else if(tab==='log'){el.innerHTML=`<div class="log">${(V.log||[]).map(l=>`<div>${esc(tl(l))}</div>`).join('')}</div>`;}
   else el.innerHTML=t('book');
@@ -2052,20 +2073,41 @@ function renderTab(){
 /* ============================================================
    MODALS
    ============================================================ */
+const MINABLE=['trade','treply','auction'];
+let stash=null; // a minimised window parked while another one (a deed card) is open
 function openModal(kind,html){
+  const root=$('modalRoot');
+  if(modal&&modal.min&&kind!==modal.kind&&!stash){const f=document.createElement('div'); while(root.firstChild) f.appendChild(root.firstChild); stash={modal,f};}
+  else if(stash&&stash.modal.kind===kind) stash=null;
+  root.classList.remove('min');
   modal={kind};
-  $('modalRoot').innerHTML=`<div class="veil" id="veil"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
+  root.innerHTML=`<div class="veil" id="veil"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`+(MINABLE.includes(kind)?`<button class="modal-pill" id="modalPill">${esc(t('pill.'+kind))}</button>`:'');
+  if(MINABLE.includes(kind)) addMinBtn(root);
   $('veil').addEventListener('click',e=>{if(e.target.id==='veil'&&kind!=='auction'&&kind!=='treply') closeModal();});
   $('modalRoot').querySelectorAll('[data-close]').forEach(b=>b.onclick=closeModal);
 }
-function closeModal(){modal=null; $('modalRoot').innerHTML='';}
+function addMinBtn(root){
+  const hd=root.querySelector('.modal .hd'); if(!hd||hd.querySelector('[data-min]')) return;
+  const b=document.createElement('button'); b.className='btn ghost sm'; b.dataset.min='1'; b.style.marginInlineStart='auto'; b.textContent='▾ '+t('btn.seeBoard');
+  const x=hd.querySelector('.x'); if(x){x.style.marginInlineStart='0'; hd.insertBefore(b,x);} else hd.appendChild(b);
+  b.onclick=minimizeModal;
+  const pill=root.querySelector('#modalPill'); if(pill) pill.onclick=restoreModal;
+}
+function minimizeModal(){if(!modal) return; modal.min=true; $('modalRoot').classList.add('min');}
+function restoreModal(){if(!modal) return; modal.min=false; $('modalRoot').classList.remove('min'); if(modal.kind==='auction') renderAuction();}
+function closeModal(){
+  const root=$('modalRoot'); modal=null; root.innerHTML=''; root.classList.remove('min');
+  if(stash){const st=stash; stash=null; while(st.f.firstChild) root.appendChild(st.f.firstChild); modal=st.modal; root.classList.add('min'); const p=root.querySelector('#modalPill'); if(p) p.onclick=restoreModal; const m=root.querySelector('[data-min]'); if(m) m.onclick=minimizeModal; autoModals();}
+}
+const hasModal=k=>(modal&&modal.kind===k)||(stash&&stash.modal.kind===k);
+function dropModal(k){if(stash&&stash.modal.kind===k) stash=null; else if(modal&&modal.kind===k) closeModal();}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal&&modal.kind!=='auction'&&modal.kind!=='treply') closeModal();});
 function autoModals(){
   if(!V||V.status!=='play') return;
-  if(V.auction){if(!modal||modal.kind!=='auction') openAuction(); else renderAuction();}
-  else if(modal&&modal.kind==='auction') closeModal();
-  if(V.trade&&iControl(V.trade.to)){if(!modal||modal.kind!=='treply') openTradeReply();}
-  else if(modal&&modal.kind==='treply') closeModal();
+  if(V.auction){if(!hasModal('auction')) openAuction(); else if(modal.kind==='auction') renderAuction();}
+  else if(hasModal('auction')) dropModal('auction');
+  if(V.trade&&iControl(V.trade.to)){if(!hasModal('treply')) openTradeReply();}
+  else if(hasModal('treply')) dropModal('treply');
   if(V.over&&shownOver!==V.gid){shownOver=V.gid; setTimeout(openGameOver,600);}
 }
 function openDeed(i){
@@ -2097,6 +2139,7 @@ function renderAuction(){
     <div class="bidders">${a.bidders.map((id,k)=>`<span class="${k===a.turn?'now':''}">${esc(V.players[id].name)}</span>`).join('')}</div>
     <div><b>${esc(p.name)}</b>${me?t('au.yourBid',{a:fmt(p.cash)}):t('au.deciding')}</div></div>
     <div class="ft">${[100,500,1000].map(inc=>`<button class="btn ${inc===100?'red':''}" data-inc="${inc}" ${!me||a.high+inc>p.cash?'disabled':''}>+${num(inc)}</button>`).join('')}<button class="btn ghost" data-pass ${me?'':'disabled'}>${t('btn.leaveAuc')}</button></div>`;
+  addMinBtn($('modalRoot')); const pl=$('modalPill'); if(pl) pl.classList.toggle('mine',me);
   box.querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>dispatch({t:'bid',inc:+b.dataset.inc},p.id));
   const pb=box.querySelector('[data-pass]'); if(pb) pb.onclick=()=>dispatch({t:'pass'},p.id);
 }
