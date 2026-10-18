@@ -478,6 +478,7 @@ html[lang="ar"] .cell .nm{font-family:var(--f-ar);font-size:1.25cqi}
     <div class="sp"></div>
     <span class="chipcode" id="codeChip" hidden dir="ltr"></span>
     <div class="langsw"></div>
+    <button class="btn ghost sm" id="mySeatBtn" hidden data-i18n="btn.mySeat"></button>
     <button class="btn ghost sm" id="leaveBtn" data-i18n="btn.leave"></button>
   </div>
   <div id="bannerSlot"></div>
@@ -954,6 +955,28 @@ function applyLang(){
 S('store.full','The game store is full. Finish an old game first.','Le stockage des parties est plein. Terminez d’abord une ancienne partie.','مخزن الألعاب ممتلئ. أنهِ لعبة قديمة أولًا.');
 S('store.retry','Could not save the game online. Retrying on the next move.','Impossible d’enregistrer la partie en ligne. Nouvel essai au prochain coup.','تعذّر حفظ اللعبة على الإنترنت. ستُعاد المحاولة في الحركة التالية.');
 const _t=(k,p)=>t(k,p);
+S('lbl.player','Player','Joueur','لاعب');
+S('log.joinsMid','{p} joins the game and starts at Al Inṭilāq.','{p} rejoint la partie et commence à Al Inṭilāq.','{p} ينضم إلى اللعبة ويبدأ من الانطلاق.');
+S('pin.title','This table has a code','Cette table a un code','لهذه الطاولة رمز');
+S('pin.help','Ask the host for the code, then type it here.','Demandez le code à l’hôte, puis saisissez-le ici.','اطلب الرمز من المضيف ثم اكتبه هنا.');
+S('pin.ph','Table code','Code de la table','رمز الطاولة');
+S('pin.join','Join the table','Rejoindre la table','انضم إلى الطاولة');
+S('pin.wrong','That code is not right. Try again.','Ce code n’est pas bon. Réessayez.','الرمز غير صحيح. حاول مجددًا.');
+S('pin.checking','Checking the code…','Vérification du code…','جارٍ التحقق من الرمز…');
+S('pin.set','Table code (optional)','Code de la table (facultatif)','رمز الطاولة (اختياري)');
+S('pin.setHelp','Players who open the link must type this code to join.','Les joueurs qui ouvrent le lien devront saisir ce code pour rejoindre.','من يفتح الرابط يجب أن يكتب هذا الرمز للانضمام.');
+S('pin.save','Set code','Définir le code','عيّن الرمز'); S('pin.remove','Remove code','Supprimer le code','أزل الرمز');
+S('pin.on','Code: {c}','Code : {c}','الرمز: {c}'); S('pin.onOther','This table has a code.','Cette table a un code.','لهذه الطاولة رمز.');
+S('pin.off','No code: anyone with the link can join.','Pas de code : toute personne qui a le lien peut rejoindre.','بدون رمز: كل من لديه الرابط يمكنه الانضمام.');
+S('pin.bad','Use 4 to 6 digits.','Utilisez 4 à 6 chiffres.','استعمل من 4 إلى 6 أرقام.');
+S('seat.joinedMid','You’re in! You start at Al Inṭilāq with {a} and play when your turn comes.','Vous êtes dans la partie ! Vous commencez à Al Inṭilāq avec {a} et jouez quand votre tour arrive.','أنت في اللعبة! تبدأ من الانطلاق ومعك {a} وتلعب عندما يحين دورك.');
+S('seat.help','Pick your token and the name shown on the board.','Choisissez votre pion et le nom affiché sur le plateau.','اختر قطعتك والاسم الذي يظهر على اللوحة.');
+S('btn.mySeat','My seat','Ma place','مقعدي'); S('btn.save','Save','Enregistrer','احفظ'); S('btn.done','Done','Terminé','تم');
+S('lb.full','The table is full (8 players). You can watch the game.','La table est complète (8 joueurs). Vous pouvez regarder la partie.','الطاولة ممتلئة (8 لاعبين). يمكنك مشاهدة اللعبة.');
+S('lb.joining','Taking your seat…','Installation à la table…','جارٍ إجلاسك…');
+S('lb.autoNote','You are at the table. Pick your token and change your name if you like.','Vous êtes à la table. Choisissez votre pion et changez votre nom si vous voulez.','أنت على الطاولة. اختر قطعتك وغيّر اسمك إن أردت.');
+S('lb.lateJoin',' Friends can still join with the link after the game starts.',' Vos amis peuvent rejoindre avec le lien même après le début de la partie.',' يمكن لأصدقائك الانضمام بالرابط حتى بعد بدء اللعبة.');
+S('watching','You are watching. The table is full.','Vous regardez : la table est complète.','أنت تشاهد. الطاولة ممتلئة.');
 function renderLangSwitch(box){
   box.setAttribute('role','group'); box.setAttribute('aria-label',t('lang.aria'));
   box.innerHTML=LANGS.map(([k,s,n])=>`<button type="button" data-lang="${k}" aria-pressed="${LANG===k}" title="${n}" lang="${k}">${s}</button>`).join('');
@@ -1255,6 +1278,9 @@ let lastSeen=0, PEND=null, Q=[], playing=false;
 let myCid=null;
 let NET={T:null,code:null,myQ:[],mySeq:0};
 let LANG_DIRTY=false;
+const myName=()=>{const n=lsGet('moropoly.name'); return (typeof n==='string'&&n.trim())?n.trim().slice(0,16):'';};
+const saveName=n=>{if(n&&n.trim()) lsSet('moropoly.name',n.trim().slice(0,16));};
+let JOIN={sent:false,pin:null,denied:0,wrong:false,welcomed:null};
 let tab='players', modal=null, botTimer=null, dpos={}, shownOver=null, lobbyDraft={name:'',token:-1};
 let CAPS=null; // claude capabilities, resolved once
 const inClaude=()=>!!(window.claude&&typeof window.claude.use==='function');
@@ -1430,10 +1456,17 @@ function hostHandle(cid,q){
   if(last!==(G.ack[cid]||0)){G.ack[cid]=last; changed=true;}
   if(changed) commit();
 }
+const pinHash=(code,pin)=>{let h=2166136261>>>0; const x=String(code)+':'+String(pin); for(let i=0;i<x.length;i++){h^=x.charCodeAt(i); h=Math.imul(h,16777619)>>>0;} return h.toString(16);};
 function handleIntent(cid,it){
   const a=it.a||{};
+  if(a.t==='join'){
+    const seated=G.players.some(p=>p.cid===cid);
+    if(G.pinHash&&!seated&&pinHash(G.code,a.pin||'')!==G.pinHash){G.denied=G.denied||{}; G.denied[cid]=(G.denied[cid]||0)+1; return true;}
+    if(G.status==='lobby') return lobbyJoin(cid,a);
+    if(G.status==='play') return playJoin(G,cid,a);
+    return false;
+  }
   if(G.status==='lobby'){
-    if(a.t==='join') return lobbyJoin(cid,a);
     if(a.t==='leave'){const n=G.players.length; G.players=G.players.filter(p=>p.cid!==cid); return n!==G.players.length;}
     return false;
   }
@@ -1443,15 +1476,36 @@ function handleIntent(cid,it){
   }
   return false;
 }
+const freeToken=(G,want,except)=>{const used=new Set(G.players.filter(p=>p.cid!==except).map(p=>p.token)); if(want>=0&&want<TOKENS.length&&!used.has(want)) return want; const k=range(TOKENS.length).find(k=>!used.has(k)); return k==null?-1:k;};
 function lobbyJoin(cid,a){
-  const name=String(a.name||'').trim().slice(0,16)||'Player';
-  const tok=+a.token; if(!(tok>=0&&tok<TOKENS.length)) return false;
+  const name=String(a.name||'').trim().slice(0,16)||t('lbl.player');
+  let tok=+a.token;
   const mine=G.players.find(p=>p.cid===cid);
-  if(G.players.some(p=>p.token===tok&&p!==mine)) return false;
+  if(!(tok>=0&&tok<TOKENS.length)||G.players.some(p=>p.token===tok&&p!==mine)){if(!a.auto&&mine) return false; tok=freeToken(G,tok,cid);}
+  if(tok<0) return false;
   if(mine){mine.name=name; mine.token=tok; return true;}
   if(G.players.length>=8) return false;
   G.players.push({cid,name,token:tok,human:true});
   log(G,'joins',{p:name});
+  return true;
+}
+/* someone opens the invite link after the game has started: they get a seat at the end of the turn order */
+function playJoin(G,cid,a){
+  const name=String(a.name||'').trim().slice(0,16)||t('lbl.player');
+  const mine=G.players.find(p=>p.cid===cid);
+  if(mine){ // changing name or token during the game
+    let tok=+a.token; if(!(tok>=0&&tok<TOKENS.length)||G.players.some(p=>p!==mine&&!p.bankrupt&&p.token===tok)) tok=mine.token;
+    if(mine.name===name&&mine.token===tok) return false;
+    mine.name=name; mine.token=tok; return true;
+  }
+  if(G.over||G.players.length>=8) return false;
+  const used=new Set(G.players.filter(p=>!p.bankrupt).map(p=>p.token));
+  let tok=+a.token; if(!(tok>=0&&tok<TOKENS.length)||used.has(tok)) tok=range(TOKENS.length).find(k=>!used.has(k));
+  if(tok==null) return false;
+  const id=G.players.length;
+  G.players.push({id,cid,name,token:tok,human:true,color:COLORS[id%COLORS.length],cash:START_CASH,pos:0,inJail:false,jailTurns:0,goojf:[],bankrupt:false,owes:-1,mt:'',lateRound:G.round});
+  log(G,'joinsMid',{p:name});
+  A(G,{k:'fx',f:'joined',pid:id});
   return true;
 }
 function sendIntent(it){
@@ -1493,7 +1547,9 @@ async function hostGame(){
   showConnecting(code,'conn.opening');
   try{await T.host(code,hostHandle);}catch(e){toast(netErr(e)); goHome(); return;}
   try{history.replaceState(null,'','#'+code);}catch(e){}
-  lobbyDraft={name:'',token:0};
+  const hn=myName()||`${t('lbl.player')} 1`;
+  lobbyDraft={name:hn,token:0};
+  lobbyJoin(myCid,{name:hn,token:0,auto:true});
   commit();
 }
 async function joinGame(code){
@@ -1523,6 +1579,7 @@ function showConnecting(code,msgKey){
   $('lobby').querySelector('[data-home]').onclick=goHome;
 }
 function teardownNet(){
+  JOIN={sent:false,pin:null,denied:0,wrong:false,welcomed:null};
   try{NET.T&&NET.T.leave();}catch(e){}
   NET={T:null,code:null,myQ:[],mySeq:0};
 }
@@ -1552,12 +1609,52 @@ function initPWA(){
     openModal('inst',`<div class="hd"><h2>${t('pwa.title')}</h2><button class="x" data-close aria-label="${t('aria.close')}">×</button></div><div class="bd"><p>${t('pwa.ios')}</p><p>${t('pwa.android')}</p><p class="muted">${t('pwa.note')}</p></div>`);
   };
 }
+function seatedIn(ns){return !!(ns&&ns.players&&ns.players.some(p=>p.cid===myCid));}
+function guestGate(ns){
+  // returns true when this state was handled by the join flow (code screen)
+  if(MODE!=='guest'||!ns||!ns.players) return false;
+  const seated=seatedIn(ns), d=(ns.denied&&ns.denied[myCid])||0;
+  if(JOIN.base==null){JOIN.base=d; JOIN.denied=d;}
+  if(d>JOIN.denied){JOIN.denied=d; JOIN.pin=null; JOIN.sent=false; JOIN.wrong=true;}
+  if(seated||ns.over) return false;
+  if(ns.pinHash&&!JOIN.pin){V=null; showPinGate(ns); return true;}
+  const full=ns.players.filter(p=>!p.bankrupt).length>=8||ns.players.length>=8;
+  if(!full&&!JOIN.sent&&(ns.status==='lobby'||ns.status==='play')){
+    JOIN.sent=true;
+    const used=new Set(ns.players.filter(p=>!p.bankrupt).map(p=>p.token));
+    const tok=range(TOKENS.length).find(k=>!used.has(k));
+    const name=myName()||`${t('lbl.player')} ${ns.players.length+1}`;
+    lobbyDraft={name,token:tok==null?0:tok};
+    sendIntent({a:{t:'join',name,token:tok==null?0:tok,pin:JOIN.pin||'',auto:true}});
+  }
+  if(ns.pinHash&&JOIN.pin){V=null; showPinGate(ns,true); return true;}
+  return false;
+}
+function showPinGate(ns,checking){
+  show('lobby');
+  const code=ns.code||NET.code||'';
+  $('lobby').innerHTML=`<div class="bar-top"><button class="btn ghost sm" data-home>${t('back')}</button><div class="sp"></div><div class="langsw"></div><span class="chipcode" dir="ltr">${esc(t('chip.game',{c:code.toUpperCase()}))}</span></div>
+   <form class="card" id="pinForm" style="max-width:460px;margin:40px auto;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center" autocomplete="off">
+     <div class="parade" style="margin:4px 0 6px">${[0,1,3].map((k,i)=>`<div class="coin" style="animation-delay:${i*.3}s"><img src="${TOKENS[k].img}" alt=""></div>`).join('')}</div>
+     <h2 class="h2">${t('pin.title')}</h2><p class="muted" style="margin:0">${t('pin.help')}</p>
+     <input class="field" id="pinInput" inputmode="numeric" pattern="[0-9]*" maxlength="6" dir="ltr" placeholder="${esc(t('pin.ph'))}" aria-label="${esc(t('pin.ph'))}" style="font-family:var(--f-display);font-size:24px;letter-spacing:.4em;text-align:center;width:220px" ${checking?'disabled':''}>
+     <div class="muted" id="pinMsg" style="min-height:1.4em;color:${JOIN.wrong&&!checking?'var(--red-hi)':'var(--dim)'}">${checking?t('pin.checking'):JOIN.wrong?t('pin.wrong'):''}</div>
+     <button class="btn red" type="submit" ${checking?'disabled':''}>${t('pin.join')}</button>
+   </form>`;
+  $('lobby').querySelectorAll('.langsw').forEach(renderLangSwitch);
+  $('lobby').querySelector('[data-home]').onclick=goHome;
+  const inp=$('pinInput'); if(inp&&!checking) inp.focus();
+  $('pinForm').onsubmit=e=>{e.preventDefault(); const v=(inp.value||'').replace(/\D/g,''); if(v.length<4){$('pinMsg').textContent=t('pin.bad'); return;}
+    JOIN.pin=v; JOIN.wrong=false; JOIN.sent=false; guestGate(ns);};
+}
 function onState(ns){
   if(!ns) return;
+  if(guestGate(ns)) return;
+  const wasSeated=seatedIn(V);
   if(!V||ns.gid!==V.gid||ns.status!==V.status){
     Q=[]; PEND=null; playing=false; V=ns; lastSeen=ns.seq||0; shownOver=null;
     if(V.status==='lobby'){show('lobby'); renderLobby(); return;}
-    show('game'); buildBoard(); syncDpos(); renderAll(); afterRender(); return;
+    show('game'); buildBoard(); syncDpos(); renderAll(); afterRender(); welcomeLate(ns,wasSeated); return;
   }
   if(V.status==='lobby'){V=ns; renderLobby(); return;}
   const fresh=(ns.anims||[]).filter(a=>a.n>lastSeen);
@@ -1566,6 +1663,13 @@ function onState(ns){
   if(MODE==='guest'&&ns.ack&&myCid){const ack=ns.ack[myCid]||0; const before=NET.myQ.length; NET.myQ=NET.myQ.filter(x=>x.s>ack); if(before!==NET.myQ.length&&NET.T&&NET.T.kind==='claude') NET.T.send(NET.myQ);}
   PEND=ns; fresh.forEach(a=>Q.push(a));
   if(!playing) play();
+  welcomeLate(ns,wasSeated);
+}
+function welcomeLate(ns,wasSeated){
+  if(MODE!=='guest'||ns.status!=='play'||wasSeated||!seatedIn(ns)||JOIN.welcomed===ns.gid) return;
+  JOIN.welcomed=ns.gid;
+  toast(t('seat.joinedMid',{a:fmt(START_CASH)}));
+  setTimeout(()=>{if(!modal) openSeat();},400);
 }
 async function play(){
   playing=true; renderTurn();
@@ -1694,6 +1798,7 @@ async function runAnim(a){
       else if(a.f==='deal'){sfx('deal'); floatAt(a.pid,t('fl.deal'),'gold'); floatAt(a.to,t('fl.deal'),'gold'); await sleep(500*sp);}
       else if(a.f==='dlala'){sfx('gavel'); setEvent(t('ev.dlala')); await sleep(400);}
       else if(a.f==='bankrupt'){sfx('sad'); floatAt(a.pid,t('fl.bankrupt'),'minus'); await sleep(800*sp);}
+      else if(a.f==='joined'){sfx('deed'); confettiAt(cellBox(0)); floatAt(a.pid,'+'+fmt(START_CASH),'plus'); await sleep(500*speed());}
       else if(a.f==='win'){sfx('zaghrouta'); confettiAt(null,260); await sleep(1200);}
       break;}
   }
@@ -1748,12 +1853,14 @@ function renderAll(){
   const pot=$('pot'); if(pot) pot.textContent=fmt(V.daret);
   setDice(V.dice,false); layoutPawns(); setEvent(tl(V.event));
   $('roundMeta').textContent=t('meta.round',{n:V.round,of:V.settings.rounds?t('meta.of',{m:V.settings.rounds}):'',a:fmt(V.daret)});
+  $('mySeatBtn').hidden=!(MODE!=='local'&&seatedIn(V)&&!V.over);
   const cc=$('codeChip'); cc.hidden=!V.code; if(V.code) cc.textContent=t('chip.game',{c:V.code.toUpperCase()});
   renderBanner(); renderTurn(); renderTab();
 }
 function renderBanner(){
   const s=$('bannerSlot'); if(!s) return;
-  s.innerHTML=(MODE==='guest'&&!hostOnline())?`<div class="banner" style="margin-bottom:12px">${esc(t('banner.paused'))}</div>`:'';
+  const watch=MODE==='guest'&&V&&V.players&&!seatedIn(V)&&!V.over;
+  s.innerHTML=watch&&hostOnline()?`<div class="banner" style="margin-bottom:12px;background:rgba(201,207,216,.08);border-color:var(--line-2);color:var(--text)">${esc(t('watching'))}</div>`:(MODE==='guest'&&!hostOnline())?`<div class="banner" style="margin-bottom:12px">${esc(t('banner.paused'))}</div>`:'';
 }
 function renderTurn(){
   const el=$('turnCard'); if(!el||!V||V.status!=='play') return;
@@ -1900,6 +2007,23 @@ function openTradeReply(){
   $('trNo').onclick=()=>{closeModal(); dispatch({t:'tradeReply',accept:false},tr.to);};
   $('trYes').onclick=()=>{closeModal(); dispatch({t:'tradeReply',accept:true},tr.to);};
 }
+function openSeat(){
+  if(!V||!V.players) return; const me=V.players.find(p=>p.cid===myCid); if(!me) return;
+  let tok=me.token;
+  const used=new Set(V.players.filter(p=>p!==me&&!p.bankrupt).map(p=>p.token));
+  openModal('seat',`<div class="hd"><h2>${t('lb.yourSeat')}</h2><button class="x" data-close aria-label="${t('aria.close')}">×</button></div>
+    <div class="bd"><p class="muted" style="margin:0">${t('seat.help')}</p>
+    <label class="muted" for="stName" style="font-size:12.5px">${t('lb.name')}</label>
+    <input class="field" id="stName" maxlength="16" value="${esc(me.name)}" placeholder="${esc(t('lb.namePh'))}">
+    <div class="tokgrid">${TOKENS.map((tk,k)=>{const taken=used.has(k)?V.players.find(p=>p!==me&&!p.bankrupt&&p.token===k):null; return `<button class="tok" data-st="${k}" aria-pressed="${k===tok}" ${taken?'disabled':''}>${coinHTML(k)}${taken?`<span class="taken">${esc(taken.name.slice(0,8))}</span>`:''}<span>${esc(tokN(k))}</span></button>`;}).join('')}</div></div>
+    <div class="ft"><button class="btn red" id="stSave">${t('btn.save')}</button></div>`);
+  document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{tok=+b.dataset.st; document.querySelectorAll('[data-st]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+  $('stSave').onclick=()=>{const n=($('stName').value||'').trim()||me.name; saveName(n); closeModal(); seatAct({t:'join',name:n,token:tok});};
+}
+function seatAct(a){
+  if(MODE==='host'){if(G.status==='lobby'?lobbyJoin(myCid,a):playJoin(G,myCid,a)) commit();}
+  else sendIntent({a});
+}
 function openGameOver(){
   const rank=[...V.players].sort((a,b)=>(a.bankrupt-b.bankrupt)||netWorth(V,b)-netWorth(V,a));
   openModal('over',`<div class="hd"><h2>${esc(t('go.title',{p:rank[0].name}))}</h2><button class="x" data-close aria-label="${t('aria.close')}">×</button></div><div class="bd"><div class="plist">${rank.map((p,k)=>`<div class="prow ${k===0?'active':''}">${coinHTML(p.token)}<div><div class="nm">${k+1}. ${esc(p.name)}</div><div class="sub">${p.bankrupt?t('st.bankrupt'):t('go.props',{n:ownedBy(V,p.id).length})}</div></div><div class="money"><b>${fmt(p.bankrupt?0:netWorth(V,p))}</b><span class="sub">${t('go.nw')}</span></div></div>`).join('')}</div></div><div class="ft"><button class="btn" data-close>${t('btn.look')}</button><button class="btn red" id="again">${t('btn.backHome')}</button></div>`);
@@ -1908,12 +2032,13 @@ function openGameOver(){
 /* ============================================================
    LOBBY (online)
    ============================================================ */
+const hostPin=()=>{const v=lsGet('moropoly.pin.'+(V&&V.code)); return v?String(v):'';};
 function renderLobby(){
   const el=$('lobby'); if(!V) return;
   const isHost=MODE==='host'; const on=onlineCids();
   const mine=V.players.find(p=>p.cid===myCid);
-  if(lobbyDraft.token<0||(V.players.some(p=>p.token===lobbyDraft.token&&p.cid!==myCid))) lobbyDraft.token=mine?mine.token:(range(10).find(k=>!V.players.some(p=>p.token===k))??0);
-  if(!lobbyDraft.name&&mine) lobbyDraft.name=mine.name;
+  if(mine) lobbyDraft.token=mine.token; else if(lobbyDraft.token<0||(V.players.some(p=>p.token===lobbyDraft.token&&p.cid!==myCid))) lobbyDraft.token=(range(10).find(k=>!V.players.some(p=>p.token===k))??0);
+  if(mine&&document.activeElement&&document.activeElement.id!=='lbName') lobbyDraft.name=mine.name; else if(!lobbyDraft.name) lobbyDraft.name=myName();
   const link=inviteLink(V.code);
   const focusId=document.activeElement&&document.activeElement.id, selStart=focusId==='lbName'?document.activeElement.selectionStart:null;
   const small=x=>` <span class="muted">· ${x}</span>`;
@@ -1923,7 +2048,10 @@ function renderLobby(){
     <div class="card">
       <div class="eyebrow" style="margin-bottom:8px">${t('lb.invite')}</div>
       <div class="code">${esc(V.code.toUpperCase())}</div>
-      <p class="muted" style="font-size:13px">${t('lb.send')}${inClaude()?t('lb.claude'):t('lb.keepOpen')}</p>
+      <p class="muted" style="font-size:13px">${t('lb.send')}${t('lb.lateJoin')}${inClaude()?t('lb.claude'):t('lb.keepOpen')}</p>
+      ${isHost?`<div class="opt" style="flex-direction:column;align-items:stretch;gap:8px;margin:4px 0 6px"><b>${t('pin.set')}</b><span>${t('pin.setHelp')}</span>
+        <div class="invite"><input class="field" id="pinSet" inputmode="numeric" pattern="[0-9]*" maxlength="6" dir="ltr" placeholder="1234" value="${esc(hostPin()||'')}" aria-label="${esc(t('pin.set'))}" style="max-width:140px;font-family:var(--f-display);letter-spacing:.3em"><button class="btn sm" id="pinSave">${t('pin.save')}</button>${V.pinHash?`<button class="btn sm ghost" id="pinClear">${t('pin.remove')}</button>`:''}</div>
+        <span class="muted" style="font-size:12px">${V.pinHash?esc(t('pin.on',{c:hostPin()||'••••'})):t('pin.off')}</span></div>`:(V.pinHash?`<p class="muted" style="font-size:12.5px">${t('pin.onOther')}</p>`:'')}
       <div class="invite"><input class="field" id="invLink" readonly dir="ltr" value="${esc(link)}" aria-label="${t('lb.invite')}"><button class="btn sm metal" id="copyLink">${t('btn.copy')}</button></div>
       <div class="sec" style="margin-top:18px">${t('lb.atTable',{n:V.players.length})}</div>
       <div class="roster">${V.players.length?V.players.map((p,k)=>`<div class="rrow">${coinHTML(p.token)}<div class="sp"><div class="n">${p.human&&on?`<span class="dotst ${on.has(p.cid)?'on':''}"></span>`:''}${esc(p.name)}${p.cid===myCid?small(t('lbl.you')):''}${p.cid===V.hostCid?small(t('lbl.host')):''}</div><div class="muted" style="font-size:12px">${esc(tokN(p.token))}${p.human?'':' · '+t('lbl.computer')}</div></div>${isHost&&p.cid!==myCid?`<button class="btn ghost sm" data-kick="${k}">${t('btn.remove')}</button>`:''}</div>`).join(''):`<div class="muted">${t('lb.nobody')}</div>`}</div>
@@ -1931,11 +2059,12 @@ function renderLobby(){
     </div>
     <div class="card">
       <div class="eyebrow" style="margin-bottom:8px">${mine?t('lb.yourSeat'):t('lb.takeSeat')}</div>
+      <p class="muted" style="font-size:12.5px;margin:0 0 10px">${mine?t('lb.autoNote'):V.players.length>=8?t('lb.full'):t('lb.joining')}</p>
       <label class="muted" for="lbName" style="font-size:12.5px">${t('lb.name')}</label>
       <input class="field" id="lbName" maxlength="16" placeholder="${esc(t('lb.namePh'))}" value="${esc(lobbyDraft.name)}" style="width:100%;box-sizing:border-box;margin:6px 0 14px">
       <div class="muted" style="font-size:12.5px;margin-bottom:8px">${t('lb.token')}</div>
       <div class="tokgrid">${TOKENS.map((tk,k)=>{const taken=V.players.find(p=>p.token===k&&p.cid!==myCid); return `<button class="tok" data-tok="${k}" aria-pressed="${lobbyDraft.token===k}" ${taken?'disabled':''}>${coinHTML(k)}${taken?`<span class="taken">${esc(taken.name.slice(0,8))}</span>`:''}<span>${esc(tokN(k))}</span></button>`;}).join('')}</div>
-      <div class="ctas" style="margin-top:16px"><button class="btn ${mine?'':'red'}" id="takeSeat" ${V.players.length>=8&&!mine?'disabled':''}>${mine?t('btn.update'):t('btn.sit')}</button>${mine?`<button class="btn ghost" id="leaveSeat">${t('btn.leaveTable')}</button>`:''}</div>
+      <div class="ctas" style="margin-top:16px"><button class="btn ${mine?'':'red'}" id="takeSeat" ${V.players.length>=8&&!mine?'disabled':''}>${mine?t('btn.save'):t('btn.sit')}</button>${mine&&!isHost?`<button class="btn ghost" id="leaveSeat">${t('btn.leaveTable')}</button>`:''}</div>
       ${isHost?`<div class="sec">${t('sec.rules')}</div><div class="opts">${optsHTML(V.settings,'lb')}</div>
         <div class="ctas" style="margin-top:16px"><button class="btn red" id="startOnline" ${V.players.length<2?'disabled':''}>${t('btn.start')}</button><span class="muted" style="font-size:12.5px">${V.players.length<2?t('lb.need2'):t('lb.ready',{n:V.players.length})}</span></div>`:`<p class="muted" style="margin-top:18px">${hostOnline()?t('lb.hostStarts'):t('lb.waitHost')}</p>`}
     </div>
@@ -1945,8 +2074,15 @@ function renderLobby(){
   el.querySelector('[data-home]').onclick=goHome;
   $('copyLink').onclick=()=>{const inp=$('invLink'); const done=()=>toast(t('toast.copied')); try{navigator.clipboard.writeText(link).then(done,()=>{inp.select();toast(t('toast.ctrlC'));});}catch(e){inp.select();}};
   $('lbName').oninput=e=>{lobbyDraft.name=e.target.value;};
-  el.querySelectorAll('[data-tok]').forEach(b=>b.onclick=()=>{lobbyDraft.token=+b.dataset.tok; el.querySelectorAll('[data-tok]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
-  $('takeSeat').onclick=()=>{const n=(lobbyDraft.name||'').trim(); if(!n){toast(t('toast.name')); $('lbName').focus(); return;} lobbyAct({t:'join',name:n,token:lobbyDraft.token}); toast(MODE==='host'?t('toast.saved'):t('toast.sitting'));};
+  const saveSeat=quiet=>{const n=(lobbyDraft.name||'').trim(); if(!n){toast(t('toast.name')); $('lbName').focus(); return;} saveName(n); lobbyAct({t:'join',name:n,token:lobbyDraft.token}); if(!quiet) toast(mine?t('toast.saved'):t('toast.sitting'));};
+  el.querySelectorAll('[data-tok]').forEach(b=>b.onclick=()=>{lobbyDraft.token=+b.dataset.tok; el.querySelectorAll('[data-tok]').forEach(x=>x.setAttribute('aria-pressed',x===b)); if(mine) saveSeat(true);});
+  $('lbName').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault(); saveSeat();}};
+  $('lbName').onchange=()=>{if(mine) saveSeat(true);};
+  $('takeSeat').onclick=()=>saveSeat();
+  if(isHost){
+    $('pinSave').onclick=()=>{const v=($('pinSet').value||'').replace(/\D/g,''); if(v.length<4||v.length>6){toast(t('pin.bad')); return;} lsSet('moropoly.pin.'+G.code,v); G.pinHash=pinHash(G.code,v); commit(); toast(t('pin.on',{c:v}));};
+    const pc=$('pinClear'); if(pc) pc.onclick=()=>{try{localStorage.removeItem('moropoly.pin.'+G.code);}catch(e){} G.pinHash=null; commit();};
+  }
   const ls=$('leaveSeat'); if(ls) ls.onclick=()=>lobbyAct({t:'leave'});
   if(isHost){
     el.querySelectorAll('[data-kick]').forEach(b=>b.onclick=()=>{G.players.splice(+b.dataset.kick,1); commit();});
@@ -1959,6 +2095,7 @@ function startOnline(){
   if(!G||G.status!=='lobby'||G.players.length<2) return;
   const seats=G.players.map(p=>({cid:p.cid,name:p.name,token:p.token,human:p.human}));
   const g=freshGame(seats,G.settings,{mode:'online',code:G.code,hostCid:G.hostCid,ack:G.ack});
+  g.pinHash=G.pinHash||null; g.denied=G.denied||{};
   G=g; commit();
 }
 function optsHTML(s,pfx){
@@ -2211,6 +2348,7 @@ $('startLocal').onclick=()=>startLocal(seats.filter(s=>s.on),localOpts);
 $('demoLocal').onclick=()=>{const o=Object.assign({},localOpts,{fast:true}); startLocal(seats.map((s,i)=>({name:s.name,token:s.token,human:false})),o);};
 $('resumeLocal').onclick=()=>{const sv=lsGet('moropoly.local.v2'); if(sv){teardownNet(); MODE='local'; G=sv; V=null; commit();}};
 $('leaveBtn').onclick=goHome;
+$('mySeatBtn').onclick=()=>openSeat();
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-tab]'); if(b) setTab(b.dataset.tab);});
 addEventListener('hashchange',()=>{const h=(location.hash||'').replace('#','').toLowerCase(); if(/^[a-z0-9]{4,8}$/.test(h)&&h!==NET.code) joinGame(h);});
 applyLang(); drawMap(); homeArt(); flagAnim(); initDock(); initPWA();
