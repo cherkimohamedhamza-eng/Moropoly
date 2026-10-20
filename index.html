@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-D/ojXCkYAP1AIDw3aqS8a/VkgFT8x8YwQbXO3qvgr20='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' wss://broker.emqx.io:8084 wss://broker.hivemq.com:8884; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-oBF/Uz7+lT7MK8kYPMw1dmMJ+uar5DLtuymy79Ql49E='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' wss://broker.emqx.io:8084 wss://broker.hivemq.com:8884; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Moropoly: the Moroccan property game for 2 to 8 players.">
@@ -1320,7 +1320,9 @@ function ensureCid(){
   if(!c){c='c'+rid(12); try{localStorage.setItem('moropoly.cid',c);}catch(e){}}
   myCid=c; return c;
 }
-function inviteLink(code){return inClaude()?`${ARTIFACT_URL}#${code}`:`${location.origin}${location.pathname}#${code}`;}
+const SITE_URL='https://moropoly.win/';
+// invite links always point at moropoly.win (never at the old GitHub address), except when testing on this computer
+function inviteLink(code){if(inClaude()) return `${ARTIFACT_URL}#${code}`; const local=/^(localhost|127\.0\.0\.1)$/.test(location.hostname); return `${local?location.origin+location.pathname:SITE_URL}#${code}`;}
 
 /* ---------- transport 1: inside Claude (db + room capabilities) ---------- */
 async function claudeCaps(){
