@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-D/ojXCkYAP1AIDw3aqS8a/VkgFT8x8YwQbXO3qvgr20='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' wss://broker.emqx.io:8084 wss://broker.hivemq.com:8884; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Moropoly: the Moroccan property game for 2 to 8 players.">
 <meta name="theme-color" content="#0b0d10">
@@ -17,9 +19,7 @@
 <meta property="og:image" content="icons/icon-512.png">
 <title>Moropoly</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Noto+Sans+Tifinagh&display=swap">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
 <style>
 /* Layout: a graphite room lit like brushed steel. Flag red and flag green are the only colours of intent; silver carries structure (frames, rings, borders). Board = silver frame, white-steel tiles, deep-green centre. */
 :root{
@@ -367,7 +367,7 @@ h1,h2,h3{text-wrap:balance}
 .dk-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .dk-row input[type=range]{flex:1;accent-color:var(--red)}
 .dk-tracks{display:flex;flex-direction:column;gap:6px}
-.dk-track{display:flex;gap:10px;align-items:center;text-align:start;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.dk-track{width:100%;color:inherit;font:inherit;cursor:pointer;display:flex;gap:10px;align-items:center;text-align:start;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
 .dk-track[aria-pressed="true"]{border-color:var(--green-hi);box-shadow:inset 0 0 0 1px var(--green-hi)}
 .dk-track .ar{font-family:var(--f-ar);font-weight:700;font-size:15px;min-width:74px;color:var(--silver-hi)}
 .dk-track small{display:block;color:var(--dim);font-size:11.5px}
@@ -891,12 +891,13 @@ S('home.eyebrow','لعبة العقارات المغربية · The Moroccan pro
 S('home.h1','<span class="s">Buy Morocco,</span><br>from <span class="r">Tangier</span> to <span class="g">Lagouira</span>.','<span class="s">Achetez le Maroc,</span><br>de <span class="r">Tanger</span> à <span class="g">Lagouira</span>.','<span class="s">اشترِ المغرب،</span><br>من <span class="r">طنجة</span> إلى <span class="g">الكويرة</span>.');
 S('home.lead','Host a game, send the invite link, and your friends join from their own screens. Each player picks a name and one of the ten silver tokens, then the dice decide.','Créez une partie, envoyez le lien d’invitation, et vos amis vous rejoignent depuis leur propre écran. Chacun choisit un nom et l’un des dix pions argentés, puis les dés décident.','أنشئ لعبة، وأرسل رابط الدعوة، فينضم أصدقاؤك من شاشاتهم. يختار كل لاعب اسمًا وواحدة من القطع الفضية العشر، ثم يقرر النرد.');
 S('home.host','Host an online game','Créer une partie en ligne','استضف لعبة عبر الإنترنت'); S('home.local','Play on this device','Jouer sur cet appareil','العب على هذا الجهاز'); S('home.install','Install the app','Installer l’application','ثبّت التطبيق');
-S('home.code','Game code (6 characters)','Code de la partie (6 caractères)','رمز اللعبة (6 رموز)'); S('home.join','Join','Rejoindre','انضم'); S('home.checking','Checking online play…','Vérification du jeu en ligne…','جارٍ التحقق من اللعب عبر الإنترنت…');
+S('home.code','Game code (8 characters)','Code de la partie (8 caractères)','رمز اللعبة (8 رموز)'); S('home.join','Join','Rejoindre','انضم'); S('home.checking','Checking online play…','Vérification du jeu en ligne…','جارٍ التحقق من اللعب عبر الإنترنت…');
 S('home.resume','Resume game {c} · {w}','Reprendre la partie {c} · {w}','تابع اللعبة {c} · {w}'); S('home.lobby','lobby','salon','الانتظار'); S('home.round','round {n}','tour {n}','الجولة {n}');
 S('note.claudeOn','Online play is on. Players join with your invite link and need access to this page on Claude.','Le jeu en ligne est activé. Les joueurs rejoignent avec votre lien et doivent avoir accès à cette page sur Claude.','اللعب عبر الإنترنت مفعّل. ينضم اللاعبون برابط دعوتك، ويحتاجون إلى صلاحية فتح هذه الصفحة على Claude.');
 S('note.claudeHostNo',' You can join games here, but hosting needs edit access.',' Vous pouvez rejoindre des parties ici, mais il faut un accès en modification pour en créer.',' يمكنك الانضمام إلى الألعاب هنا، لكن الاستضافة تتطلب صلاحية التعديل.');
 S('note.claudeOff','Online play is not available in this view. You can still play on this device.','Le jeu en ligne n’est pas disponible ici. Vous pouvez quand même jouer sur cet appareil.','اللعب عبر الإنترنت غير متاح هنا. يمكنك مع ذلك اللعب على هذا الجهاز.');
-S('note.peer','Online play works on any network, including mobile data. Keep the host’s page open while you play.','Le jeu en ligne fonctionne sur tous les réseaux, y compris les données mobiles. Gardez la page de l’hôte ouverte pendant la partie.','اللعب عبر الإنترنت يعمل على أي شبكة، بما فيها بيانات الهاتف. أبقِ صفحة المضيف مفتوحة أثناء اللعب.');S('conn.noRelay','Can’t reach the game server yet. Check your internet connection; this page keeps trying.','Impossible de joindre le serveur de jeu pour l’instant. Vérifiez votre connexion internet ; cette page réessaie.','تعذّر الوصول إلى خادم اللعبة حتى الآن. تحقق من اتصالك بالإنترنت؛ هذه الصفحة تواصل المحاولة.');S('conn.noTable','No open table has the code {c}. The game code is the 6 letters and numbers at the end of the invite link. If the host set a table code, you’ll be asked for it next.','Aucune table ouverte n’a le code {c}. Le code de la partie, ce sont les 6 lettres et chiffres à la fin du lien d’invitation. Si l’hôte a fixé un code de table, il vous sera demandé ensuite.','لا توجد طاولة مفتوحة بالرمز {c}. رمز اللعبة هو الحروف والأرقام الستة في آخر رابط الدعوة. إذا وضع المضيف رمزًا للطاولة فسيُطلب منك بعد ذلك.');S('conn.found','Table found. Joining…','Table trouvée. Connexion…','تم العثور على الطاولة. جارٍ الانضمام…');
+S('note.secure','Online play needs the secure address: open https://moropoly.win','Le jeu en ligne nécessite l’adresse sécurisée : ouvrez https://moropoly.win','اللعب عبر الإنترنت يحتاج العنوان الآمن: افتح https://moropoly.win');
+S('note.peer','Online play works on any network, including mobile data. Keep the host’s page open while you play.','Le jeu en ligne fonctionne sur tous les réseaux, y compris les données mobiles. Gardez la page de l’hôte ouverte pendant la partie.','اللعب عبر الإنترنت يعمل على أي شبكة، بما فيها بيانات الهاتف. أبقِ صفحة المضيف مفتوحة أثناء اللعب.');S('conn.noRelay','Can’t reach the game server yet. Check your internet connection; this page keeps trying.','Impossible de joindre le serveur de jeu pour l’instant. Vérifiez votre connexion internet ; cette page réessaie.','تعذّر الوصول إلى خادم اللعبة حتى الآن. تحقق من اتصالك بالإنترنت؛ هذه الصفحة تواصل المحاولة.');S('conn.noTable','No open table has the code {c}. The game code is the 8 letters and numbers at the end of the invite link. If the host set a table code, you’ll be asked for it next.','Aucune table ouverte n’a le code {c}. Le code de la partie, ce sont les 8 lettres et chiffres à la fin du lien d’invitation. Si l’hôte a fixé un code de table, il vous sera demandé ensuite.','لا توجد طاولة مفتوحة بالرمز {c}. رمز اللعبة هو الحروف والأرقام الثمانية في آخر رابط الدعوة. إذا وضع المضيف رمزًا للطاولة فسيُطلب منك بعد ذلك.');S('conn.found','Table found. Joining…','Table trouvée. Connexion…','تم العثور على الطاولة. جارٍ الانضمام…');
 S('feat.dlala','DLALA','DLALA','المزاد'); S('feat.dlalaP','Nobody buys a property? The souk auctioneer sells it to the highest bidder.','Personne n’achète une propriété ? Le crieur du souk la vend au plus offrant.','لم يشترِ أحد العقار؟ دلّال السوق يبيعه لمن يدفع أكثر.');
 S('feat.daret','DARET','DARET','دارت'); S('feat.daretP','Taxes and fines pool into the Daret. Stop at the Qahwa and take it all.','Taxes et amendes alimentent la Daret. Arrêtez-vous à la Qahwa et raflez tout.','الضرائب والغرامات تتجمع في الدارت. توقّف في القهوة وخذها كلها.');
 S('feat.cards','MEKTOUB & BARAKA','MEKTOUB & BARAKA','مكتوب وبركة'); S('feat.cardsP','Grand taxis, radars, the Eid sheep, Friday couscous and grandma’s baraka.','Grands taxis, radars, mouton de l’Aïd, couscous du vendredi et baraka de grand-mère.','الطاكسي الكبير، الرادار، حولي العيد، كسكس الجمعة وبركة الجدة.');
@@ -909,7 +910,7 @@ S('err.lib','Could not load the connection library. Check your internet connecti
 S('err.inUse','That game is already open in another tab or browser.','Cette partie est déjà ouverte dans un autre onglet ou navigateur.','هذه اللعبة مفتوحة في نافذة أو متصفح آخر.');
 S('err.browser','This browser cannot make direct connections. Try Chrome, Edge, Firefox or Safari.','Ce navigateur ne peut pas établir de connexion directe. Essayez Chrome, Edge, Firefox ou Safari.','هذا المتصفح لا يدعم الاتصال المباشر. جرّب Chrome أو Edge أو Firefox أو Safari.');
 S('err.conn','Could not connect. Check your internet connection and try again.','Connexion impossible. Vérifiez votre connexion internet et réessayez.','تعذّر الاتصال. تحقق من اتصالك بالإنترنت وحاول مجددًا.');
-S('toast.noHost','Hosting is not available here.','Impossible de créer une partie ici.','الاستضافة غير متاحة هنا.'); S('toast.code','Game codes are 6 letters and numbers.','Les codes de partie font 6 lettres et chiffres.','رمز اللعبة من 6 حروف وأرقام.');
+S('toast.noHost','Hosting is not available here.','Impossible de créer une partie ici.','الاستضافة غير متاحة هنا.'); S('toast.code','Game codes are 8 letters and numbers, at the end of the invite link.','Les codes de partie font 8 lettres et chiffres, à la fin du lien d’invitation.','رمز اللعبة 8 حروف وأرقام، في آخر رابط الدعوة.');
 S('toast.noOnline','Online play is not available in this view.','Le jeu en ligne n’est pas disponible ici.','اللعب عبر الإنترنت غير متاح هنا.'); S('toast.noGame','No game found with code {c}.','Aucune partie trouvée avec le code {c}.','لا توجد لعبة بالرمز {c}.');
 S('conn.opening','Opening your table…','Ouverture de votre table…','جارٍ فتح طاولتك…'); S('conn.reopen','Reopening your table…','Réouverture de votre table…','جارٍ إعادة فتح طاولتك…'); S('conn.connecting','Connecting to the host…','Connexion à l’hôte…','جارٍ الاتصال بالمضيف…');
 S('conn.hint','The host needs to have the game open. This page keeps trying on its own.','L’hôte doit avoir la partie ouverte. Cette page réessaie toute seule.','يجب أن تكون اللعبة مفتوحة عند المضيف. هذه الصفحة تواصل المحاولة تلقائيًا.');
@@ -924,7 +925,10 @@ S('pwa.ios','<b>iPhone or iPad (Safari):</b> tap the Share button, then <b>Add t
 S('pwa.android','<b>Android (Chrome):</b> open the ⋮ menu, then <b>Install app</b> or <b>Add to Home screen</b>.','<b>Android (Chrome) :</b> ouvrez le menu ⋮, puis <b>Installer l’application</b> ou <b>Ajouter à l’écran d’accueil</b>.','<b>أندرويد (Chrome):</b> افتح القائمة ⋮، ثم <b>تثبيت التطبيق</b> أو <b>إضافة إلى الشاشة الرئيسية</b>.');
 S('pwa.note','It opens full screen like an app, and invite links still work.','Il s’ouvre en plein écran comme une application, et les liens d’invitation fonctionnent toujours.','يفتح بملء الشاشة مثل التطبيق، وتبقى روابط الدعوة تعمل.');
 /* dock */
-S('dk.music','Music','Musique','الموسيقى'); S('dk.loop','Plays on a loop','En boucle','تُعاد باستمرار'); S('dk.vol','Volume','Volume','الصوت'); S('dk.sfx','Sound effects','Effets sonores','المؤثرات الصوتية');
+S('dk.music','Music','Musique','الموسيقى'); S('dk.pick','Choose the music','Choisir la musique','اختر الموسيقى');
+S('trk.oud','Oud Nights','Nuits d’oud','ليالي العود'); S('trk.oud.d','Calm oud under the stars','Oud paisible sous les étoiles','عود هادئ تحت النجوم');
+S('trk.guitar','Andalusian Sunset','Coucher de soleil andalou','غروب أندلسي'); S('trk.guitar.d','Slow guitar, Tangier evenings','Guitare lente, soirées de Tanger','قيثارة هادئة، أمسيات طنجة');
+S('trk.chaabi','Chaabi Wedding','Mariage chaâbi','عرس شعبي'); S('trk.chaabi.d','Lively chaabi, everyone dances','Chaâbi entraînant, tout le monde danse','شعبي حماسي، الكل يرقص'); S('dk.loop','Plays on a loop','En boucle','تُعاد باستمرار'); S('dk.vol','Volume','Volume','الصوت'); S('dk.sfx','Sound effects','Effets sonores','المؤثرات الصوتية');
 S('dk.m','Press M to turn the music on or off.','Appuyez sur M pour activer ou couper la musique.','اضغط M لتشغيل الموسيقى أو إيقافها.'); S('toast.musicOn','Music on','Musique activée','الموسيقى تعمل'); S('toast.musicOff','Music off','Musique coupée','الموسيقى متوقفة');
 S('dk.aria','Open music controls','Ouvrir les réglages de la musique','افتح إعدادات الموسيقى'); S('dk.ariaOn','Music playing. Open music controls','Musique en cours. Ouvrir les réglages','الموسيقى تعمل. افتح الإعدادات');
 S('lang.aria','Language','Langue','اللغة');
@@ -1379,66 +1383,68 @@ function ClaudeT(){
   return t;
 }
 
-/* ---------- transport 2: anywhere else (direct browser-to-browser via PeerJS) ---------- */
-function loadPeerLib(){
-  if(window.Peer) return Promise.resolve(true);
-  const tryLoad=src=>new Promise(res=>{const s=document.createElement('script'); s.src=src; s.onload=()=>res(!!window.Peer); s.onerror=()=>res(false); document.head.appendChild(s);});
-  return tryLoad('assets/peerjs.min.js').then(ok=>ok||tryLoad('https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'));
-}
-const PEER_PREFIX='moropoly-hcmh-';
-function PeerT(){
-  const t={kind:'peer',peer:null,conns:new Map(),hostConn:null,alive:false,set:new Set(),code:null,isHost:false,retry:null,stopped:false,tries:0};
-  t.ready=()=>true; t.canHost=()=>true;
-  t.load=async code=>lsGet('moropoly.host.'+code);
-  t.listMine=async()=>{const out=[]; try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i); if(k&&k.startsWith('moropoly.host.')){const g=lsGet(k); if(g) out.push(g);}}}catch(e){} return out;};
-  const makePeer=id=>new Promise((res,rej)=>{const p=id?new Peer(id,{debug:0}):new Peer({debug:0}); const to=setTimeout(()=>{rej({type:'timeout'}); try{p.destroy();}catch(e){}},15000); p.on('open',()=>{clearTimeout(to); res(p);}); p.on('error',e=>{clearTimeout(to); rej(e);});});
-  t.host=async(code,onIntent)=>{
-    if(!await loadPeerLib()) throw {type:'lib'};
-    t.isHost=true; t.code=code;
-    for(let k=0;k<6&&!t.peer;k++){try{t.peer=await makePeer(PEER_PREFIX+code);}catch(e){if(e&&e.type==='unavailable-id'){await sleep(2500); continue;} throw e;}}
-    if(!t.peer) throw {type:'unavailable-id'};
-    t.peer.on('connection',c=>{
-      c.on('open',()=>{t.conns.set(c.peer,{c,cid:null}); if(G) try{c.send({t:'state',G:clone(G)});}catch(e){}});
-      c.on('data',d=>{const e=t.conns.get(c.peer); if(!d||!e) return; if(d.cid) e.cid=String(d.cid).slice(0,40); if(d.t==='intent') onIntent(e.cid,d.q); if(d.t==='hello') t.broadcastOnline();});
-      c.on('close',()=>{t.conns.delete(c.peer); t.broadcastOnline();});
-      c.on('error',()=>{});
-    });
-    t.peer.on('disconnected',()=>{if(!t.stopped) setTimeout(()=>{try{t.peer.reconnect();}catch(e){}},1500);});
-    t.peer.on('error',()=>{});
-    t.set=new Set([myCid]);
-  };
-  t.broadcastOnline=()=>{t.set=new Set([myCid,...[...t.conns.values()].map(e=>e.cid).filter(Boolean)]); const m={t:'online',cids:[...t.set]}; for(const {c} of t.conns.values()) if(c.open) try{c.send(m);}catch(e){} renderPresence();};
-  t.push=g=>{lsSet('moropoly.host.'+t.code,g); const m={t:'state',G:clone(g)}; for(const {c} of t.conns.values()) if(c.open) try{c.send(m);}catch(e){}};
-  t.join=async(code,onState)=>{
-    if(!await loadPeerLib()) throw {type:'lib'};
-    t.code=code; t.onState=onState;
-    t.peer=await makePeer(null);
-    t.peer.on('disconnected',()=>{if(!t.stopped) setTimeout(()=>{try{t.peer.reconnect();}catch(e){}},1500);});
-    t.peer.on('error',e=>{if(e&&(e.type==='peer-unavailable'||e.type==='network')){t.alive=false; renderPresence(); t.schedule();}});
-    t.connect();
-  };
-  t.connect=()=>{
-    if(t.stopped||!t.peer||t.peer.destroyed) return; clearTimeout(t.retry); t.tries++;
-    const c=t.peer.connect(PEER_PREFIX+t.code,{reliable:true}); let opened=false;
-    const to=setTimeout(()=>{if(!opened){try{c.close();}catch(e){} t.alive=false; renderPresence(); t.schedule();}},10000);
-    c.on('open',()=>{opened=true; clearTimeout(to); t.hostConn=c; t.alive=true; t.tries=0; c.send({t:'hello',cid:myCid}); if(NET.myQ.length) c.send({t:'intent',cid:myCid,q:NET.myQ}); renderPresence();});
-    c.on('data',d=>{if(!d) return; if(d.t==='state'&&d.G) t.onState(d.G); if(d.t==='online'&&Array.isArray(d.cids)){t.set=new Set(d.cids); renderPresence();}});
-    c.on('close',()=>{if(t.hostConn===c){t.hostConn=null; t.alive=false; renderPresence(); t.schedule();}});
-    c.on('error',()=>{});
-  };
-  t.schedule=()=>{if(t.stopped) return; clearTimeout(t.retry); t.retry=setTimeout(t.connect,Math.min(8000,2500+t.tries*800));};
-  t.send=q=>{if(t.hostConn&&t.hostConn.open) try{t.hostConn.send({t:'intent',cid:myCid,q});}catch(e){}};
-  t.onlineCids=()=>t.set;
-  t.hostOnline=()=>t.isHost||t.alive;
-  t.leave=()=>{t.stopped=true; clearTimeout(t.retry); try{t.peer&&t.peer.destroy();}catch(e){} t.conns=new Map();};
-  return t;
-}
-/* ---------- transport 3: anywhere else (public MQTT relay over secure WebSocket) ----------
+/* ---------- transport 2: anywhere else (public MQTT relay over secure WebSocket) ----------
    Every player keeps one connection to each relay below; the host's state is published as a
    retained message, so someone who opens the link gets the table straight away. Works on any
-   network (mobile data, hotel wifi, school networks) because nobody connects to anybody directly. */
-const RELAYS=(()=>{try{const o=new URLSearchParams(location.search).get('relay'); if(o) return o.split(',');}catch(e){} return ['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt'];})();
-const RELAY_ROOT='moropoly-hcmh/v1/';
+   network (mobile data, hotel wifi, school networks) because nobody connects to anybody directly.
+   Security: the relays only ever see encrypted bytes on unguessable topic names. The key comes
+   from the game code, the host signs every board it sends (and the game code itself is derived
+   from the host's public key, so nobody else can pretend to be the host), each player signs their
+   own moves, and a table code is encrypted so that only the host can read it. */
+const RELAYS=(()=>{try{if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){const o=new URLSearchParams(location.search).get('relay'); if(o) return o.split(',');}}catch(e){} return ['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt'];})();
+const RELAY_ROOT='moropoly-hcmh/v2/';
+const CODE_ABC='abcdefghjkmnpqrstuvwxyz23456789';
+const SUB=()=>window.crypto&&crypto.subtle;
+const b64=u=>{let s=''; const a=new Uint8Array(u); for(let i=0;i<a.length;i++) s+=String.fromCharCode(a[i]); return btoa(s);};
+const unb64=s=>{const r=atob(s); const a=new Uint8Array(r.length); for(let i=0;i<r.length;i++) a[i]=r.charCodeAt(i); return a;};
+async function sha(str){return new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str)));}
+const hex=u=>[...u].map(x=>x.toString(16).padStart(2,'0')).join('');
+const ECDSA={name:'ECDSA',namedCurve:'P-256'}, ECDH={name:'ECDH',namedCurve:'P-256'}, SIGN={name:'ECDSA',hash:'SHA-256'};
+const pubXY=j=>({x:j.x,y:j.y});
+const jwkOf=(xy,ops)=>({kty:'EC',crv:'P-256',x:String(xy.x),y:String(xy.y),ext:true,key_ops:ops});
+async function codeFrom(hostKey,nonce){const h=await sha('mp2|code|'+hostKey.x+'|'+hostKey.y+'|'+nonce); let s=''; for(let i=0;i<8;i++) s+=CODE_ABC[h[i]%CODE_ABC.length]; return s;}
+async function cidFrom(k){return 'k'+hex(await sha('mp2|cid|'+k.x+'|'+k.y)).slice(0,18);}
+/* this device's keys: kept in IndexedDB so the private halves can never be read back, with a localStorage fallback */
+let KEYS=null;
+function idb(){return new Promise((res,rej)=>{let r; try{r=indexedDB.open('moropoly-keys',1);}catch(e){rej(e); return;} r.onupgradeneeded=()=>r.result.createObjectStore('k'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);});}
+async function idbGet(db,k){return new Promise((res,rej)=>{const q=db.transaction('k').objectStore('k').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error);});}
+async function idbPut(db,k,v){return new Promise((res,rej)=>{const q=db.transaction('k','readwrite').objectStore('k').put(v,k); q.onsuccess=()=>res(); q.onerror=()=>rej(q.error);});}
+async function deviceKeys(){
+  if(KEYS) return KEYS; if(!SUB()) return null;
+  let rec=null, db=null;
+  try{db=await idb(); rec=await idbGet(db,'v1');}catch(e){db=null;}
+  if(!rec){const ls=lsGet('moropoly.keys.v1'); if(ls&&ls.sp){try{rec={s:{privateKey:await crypto.subtle.importKey('jwk',ls.sp,ECDSA,false,['sign'])},d:{privateKey:await crypto.subtle.importKey('jwk',ls.dp,ECDH,false,['deriveKey'])},sPub:ls.sPub,dPub:ls.dPub};}catch(e){rec=null;}}}
+  if(!rec){
+    const s=await crypto.subtle.generateKey(ECDSA,!db,['sign','verify']), d=await crypto.subtle.generateKey(ECDH,!db,['deriveKey']);
+    const sPub=pubXY(await crypto.subtle.exportKey('jwk',s.publicKey)), dPub=pubXY(await crypto.subtle.exportKey('jwk',d.publicKey));
+    rec={s:{privateKey:s.privateKey},d:{privateKey:d.privateKey},sPub,dPub};
+    if(db){try{await idbPut(db,'v1',rec);}catch(e){db=null;}}
+    if(!db){try{lsSet('moropoly.keys.v1',{sp:await crypto.subtle.exportKey('jwk',s.privateKey),dp:await crypto.subtle.exportKey('jwk',d.privateKey),sPub,dPub});}catch(e){}}
+  }
+  KEYS={sign:rec.s.privateKey,dh:rec.d.privateKey,sPub:rec.sPub,dPub:rec.dPub,cid:await cidFrom(rec.sPub)};
+  return KEYS;
+}
+const keyCache=new Map();
+async function verifyKey(xy){const k=xy.x+'.'+xy.y; if(!keyCache.has(k)) keyCache.set(k,await crypto.subtle.importKey('jwk',jwkOf(xy,['verify']),ECDSA,false,['verify'])); return keyCache.get(k);}
+async function signStr(m){return b64(await crypto.subtle.sign(SIGN,KEYS.sign,new TextEncoder().encode(m)));}
+async function verifyStr(xy,m,sig){try{return await crypto.subtle.verify(SIGN,await verifyKey(xy),unb64(sig),new TextEncoder().encode(m));}catch(e){return false;}}
+async function gameKey(code){
+  const base=await crypto.subtle.importKey('raw',new TextEncoder().encode('mp2|'+code),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',hash:'SHA-256',salt:new TextEncoder().encode('moropoly-relay-v2'),iterations:150000},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+async function seal(key,obj){const iv=crypto.getRandomValues(new Uint8Array(12)); const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(JSON.stringify(obj)))); const o=new Uint8Array(12+ct.length); o.set(iv); o.set(ct,12); return o;}
+async function open_(key,b){if(!b||b.length<29) return null; try{const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b.slice(0,12)},key,b.slice(12)); return JSON.parse(new TextDecoder().decode(pt));}catch(e){return null;}}
+/* the table code travels encrypted to the host's own key, so other people holding the link cannot read it */
+async function pinFor(hostDh,pin){
+  const e=await crypto.subtle.generateKey(ECDH,true,['deriveKey']);
+  const k=await crypto.subtle.deriveKey({name:'ECDH',public:await crypto.subtle.importKey('jwk',jwkOf(hostDh,[]),ECDH,false,[])},e.privateKey,{name:'AES-GCM',length:256},false,['encrypt']);
+  const iv=crypto.getRandomValues(new Uint8Array(12)); const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(String(pin)));
+  return {e:pubXY(await crypto.subtle.exportKey('jwk',e.publicKey)),iv:b64(iv),c:b64(ct)};
+}
+async function pinOpen(pe){
+  try{const k=await crypto.subtle.deriveKey({name:'ECDH',public:await crypto.subtle.importKey('jwk',jwkOf(pe.e,[]),ECDH,false,[])},KEYS.dh,{name:'AES-GCM',length:256},false,['decrypt']);
+    return new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(pe.iv)},k,unb64(pe.c)));}catch(e){return null;}
+}
 const U8=new TextEncoder(), D8=new TextDecoder();
 function mqStr(s){const b=typeof s==='string'?U8.encode(s):s; const o=new Uint8Array(2+b.length); o[0]=b.length>>8; o[1]=b.length&255; o.set(b,2); return o;}
 function mqPkt(h,...parts){let n=0; parts.forEach(p=>n+=p.length); const len=[]; let x=n; do{let d=x%128; x=Math.floor(x/128); if(x>0) d|=128; len.push(d);}while(x>0);
@@ -1492,58 +1498,102 @@ function MqConn(url,opt){
   return c;
 }
 function RelayT(){
-  const t={kind:'relay',conns:[],code:null,isHost:false,stopped:false,on:new Map(),hostCid:null,lastV:0,v:0,gotState:false,pendingG:null,pushT:null,lastPush:0,startedAt:0,q:null};
-  t.ready=()=>typeof WebSocket==='function'; t.canHost=t.ready;
+  const t={kind:'relay',conns:[],code:null,isHost:false,stopped:false,on:new Map(),onT:new Map(),hostCid:null,lastV:0,v:0,gotState:false,pendingG:null,pushT:null,lastPush:0,startedAt:0,q:null,key:null,base:null,chain:Promise.resolve(),hb:null,hostDh:null,sealed:null};
+  t.ready=()=>typeof WebSocket==='function'&&!!SUB(); t.canHost=t.ready;
   t.load=async code=>lsGet('moropoly.host.'+code);
-  t.listMine=async()=>{const out=[]; try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i); if(k&&k.startsWith('moropoly.host.')){const g=lsGet(k); if(g) out.push(g);}}}catch(e){} return out;};
-  const T=s=>RELAY_ROOT+t.code+'/'+s;
+  t.listMine=async()=>{const out=[]; try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i); if(k&&k.startsWith('moropoly.host.')){const g=lsGet(k); if(g&&g.hostKey) out.push(g);}}}catch(e){} return out;};
+  t.makeCode=async()=>{const K=await deviceKeys(); const nonce=rid(10); return {code:await codeFrom(K.sPub,nonce),nonce,hostKey:K.sPub,hostDh:K.dPub};};
+  const T=s=>t.base+s;
+  const queue=f=>{t.chain=t.chain.then(f).catch(()=>{}); return t.chain;};
   const pubAll=(topic,payload,retain)=>{let ok=false; t.conns.forEach(c=>{if(c.publish(topic,payload,retain)) ok=true;}); return ok;};
   t.anyUp=()=>t.conns.some(c=>c.up);
-  const announce=c=>{c.publish(T('on/'+myCid),'1',true);};
+  const tag=async cid=>hex(await sha('mp2|tag|'+t.code+'|'+cid)).slice(0,16);
+  let myOn=null, myReq=null;
+  const prep=async code=>{
+    t.code=code; const K=await deviceKeys(); if(!K) throw {type:'crypto'};
+    t.key=await gameKey(code); t.base=RELAY_ROOT+hex(await sha('mp2|topic|'+code)).slice(0,32)+'/';
+    myOn='on/'+await tag(myCid); myReq='req/'+await tag(myCid);
+    t.myOnMsg=await seal(t.key,{cid:myCid});
+  };
   const start=(subs,onMsg,onUp)=>{
     t.startedAt=Date.now();
     t.conns=RELAYS.map(u=>MqConn(u,{
-      will:()=>({topic:T('on/'+myCid),payload:''}),
-      onUp:c=>{subs.forEach(s=>c.subscribe(T(s))); announce(c); onUp&&onUp(c); renderPresence(); t.onStatus&&t.onStatus();},
+      will:()=>({topic:T(myOn),payload:''}),
+      onUp:c=>{subs.forEach(s=>c.subscribe(T(s))); c.publish(T(myOn),t.myOnMsg,true); onUp&&onUp(c); renderPresence(); t.onStatus&&t.onStatus();},
       onDown:()=>{renderPresence(); t.onStatus&&t.onStatus();},
       onMsg:(topic,b)=>{
-        const rest=topic.slice((RELAY_ROOT+t.code+'/').length);
-        if(rest.startsWith('on/')){const cid=rest.slice(3); const prev=t.on.has(cid); if(b.length) t.on.set(cid,(t.on.get(cid)||0)|1); else t.on.delete(cid); if(prev!==t.on.has(cid)) renderPresence(); return;}
-        let d=null; try{d=JSON.parse(D8.decode(b));}catch(e){return;}
-        onMsg(rest,d);
+        if(!topic.startsWith(t.base)) return; const rest=topic.slice(t.base.length); const bytes=b.slice();
+        if(rest.startsWith('on/')){
+          if(!bytes.length){const cid=t.onT.get(rest); t.onT.delete(rest); if(cid&&![...t.onT.values()].includes(cid)){t.on.delete(cid); renderPresence();} return;}
+          open_(t.key,bytes).then(d=>{if(!d||typeof d.cid!=='string') return; const cid=d.cid.slice(0,40); tag(cid).then(x=>{if('on/'+x!==rest) return; t.onT.set(rest,cid); if(!t.on.has(cid)){t.on.set(cid,1); renderPresence();}});});
+          return;
+        }
+        if(!bytes.length) return;
+        open_(t.key,bytes).then(d=>{if(d) onMsg(rest,d);});
       }
     }));
     t.wake=()=>{if(document.visibilityState==='visible') t.conns.forEach(c=>c.kick());};
     document.addEventListener('visibilitychange',t.wake); addEventListener('online',t.wake);
   };
   const waitUp=ms=>new Promise((res,rej)=>{const t0=Date.now(); const iv=setInterval(()=>{if(t.anyUp()){clearInterval(iv); res();} else if(t.stopped||Date.now()-t0>ms){clearInterval(iv); rej({type:'relay'});}},100);});
+  /* ----- host ----- */
   t.host=async(code,onIntent)=>{
-    t.isHost=true; t.code=code; t.hostCid=myCid;
-    start(['req/+','on/+'],(rest,d)=>{if(rest.startsWith('req/')&&d&&d.cid&&Array.isArray(d.q)) onIntent(String(d.cid).slice(0,40),d.q);},
-      c=>{if(t.pendingG) c.publish(T('state'),JSON.stringify({v:t.v,G:t.pendingG}),true);});
+    t.isHost=true; t.hostCid=myCid; await prep(code);
+    start(['req/+','on/+'],(rest,d)=>{
+      if(!rest.startsWith('req/')||!d||typeof d.m!=='string'||!d.k||typeof d.s!=='string') return;
+      queue(async()=>{
+        if(!await verifyStr(d.k,d.m,d.s)) return;                 // signed by the key it claims
+        let o; try{o=JSON.parse(d.m);}catch(e){return;}
+        if(!o||typeof o.cid!=='string'||!Array.isArray(o.q)) return;
+        if(o.cid!==await cidFrom(d.k)) return;                     // and that key owns this player id
+        if(rest!=='req/'+await tag(o.cid)) return;
+        for(const it of o.q){const a=it&&it.a; if(a&&a.t==='join'&&a.pinE){a.pin=(await pinOpen(a.pinE))||''; delete a.pinE;}}
+        onIntent(o.cid,o.q);
+      });
+    },c=>{if(t.sealed) c.publish(T('state'),t.sealed,true);});
+    t.hb=setInterval(()=>{if(t.sealed) pubAll(T('state'),t.sealed,true);},15000); // heals a relay that lost or was fed a bad copy
     await waitUp(15000);
   };
-  const flush=()=>{t.pushT=null; if(!t.pendingG) return; t.lastPush=Date.now(); t.v=Math.max(t.v+1,Date.now()); pubAll(T('state'),JSON.stringify({v:t.v,G:t.pendingG}),true);};
+  const flush=()=>{t.pushT=null; if(!t.pendingG) return; t.lastPush=Date.now(); const g=t.pendingG;
+    queue(async()=>{t.v=Math.max(t.v+1,Date.now()); const m=JSON.stringify({v:t.v,G:g}); t.sealed=await seal(t.key,{m,s:await signStr(m)}); pubAll(T('state'),t.sealed,true);
+      if(g.over&&!t.clearT) t.clearT=setTimeout(()=>t.wipe(g),180000);});};
   t.push=g=>{
     lsSet('moropoly.host.'+t.code,g); t.pendingG=clone(g);
     if(t.pushT) return; const wait=Math.max(0,120-(Date.now()-t.lastPush));
     if(wait===0) flush(); else t.pushT=setTimeout(flush,wait);
   };
+  /* when a game is over, remove what is left on the relays */
+  t.wipe=async g=>{const cids=new Set(((g||t.pendingG||{}).players||[]).map(p=>p.cid).filter(Boolean)); for(const cid of cids){const x=await tag(cid); pubAll(T('req/'+x),'',true);} pubAll(T('state'),'',true); t.sealed=null;};
+  /* ----- guest ----- */
   t.join=async(code,onState)=>{
-    t.code=code; t.onState=onState;
+    await prep(code); t.onState=onState;
     start(['state','on/+'],(rest,d)=>{
-      if(rest==='state'&&d&&d.G&&typeof d.v==='number'){
-        if(d.v<=t.lastV) return; t.lastV=d.v; t.gotState=true; t.hostCid=d.G.hostCid||null; t.onStatus&&t.onStatus(); onState(d.G);
-      }
-    },c=>{if(t.q) c.publish(T('req/'+myCid),JSON.stringify({cid:myCid,q:t.q}),true);});
+      if(rest!=='state'||!d||typeof d.m!=='string'||typeof d.s!=='string') return;
+      queue(async()=>{
+        let o; try{o=JSON.parse(d.m);}catch(e){return;}
+        if(!o||typeof o.v!=='number'||!o.G||!o.G.hostKey||typeof o.G.nonce!=='string') return;
+        if(o.v<=t.lastV) return;
+        if(await codeFrom(o.G.hostKey,o.G.nonce)!==t.code) return;   // the game code proves who the host is
+        if(!await verifyStr(o.G.hostKey,d.m,d.s)) return;              // and the host signed this board
+        if(o.v<=t.lastV) return;
+        t.lastV=o.v; t.gotState=true; t.hostCid=o.G.hostCid||null; t.hostDh=o.G.hostDh||null; t.onStatus&&t.onStatus(); onState(o.G);
+      });
+    },c=>{if(t.reqSealed) c.publish(T(myReq),t.reqSealed,true);});
   };
-  t.send=q=>{t.q=q; pubAll(T('req/'+myCid),JSON.stringify({cid:myCid,q}),true);};
+  t.send=q=>{
+    t.q=q; const snap=JSON.parse(JSON.stringify(q));
+    queue(async()=>{
+      for(const it of snap){const a=it&&it.a; if(a&&a.t==='join'&&a.pin){if(!t.hostDh) return; a.pinE=await pinFor(t.hostDh,a.pin); a.pin='';}}
+      const m=JSON.stringify({cid:myCid,q:snap});
+      t.reqSealed=await seal(t.key,{m,k:KEYS.sPub,s:await signStr(m)}); pubAll(T(myReq),t.reqSealed,true);
+    });
+  };
   t.onlineCids=()=>{const s=new Set(t.on.keys()); if(myCid) s.add(myCid); return s;};
   t.hostOnline=()=>t.isHost||(!!t.hostCid&&t.on.has(t.hostCid));
   t.leave=()=>{
-    t.stopped=true; clearTimeout(t.pushT);
-    if(t.code){ if(!t.isHost) pubAll(T('req/'+myCid),'',true); pubAll(T('on/'+myCid),'',true); }
-    setTimeout(()=>t.conns.forEach(c=>c.close()),150);
+    t.stopped=true; clearTimeout(t.pushT); clearInterval(t.hb);
+    if(t.base){ if(!t.isHost&&myReq) pubAll(T(myReq),'',true); if(myOn) pubAll(T(myOn),'',true); if(t.isHost&&t.pendingG&&t.pendingG.over){clearTimeout(t.clearT); t.wipe(t.pendingG);} }
+    setTimeout(()=>t.conns.forEach(c=>c.close()),900);
     if(t.wake){document.removeEventListener('visibilitychange',t.wake); removeEventListener('online',t.wake);}
   };
   return t;
@@ -1553,6 +1603,7 @@ function newTransport(){return inClaude()?ClaudeT():RelayT();}
 
 async function initNet(){
   if(inClaude()) await claudeCaps();
+  else{try{const K=await deviceKeys(); if(K){myCid=K.cid; try{localStorage.setItem('moropoly.cid',myCid);}catch(e){}}}catch(e){}}
   ensureCid();
   const T=newTransport();
   setOnlineNote(T);
@@ -1565,7 +1616,8 @@ function setOnlineNote(T){
   if(T.kind==='claude'){
     if(T.ready()){n.textContent=t('note.claudeOn')+(T.canHost()?'':t('note.claudeHostNo')); $('hostBtn').disabled=!T.canHost();}
     else{n.textContent=t('note.claudeOff'); $('hostBtn').disabled=true;}
-  } else {n.textContent=t('note.peer'); $('hostBtn').disabled=false;}
+  } else if(!T.ready()){n.textContent=t('note.secure'); $('hostBtn').disabled=true;}
+  else {n.textContent=t('note.peer'); $('hostBtn').disabled=false;}
 }
 async function listMyGames(){
   try{
@@ -1598,12 +1650,12 @@ function hostHandle(cid,q){
   if(last!==(G.ack[cid]||0)){G.ack[cid]=last; changed=true;}
   if(changed) commit();
 }
-const pinHash=(code,pin)=>{let h=2166136261>>>0; const x=String(code)+':'+String(pin); for(let i=0;i<x.length;i++){h^=x.charCodeAt(i); h=Math.imul(h,16777619)>>>0;} return h.toString(16);};
+const hostPinOf=code=>{const v=lsGet('moropoly.pin.'+code); return v?String(v):'';};
 function handleIntent(cid,it){
   const a=it.a||{};
   if(a.t==='join'){
     const seated=G.players.some(p=>p.cid===cid);
-    if(G.pinHash&&!seated&&pinHash(G.code,a.pin||'')!==G.pinHash){G.denied=G.denied||{}; G.denied[cid]=(G.denied[cid]||0)+1; return true;}
+    if(G.pinOn&&!seated&&(!hostPinOf(G.code)||String(a.pin||'')!==hostPinOf(G.code))){G.denied=G.denied||{}; G.denied[cid]=(G.denied[cid]||0)+1; return true;}
     if(G.status==='lobby') return lobbyJoin(cid,a);
     if(G.status==='play') return playJoin(G,cid,a);
     return false;
@@ -1677,13 +1729,14 @@ function lobbyAct(a){
 /* ============================================================
    ONLINE: host / join
    ============================================================ */
-const netErr=e=>{const k=e&&e.type; return t(k==='relay'?'conn.noRelay':k==='lib'?'err.lib':k==='unavailable-id'?'err.inUse':k==='browser-incompatible'?'err.browser':'err.conn');};
+const netErr=e=>{const k=e&&e.type; return t(k==='crypto'?'note.secure':k==='relay'?'conn.noRelay':k==='lib'?'err.lib':k==='unavailable-id'?'err.inUse':k==='browser-incompatible'?'err.browser':'err.conn');};
 async function hostGame(){
   ensureCid(); teardownNet();
-  const T=newTransport(); if(!T.canHost()){toast(t('toast.noHost')); return;}
-  const code=rid(6);
+  const T=newTransport(); if(!T.canHost()){toast(t(T.kind==='relay'?'note.secure':'toast.noHost')); return;}
+  let code=rid(6), extra={};
+  if(T.makeCode){try{const r=await T.makeCode(); code=r.code; extra={nonce:r.nonce,hostKey:r.hostKey,hostDh:r.hostDh};}catch(e){toast(t('note.secure')); return;}}
   MODE='host';
-  G={gid:rid(10),status:'lobby',mode:'online',code,hostCid:myCid,players:[],settings:{daret:true,dlala:true,rounds:25,fast:false},seq:0,anims:[],ack:{},log:[],event:'',updated:Date.now()};
+  G={...extra,gid:rid(10),status:'lobby',mode:'online',code,hostCid:myCid,players:[],settings:{daret:true,dlala:true,rounds:25,fast:false},seq:0,anims:[],ack:{},log:[],event:'',updated:Date.now()};
   log(G,'tableSet');
   NET.T=T; NET.code=code;
   showConnecting(code,'conn.opening');
@@ -1770,7 +1823,7 @@ function guestGate(ns){
   if(JOIN.base==null){JOIN.base=d; JOIN.denied=d;}
   if(d>JOIN.denied){JOIN.denied=d; JOIN.pin=null; JOIN.sent=false; JOIN.wrong=true;}
   if(seated||ns.over) return false;
-  if(ns.pinHash&&!JOIN.pin){V=null; showPinGate(ns); return true;}
+  if(ns.pinOn&&!JOIN.pin){V=null; showPinGate(ns); return true;}
   const full=ns.players.filter(p=>!p.bankrupt).length>=8||ns.players.length>=8;
   if(!full&&!JOIN.sent&&(ns.status==='lobby'||ns.status==='play')){
     JOIN.sent=true;
@@ -1780,7 +1833,7 @@ function guestGate(ns){
     lobbyDraft={name,token:tok==null?0:tok};
     sendIntent({a:{t:'join',name,token:tok==null?0:tok,pin:JOIN.pin||'',auto:true}});
   }
-  if(ns.pinHash&&JOIN.pin){V=null; showPinGate(ns,true); return true;}
+  if(ns.pinOn&&JOIN.pin){V=null; showPinGate(ns,true); return true;}
   return false;
 }
 function showPinGate(ns,checking){
@@ -2226,7 +2279,7 @@ function renderLobby(){
       <p class="muted" style="font-size:13px">${t('lb.send')}${t('lb.lateJoin')}${inClaude()?t('lb.claude'):t('lb.keepOpen')}</p>
       ${isHost?`<div class="opt" style="flex-direction:column;align-items:stretch;gap:8px;margin:4px 0 6px"><b>${t('pin.set')}</b><span>${t('pin.setHelp')}</span>
         <div class="invite"><input class="field" id="pinSet" inputmode="numeric" pattern="[0-9]*" maxlength="6" dir="ltr" placeholder="1234" value="${esc(hostPin()||'')}" aria-label="${esc(t('pin.set'))}" style="max-width:140px;font-family:var(--f-display);letter-spacing:.3em"><button class="btn sm" id="pinSave">${t('pin.save')}</button>${V.pinHash?`<button class="btn sm ghost" id="pinClear">${t('pin.remove')}</button>`:''}</div>
-        <span class="muted" style="font-size:12px">${V.pinHash?esc(t('pin.on',{c:hostPin()||'••••'})):t('pin.off')}</span></div>`:(V.pinHash?`<p class="muted" style="font-size:12.5px">${t('pin.onOther')}</p>`:'')}
+        <span class="muted" style="font-size:12px">${V.pinOn?esc(t('pin.on',{c:hostPin()||'••••'})):t('pin.off')}</span></div>`:(V.pinOn?`<p class="muted" style="font-size:12.5px">${t('pin.onOther')}</p>`:'')}
       <div class="invite"><input class="field" id="invLink" readonly dir="ltr" value="${esc(link)}" aria-label="${t('lb.invite')}"><button class="btn sm metal" id="copyLink">${t('btn.copy')}</button></div>
       <div class="sec" style="margin-top:18px">${t('lb.atTable',{n:V.players.length})}</div>
       <div class="roster">${V.players.length?V.players.map((p,k)=>`<div class="rrow">${coinHTML(p.token)}<div class="sp"><div class="n">${p.human&&on?`<span class="dotst ${on.has(p.cid)?'on':''}"></span>`:''}${esc(p.name)}${p.cid===myCid?small(t('lbl.you')):''}${p.cid===V.hostCid?small(t('lbl.host')):''}</div><div class="muted" style="font-size:12px">${esc(tokN(p.token))}${p.human?'':' · '+t('lbl.computer')}</div></div>${isHost&&p.cid!==myCid?`<button class="btn ghost sm" data-kick="${k}">${t('btn.remove')}</button>`:''}</div>`).join(''):`<div class="muted">${t('lb.nobody')}</div>`}</div>
@@ -2255,8 +2308,8 @@ function renderLobby(){
   $('lbName').onchange=()=>{if(mine) saveSeat(true);};
   $('takeSeat').onclick=()=>saveSeat();
   if(isHost){
-    $('pinSave').onclick=()=>{const v=($('pinSet').value||'').replace(/\D/g,''); if(v.length<4||v.length>6){toast(t('pin.bad')); return;} lsSet('moropoly.pin.'+G.code,v); G.pinHash=pinHash(G.code,v); commit(); toast(t('pin.on',{c:v}));};
-    const pc=$('pinClear'); if(pc) pc.onclick=()=>{try{localStorage.removeItem('moropoly.pin.'+G.code);}catch(e){} G.pinHash=null; commit();};
+    $('pinSave').onclick=()=>{const v=($('pinSet').value||'').replace(/\D/g,''); if(v.length<4||v.length>6){toast(t('pin.bad')); return;} lsSet('moropoly.pin.'+G.code,v); G.pinOn=true; delete G.pinHash; commit(); toast(t('pin.on',{c:v}));};
+    const pc=$('pinClear'); if(pc) pc.onclick=()=>{try{localStorage.removeItem('moropoly.pin.'+G.code);}catch(e){} G.pinOn=false; delete G.pinHash; commit();};
   }
   const ls=$('leaveSeat'); if(ls) ls.onclick=()=>lobbyAct({t:'leave'});
   if(isHost){
@@ -2270,7 +2323,7 @@ function startOnline(){
   if(!G||G.status!=='lobby'||G.players.length<2) return;
   const seats=G.players.map(p=>({cid:p.cid,name:p.name,token:p.token,human:p.human}));
   const g=freshGame(seats,G.settings,{mode:'online',code:G.code,hostCid:G.hostCid,ack:G.ack});
-  g.pinHash=G.pinHash||null; g.denied=G.denied||{};
+  g.pinOn=!!G.pinOn; g.denied=G.denied||{}; ['nonce','hostKey','hostDh'].forEach(k=>{if(G[k]) g[k]=G[k];});
   G=g; commit();
 }
 function optsHTML(s,pfx){
@@ -2372,9 +2425,10 @@ function goHome(){
 /* ============================================================
    MUSIC & SOUND (synthesised in the browser, nothing to download)
    ============================================================ */
-const MUSIC={src:'assets/midnight-oud-plucks.mp3',title:'Midnight Oud Plucks',ar:'نغمات العود في منتصف الليل'};
+const TRACKS=[{src:'assets/midnight-oud-plucks.mp3',k:'oud',ic:'🌙'},{src:'assets/andalusian-sunset.mp3',k:'guitar',ic:'🌅'},{src:'assets/chaabi-wedding.mp3',k:'chaabi',ic:'🥁'}];
+const curTrack=()=>TRACKS[(AU.set.track>=0&&AU.set.track<TRACKS.length)?AU.set.track:0];
 const AU={ctx:null,master:null,music:null,sfx:null,rev:null,unlocked:false,noise:null,ks:{},els:[],cur:0,playing:false,xfading:false,loop:null,
-  set:Object.assign({music:true,sfx:true,vol:0.3},lsGet('moropoly.audio.v2')||{})};
+  set:Object.assign({music:true,sfx:true,vol:0.3,track:0},lsGet('moropoly.audio.v2')||{})};
 
 function saveAudio(){lsSet('moropoly.audio.v2',AU.set);}
 function actx(){
@@ -2425,7 +2479,7 @@ const hz=n=>440*Math.pow(2,(n-69)/12); // midi → Hz
 /* --- music: Hamza's track, looped with a soft crossfade --- */
 function musicEl(i){
   if(AU.els[i]) return AU.els[i];
-  const a=new Audio(); a.src=MUSIC.src; a.preload=i===0?'auto':'metadata'; a.setAttribute('playsinline','');
+  const a=new Audio(); a.src=curTrack().src; a.preload=i===0?'auto':'metadata'; a.setAttribute('playsinline','');
   let g=null;
   try{const src=AU.ctx.createMediaElementSource(a); g=AU.ctx.createGain(); g.gain.value=0; src.connect(g); g.connect(AU.music);}catch(e){g=null;}
   a.addEventListener('ended',()=>{if(AU.playing&&!AU.xfading){a.currentTime=0; a.play().catch(()=>{});}});
@@ -2453,6 +2507,14 @@ function startMusic(){
   AU.playing=true; clearInterval(AU.loop); AU.loop=setInterval(checkLoop,250); applyVolumes(); renderDock();
 }
 function stopMusic(){AU.playing=false; AU.xfading=false; clearInterval(AU.loop); AU.els.forEach(e=>{try{e.a.pause();}catch(x){}}); renderDock();}
+function setTrack(i){
+  if(!(i>=0&&i<TRACKS.length)) return;
+  const same=i===AU.set.track&&AU.playing; AU.set.track=i; AU.set.music=true; saveAudio();
+  if(same){renderDock(); return;}
+  AU.playing=false; AU.xfading=false; clearInterval(AU.loop);
+  AU.els.forEach(e=>{try{e.a.pause(); if(e.g) e.g.disconnect(); e.a.removeAttribute('src'); e.a.load();}catch(x){}});
+  AU.els=[]; AU.cur=0; unlockAudio(); applyVolumes(); startMusic(); renderDock();
+}
 function toggleMusic(on){AU.set.music=on==null?!AU.set.music:on; saveAudio(); applyVolumes(); if(AU.set.music) startMusic(); else setTimeout(()=>{if(!AU.set.music) stopMusic();},300); renderDock();}
 function unlockAudio(){if(AU.unlocked) return; AU.unlocked=true; const c=actx(); if(c&&c.state==='suspended') c.resume(); if(AU.set.music) startMusic();}
 ['pointerdown','keydown'].forEach(ev=>addEventListener(ev,unlockAudio,{passive:true}));
@@ -2497,11 +2559,12 @@ function renderDock(){
   $('dockBtn').classList.toggle('on',on); $('dockBtn').setAttribute('aria-label',on?t('dk.ariaOn'):t('dk.aria'));
   const p=$('dockPanel'); if(p.hidden) return;
   p.innerHTML=`<div class="dk-row"><b>${t('dk.music')}</b><button class="sw" role="switch" aria-checked="${AU.set.music}" id="dkMusic" aria-label="${t('dk.music')}"><i></i></button></div>
-    <div class="dk-track" aria-pressed="${on}"><span class="ar" style="min-width:auto">♫</span><span><b dir="ltr">${esc(MUSIC.title)}</b><small>${t('dk.loop')}</small></span></div>
+    <div class="dk-tracks" role="group" aria-label="${t('dk.pick')}">${TRACKS.map((tr,i)=>{const sel=curTrack()===tr; return `<button type="button" class="dk-track" data-trk="${i}" aria-pressed="${sel&&AU.set.music}"><span class="ar" style="min-width:auto">${tr.ic}</span><span><b>${esc(t('trk.'+tr.k))}</b><small>${esc(t('trk.'+tr.k+'.d'))}${sel&&on?' · '+t('dk.loop'):''}</small></span></button>`;}).join('')}</div>
     <label class="dk-row" for="dkVol"><span>${t('dk.vol')}</span><input type="range" id="dkVol" min="0" max="1" step="0.05" value="${AU.set.vol}"><span class="muted" id="dkVolN" style="min-width:34px;text-align:end">${Math.round(AU.set.vol*100)}%</span></label>
     <div class="dk-row"><b>${t('dk.sfx')}</b><button class="sw" role="switch" aria-checked="${AU.set.sfx}" id="dkSfx" aria-label="${t('dk.sfx')}"><i></i></button></div>
     <div class="muted" style="font-size:11.5px">${t('dk.m')}</div>`;
   $('dkMusic').onclick=()=>toggleMusic();
+  p.querySelectorAll('[data-trk]').forEach(b=>b.onclick=e=>{e.stopPropagation(); setTrack(+b.dataset.trk);});
   $('dkSfx').onclick=()=>{AU.set.sfx=!AU.set.sfx; saveAudio(); applyVolumes(); renderDock(); if(AU.set.sfx) sfx('coin');};
   $('dkVol').oninput=e=>{AU.set.vol=+e.target.value; $('dkVolN').textContent=Math.round(AU.set.vol*100)+'%'; saveAudio(); applyVolumes();};
 }
