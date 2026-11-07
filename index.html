@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-oBF/Uz7+lT7MK8kYPMw1dmMJ+uar5DLtuymy79Ql49E='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' wss://broker.emqx.io:8084 wss://broker.hivemq.com:8884; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5WF+gi6ROo1HDxYUk3/wxkyS7LTG9RP+vNQtTm32t/4='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' wss://broker.emqx.io:8084 wss://broker.hivemq.com:8884; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Moropoly: the Moroccan property game for 2 to 8 players.">
@@ -367,6 +367,12 @@ h1,h2,h3{text-wrap:balance}
 .dk-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .dk-row input[type=range]{flex:1;accent-color:var(--red)}
 .dk-tracks{display:flex;flex-direction:column;gap:6px}
+.ttimer{position:relative;margin-top:10px;height:26px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.ttimer i{position:absolute;inset:0;background:linear-gradient(90deg,#1f7a4d,#2f9e64);transform-origin:left;transition:transform .25s linear}
+html[dir=rtl] .ttimer i{transform-origin:right}
+.ttimer.low i{background:linear-gradient(90deg,#a3222c,#d1343f)}
+.ttimer span{position:relative;display:block;text-align:center;font-size:12.5px;font-weight:700;line-height:24px;font-variant-numeric:tabular-nums}
+.ttimer.low.mine{animation:pillpulse 1s ease-in-out infinite}
 .dk-track{width:100%;color:inherit;font:inherit;cursor:pointer;display:flex;gap:10px;align-items:center;text-align:start;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
 .dk-track[aria-pressed="true"]{border-color:var(--green-hi);box-shadow:inset 0 0 0 1px var(--green-hi)}
 .dk-track .ar{font-family:var(--f-ar);font-weight:700;font-size:15px;min-width:74px;color:var(--silver-hi)}
@@ -693,6 +699,7 @@ function tl(e){
   if(!e) return ''; if(typeof e==='string') return e;
   const [k,p0]=e; const p=Object.assign({},p0||{});
   if(p.a!=null) p.a=fmt(p.a);
+  if(p.b!=null) p.b=fmt(p.b);
   if(p.s!=null) p.s=spN(p.s);
   if(p.to!=null) p.to=p.to==='@daret'?t('w.daret'):p.to==='@bank'?t('w.bank'):p.to;
   if(p.why!=null) p.why=t('why.'+p.why,{s:p.s,d:p.d,r:p.r});
@@ -704,6 +711,13 @@ function tl(e){
 /* ---------- log lines ---------- */
 S('log.start','Bismillah. {n} players set off from Al Inṭilāq with {a} each.','Bismillah. {n} joueurs partent d’Al Inṭilāq avec {a} chacun.','بسم الله. ينطلق {n} لاعبين من الانطلاق، ومع كل واحد {a}.');
 S('log.collect','{p} collects {a}.','{p} reçoit {a}.','{p} يحصل على {a}.');
+S('log.payShort','{p} owes {a} to {to} for {why} but only has {b}, so only {b} is paid for now.','{p} doit {a} à {to} pour {why} mais n’a que {b} : seuls {b} sont payés pour l’instant.','{p} مدين بـ{a} إلى {to} مقابل {why} لكنه لا يملك سوى {b}، فيُدفع {b} فقط الآن.');
+S('log.debtPaid','{p} pays {a} more to {to} toward the debt.','{p} verse encore {a} à {to} pour sa dette.','{p} يدفع {a} إضافية إلى {to} من دينه.');
+S('log.liquidated','{p}’s buildings are sold and properties mortgaged to pay the debt.','Les bâtiments de {p} sont vendus et ses propriétés hypothéquées pour payer la dette.','تُباع مباني {p} وتُرهن ممتلكاته لتسديد الدين.');
+S('log.saved','{p} manages to pay everything and stays in the game.','{p} parvient à tout payer et reste dans la partie.','{p} يتمكن من دفع كل شيء ويبقى في اللعبة.');
+S('log.timeUp','Time’s up for {p}. The game plays for them.','Temps écoulé pour {p}. Le jeu joue à sa place.','انتهى الوقت لـ{p}. اللعبة تلعب مكانه.');
+S('opt.timer','Turn timer','Minuteur de tour','مؤقت الدور'); S('opt.timerD','When time runs out, the game moves for the player: roll, skip buying, end the turn, or leave the auction.','Quand le temps est écoulé, le jeu joue à la place du joueur : lancer, ne pas acheter, finir le tour ou quitter l’enchère.','عند انتهاء الوقت تلعب اللعبة مكان اللاعب: رمي النرد، عدم الشراء، إنهاء الدور أو مغادرة المزاد.');
+S('opt.off','Off','Désactivé','متوقف'); S('opt.sec','{n} seconds','{n} secondes','{n} ثانية'); S('opt.min','{n} minutes','{n} minutes','{n} دقائق');
 S('log.pay','{p} pays {a} to {to} for {why}.','{p} paie {a} à {to} pour {why}.','{p} يدفع {a} إلى {to} مقابل {why}.');
 S('w.bank','the bank','la banque','البنك'); S('w.daret','the Daret','la Daret','الدارت');
 S('why.rent','rent at {s}','le loyer de {s}','كراء {s}');
@@ -733,7 +747,7 @@ S('log.visit','{p} is just visiting 3okacha.','{p} est en simple visite à 3okac
 S('log.draw','{p} draws {deckN}: {card}','{p} tire {deckN} : {card}','{p} يسحب {deckN}: {card}');
 S('deck.mektoub','Mektoub','Mektoub','مكتوب'); S('deck.baraka','Baraka','Baraka','بركة');
 S('log.noBuild','{p} owns no buildings and pays nothing.','{p} n’a aucun bâtiment et ne paie rien.','{p} لا يملك أي بناء ولا يدفع شيئًا.');
-S('log.bankTo','{p} is bankrupt. Everything goes to {o}.','{p} fait faillite. Tout revient à {o}.','{p} أفلس. كل ممتلكاته تذهب إلى {o}.');
+S('log.bankTo','{p} is bankrupt. {o} gets only what {p} could pay, plus {p}’s mortgaged properties.','{p} fait faillite. {o} ne reçoit que ce que {p} pouvait payer, plus ses propriétés hypothéquées.','{p} أفلس. يحصل {o} فقط على ما استطاع {p} دفعه، إضافة إلى ممتلكاته المرهونة.');
 S('log.bankBank','{p} is bankrupt. Their properties return to the bank.','{p} fait faillite. Ses propriétés reviennent à la banque.','{p} أفلس. ممتلكاته تعود إلى البنك.');
 S('log.win','{p} wins Moropoly with a net worth of {a}. Mabrouk!','{p} remporte Moropoly avec une fortune de {a}. Mabrouk !','{p} يفوز بموروبولي بثروة قدرها {a}. مبروك!');
 S('log.turn','{p}’s turn.','Au tour de {p}.','دور {p}.');
@@ -842,7 +856,7 @@ S('au.yourBid',', your bid. You have {a}.',', à vous d’enchérir. Vous avez {
 S('btn.leaveAuc','Leave auction','Quitter les enchères','انسحب من المزاد');
 /* bankrupt */
 S('bk.title','Declare bankruptcy?','Déclarer faillite ?','إعلان الإفلاس؟');
-S('bk.body','{p} owes {a}. Everything {p} owns goes to {o}, and {p} leaves the game. This cannot be undone.','{p} doit {a}. Tout ce que possède {p} revient à {o}, et {p} quitte la partie. C’est définitif.','{p} مدين بـ {a}. كل ما يملكه {p} يذهب إلى {o}، ويغادر {p} اللعبة. لا يمكن التراجع.');
+S('bk.body','{p} owes {a}. First the game sells {p}’s buildings and mortgages their properties to pay as much as possible. If that is still not enough, {o} gets only that money and the mortgaged properties, and {p} leaves the game. This cannot be undone.','{p} doit {a}. Le jeu vend d’abord les bâtiments de {p} et hypothèque ses propriétés pour payer le plus possible. Si cela ne suffit pas, {o} ne reçoit que cet argent et les propriétés hypothéquées, et {p} quitte la partie. C’est définitif.','{p} مدين بـ{a}. تبيع اللعبة أولًا مباني {p} وترهن ممتلكاته لدفع أكبر قدر ممكن. إذا لم يكفِ ذلك، يحصل {o} فقط على هذا المال والممتلكات المرهونة، ويغادر {p} اللعبة. لا يمكن التراجع عن ذلك.');
 S('btn.keep','Keep playing','Continuer à jouer','واصل اللعب');
 /* trade */
 S('tr.title','Tbadel · Trade','Tbadel · Échange','تبادل'); S('tr.with','Trade with','Échanger avec','تبادل مع'); S('tr.gives','{p} gives','{p} donne','{p} يعطي'); S('tr.cash','Cash','Argent','نقدًا');
@@ -1020,7 +1034,7 @@ function freshGame(seats,settings,extra){
   extra=extra||{};
   const G={gid:rid(10),status:'play',mode:extra.mode||'local',code:extra.code||null,hostCid:extra.hostCid||null,
     players:seats.map((s,i)=>({id:i,cid:s.cid||null,name:s.name,token:s.token,human:!!s.human,color:COLORS[i],cash:START_CASH,pos:0,inJail:false,jailTurns:0,goojf:[],bankrupt:false,owes:-1,mt:''})),
-    props:{},cur:0,phase:'roll',dice:[3,4],doubles:0,rollAgain:false,daret:0,round:1,turn:1,log:[],settings:Object.assign({daret:true,dlala:true,rounds:25,fast:false},settings),
+    props:{},cur:0,phase:'roll',dice:[3,4],doubles:0,rollAgain:false,daret:0,round:1,turn:1,log:[],settings:Object.assign({daret:true,dlala:true,rounds:25,fast:false,timer:0},settings),
     decks:{mektoub:shuffle(range(MEKTOUB.length)),baraka:shuffle(range(BARAKA.length))},
     pending:null,auction:null,trade:null,card:null,event:'',winner:null,over:false,landed:-1,seq:0,anims:[],ack:extra.ack||{}};
   SP.forEach((s,i)=>{if(isOwnable(i)) G.props[i]={owner:-1,houses:0,mort:false};});
@@ -1029,14 +1043,27 @@ function freshGame(seats,settings,extra){
 }
 function gain(G,p,amt){p.cash+=amt; log(G,'collect',{p:p.name,a:amt}); A(G,{k:'fx',f:'gain',pid:p.id,amt});}
 function payTax(G,p,amt,why,extra){pay(G,p,G.settings.daret?'daret':-1,amt,why,extra);}
+function payDest(G,to){return to==='daret'?'@daret':(typeof to==='number'&&to>=0&&G.players[to])?G.players[to].name:'@bank';}
+function credit(G,to,x){if(x<=0) return; if(to==='daret') G.daret+=x; else if(typeof to==='number'&&to>=0&&G.players[to]&&!G.players[to].bankrupt) G.players[to].cash+=x;}
 function pay(G,p,to,amt,why,extra){
   if(amt<=0) return;
-  p.cash-=amt; let dest='@bank';
-  if(to==='daret'){G.daret+=amt; dest='@daret';}
-  else if(typeof to==='number'&&to>=0){G.players[to].cash+=amt; dest=G.players[to].name;}
-  log(G,'pay',Object.assign({p:p.name,a:amt,to:dest,why},extra||{}));
-  A(G,{k:'fx',f:'pay',pid:p.id,to:typeof to==='number'?to:-1,amt});
-  if(p.cash<0) p.owes=to;
+  const paid=Math.min(Math.max(0,p.cash),amt), short=amt-paid, dest=payDest(G,to);
+  p.cash-=amt; credit(G,to,paid);           // the creditor only receives what the player really has
+  if(short>0){
+    p.debts=p.debts||[]; p.debts.push({to,amt:short}); p.owes=p.debts[0].to;
+    log(G,'payShort',Object.assign({p:p.name,a:amt,b:paid,to:dest,why},extra||{}));
+  } else log(G,'pay',Object.assign({p:p.name,a:amt,to:dest,why},extra||{}));
+  if(paid>0) A(G,{k:'fx',f:'pay',pid:p.id,to:typeof to==='number'?to:-1,amt:paid});
+}
+/* money a player raises while in debt (selling, mortgaging, a trade) goes straight to the people they owe */
+function payDebts(G,p){
+  const ds=(p.debts||[]).filter(d=>d.amt>0);
+  if(!ds.length){p.debts=[]; if(p.cash>=0) p.owes=-1; return;}
+  const owed=ds.reduce((x,d)=>x+d.amt,0); let have=Math.max(0,p.cash+owed);
+  for(const d of ds){const x=Math.min(have,d.amt); if(x>0){credit(G,d.to,x); d.amt-=x; have-=x; log(G,'debtPaid',{p:p.name,a:x,to:payDest(G,d.to)}); A(G,{k:'fx',f:'pay',pid:p.id,to:typeof d.to==='number'?d.to:-1,amt:x});}}
+  p.debts=ds.filter(d=>d.amt>0);
+  p.cash=have-p.debts.reduce((x,d)=>x+d.amt,0);
+  p.owes=p.debts.length?p.debts[0].to:-1;
 }
 function rentFor(G,i,opts){
   opts=opts||{}; const s=SP[i],pr=G.props[i],o=pr.owner;
@@ -1108,23 +1135,27 @@ function autoLiquidate(G,p){
   }
 }
 function goBankrupt(G,p){
-  const cred=p.owes;
-  if(typeof cred==='number'&&cred>=0&&!G.players[cred].bankrupt){
-    const c=G.players[cred]; c.cash+=p.cash;
-    ownedBy(G,p.id).forEach(i=>{const pr=G.props[i]; if(pr.houses){c.cash+=pr.houses*houseCost(i)/2; pr.houses=0;} pr.owner=cred;});
+  const before=p.cash; autoLiquidate(G,p); if(p.cash>before) log(G,'liquidated',{p:p.name});
+  payDebts(G,p);
+  if(p.cash>=0){log(G,'saved',{p:p.name}); return false;}   // selling and mortgaging covered the debt
+  const ds=(p.debts||[]); const pc=ds.find(d=>typeof d.to==='number'&&d.to>=0&&G.players[d.to]&&!G.players[d.to].bankrupt);
+  const cred=pc?pc.to:(ds.length?ds[0].to:p.owes);
+  if(typeof cred==='number'&&cred>=0&&G.players[cred]&&!G.players[cred].bankrupt){
+    const c=G.players[cred];
+    ownedBy(G,p.id).forEach(i=>{G.props[i].houses=0; G.props[i].owner=cred;});   // already mortgaged above
     p.goojf.forEach(g=>c.goojf.push(g));
     log(G,'bankTo',{p:p.name,o:c.name});
   } else {
-    if(cred==='daret') G.daret=Math.max(0,G.daret+p.cash);
     ownedBy(G,p.id).forEach(i=>{G.props[i]={owner:-1,houses:0,mort:false};});
     p.goojf.forEach(g=>G.decks[g.deck].push(g.id));
     log(G,'bankBank',{p:p.name});
   }
   A(G,{k:'fx',f:'bankrupt',pid:p.id});
-  p.cash=0; p.goojf=[]; p.bankrupt=true; p.inJail=false;
+  p.cash=0; p.debts=[]; p.owes=-1; p.goojf=[]; p.bankrupt=true; p.inJail=false;
   if(G.trade&&(G.trade.from===p.id||G.trade.to===p.id)) G.trade=null;
   if(G.auction){G.auction.bidders=G.auction.bidders.filter(id=>id!==p.id); if(G.auction.highBidder===p.id){G.auction.highBidder=-1;G.auction.high=0;} if(G.auction.turn>=G.auction.bidders.length) G.auction.turn=0;}
   if(alive(G).length<=1) finishGame(G);
+  return true;
 }
 function finishGame(G){
   if(G.over) return;
@@ -1138,7 +1169,7 @@ function settle(G){
   G.players.forEach(p=>{
     if(p.bankrupt||p.cash>=0) return;
     if(p.id===G.cur&&p.human) return;
-    autoLiquidate(G,p); if(p.cash<0) goBankrupt(G,p);
+    goBankrupt(G,p);
   });
   if(G.over) return;
   const p=G.players[G.cur];
@@ -1165,6 +1196,11 @@ function actorOf(G){
 }
 /* apply one action for seat; returns true when state changed */
 function apply(G,seat,a){
+  const ok=applyCore(G,seat,a);
+  if(ok&&G.players) G.players.forEach(q=>{if(!q.bankrupt&&q.debts&&q.debts.length) payDebts(G,q);});
+  return ok;
+}
+function applyCore(G,seat,a){
   if(!G||G.status!=='play'||G.over||!a) return false;
   const p=G.players[seat]; if(!p||p.bankrupt) return false;
   const isCur=seat===G.cur, free=!G.auction&&!G.trade;
@@ -1226,7 +1262,6 @@ function apply(G,seat,a){
       if(a.t==='sell'){if(!canSell(G,i,seat)) return false; G.props[i].houses--; p.cash+=houseCost(i)/2; log(G,'sellB',{p:p.name,s:i,a:houseCost(i)/2});}
       if(a.t==='mort'){if(!canMort(G,i,seat)) return false; G.props[i].mort=true; p.cash+=SP[i].price/2; log(G,'mort',{p:p.name,s:i,a:SP[i].price/2});}
       if(a.t==='unmort'){if(!canUnmort(G,i,seat)) return false; p.cash-=unmortCost(i); G.props[i].mort=false; log(G,'unmort',{p:p.name,s:i});}
-      if(p.cash>=0) p.owes=-1;
       return true;}
     case 'manage':{ // computer players only: unmortgage and build in one go
       if(p.human||!isCur||!free) return false;
@@ -1633,9 +1668,38 @@ async function listMyGames(){
 /* ============================================================
    AUTHORITY: commit, push, intents
    ============================================================ */
+const TIMER_GRACE=3000; // time for the dice and pawn animations before the clock really starts
+function timerStamp(G){
+  const sec=+((G.settings||{}).timer||0);
+  if(G.status!=='play'||G.over||!sec){G.tEnd=null; G.tk=null; return;}
+  const a=actorOf(G), q=G.players[a], hum=!!(q&&q.human&&!q.bankrupt);
+  const k=hum?[G.turn,G.phase,a,G.auction?G.auction.turn+':'+G.auction.high+':'+G.auction.bidders.length:'',G.trade?1:0,(G.players[G.cur]||{}).cash<0?1:0].join('|'):'';
+  if(k!==G.tk){G.tk=k; G.tEnd=hum?Date.now()+sec*1000+TIMER_GRACE:null;}
+  G.tNow=Date.now();
+}
+function timeoutAction(G,a){
+  if(G.trade&&G.trade.to===a) return {t:'tradeReply',accept:false};
+  if(G.auction) return {t:'pass'};
+  const p=G.players[a]; if(a!==G.cur) return null;
+  if(p.cash<0) return {t:'bankrupt'};
+  if(G.phase==='roll') return {t:'roll'};
+  if(G.phase==='buy') return {t:'decline'};
+  if(G.phase==='end') return {t:'end'};
+  return null;
+}
+/* the host (or this device, in a local game) plays for whoever let the clock run out */
+function timerTick(){
+  if(!(MODE==='local'||MODE==='host')||!G||G.status!=='play'||G.over||!G.tEnd||Date.now()<G.tEnd) return;
+  const a=actorOf(G), q=G.players[a]; G.tEnd=null; G.tk=null;
+  if(!q||!q.human){commit(); return;}
+  const act=timeoutAction(G,a); log(G,'timeUp',{p:q.name});
+  if(!(act&&apply(G,a,act))&&G.cur===a&&G.phase==='end'&&q.cash>=0) apply(G,a,{t:'end'});
+  commit();
+}
+setInterval(timerTick,500);
 function commit(){
   if(!G) return;
-  G.updated=Date.now();
+  G.updated=Date.now(); timerStamp(G);
   if(MODE==='local') lsSet('moropoly.local.v2',G);
   if(MODE==='host'&&NET.T) NET.T.push(G);
   onState(clone(G));
@@ -1738,7 +1802,7 @@ async function hostGame(){
   let code=rid(6), extra={};
   if(T.makeCode){try{const r=await T.makeCode(); code=r.code; extra={nonce:r.nonce,hostKey:r.hostKey,hostDh:r.hostDh};}catch(e){toast(t('note.secure')); return;}}
   MODE='host';
-  G={...extra,gid:rid(10),status:'lobby',mode:'online',code,hostCid:myCid,players:[],settings:{daret:true,dlala:true,rounds:25,fast:false},seq:0,anims:[],ack:{},log:[],event:'',updated:Date.now()};
+  G={...extra,gid:rid(10),status:'lobby',mode:'online',code,hostCid:myCid,players:[],settings:{daret:true,dlala:true,rounds:25,fast:false,timer:0},seq:0,anims:[],ack:{},log:[],event:'',updated:Date.now()};
   log(G,'tableSet');
   NET.T=T; NET.code=code;
   showConnecting(code,'conn.opening');
@@ -1855,8 +1919,10 @@ function showPinGate(ns,checking){
   $('pinForm').onsubmit=e=>{e.preventDefault(); const v=(inp.value||'').replace(/\D/g,''); if(v.length<4){$('pinMsg').textContent=t('pin.bad'); return;}
     JOIN.pin=v; JOIN.wrong=false; JOIN.sent=false; guestGate(ns);};
 }
+let TDL=null;
 function onState(ns){
   if(!ns) return;
+  TDL=(ns.tEnd&&ns.tNow&&ns.settings&&ns.settings.timer)?{end:Date.now()+(ns.tEnd-ns.tNow),total:ns.settings.timer*1000,actor:actorOf(ns)}:null;
   if(guestGate(ns)) return;
   const wasSeated=seatedIn(V);
   if(!V||ns.gid!==V.gid||ns.status!==V.status){
@@ -2087,9 +2153,21 @@ function renderTurn(){
   if(V.phase==='buy'&&V.pending&&!playing){const i=V.pending.idx,s=SP[i]; prev=`<div class="preview">${s.art?`<img src="${s.art}" alt="">`:''}<div style="min-width:0"><div style="font-weight:700">${esc(spN(i))} ${LANG==='ar'?'':`<span style="font-family:var(--f-ar);color:var(--dim)">${s.ar}</span>`}</div><div class="muted" style="font-size:12.5px">${esc(s.t==='prop'?t('pv.rentProp',{a:fmt(s.rent[0]),b:fmt(s.rent[0]*2),c:cityN(s.g)}):s.t==='rail'?t('pv.rentRail'):t('pv.rentUtil'))}</div><button class="btn ghost sm" style="margin-top:6px" data-act="deed" data-i="${i}">${t('btn.viewDeed')}</button></div></div>`;}
   const wait=!mine&&!V.over&&!playing&&!V.auction&&!V.trade?`<div class="muted" style="font-size:12.5px">${p.human?(MODE==='local'?'':esc(t('tc.waiting',{p:p.name}))):t('tc.thinking')}</div>`:'';
   el.innerHTML=`<div class="who">${coinHTML(p.token)}<div style="flex:1;min-width:0"><div class="n">${esc(p.name)}</div><div class="muted" style="font-size:12px">${esc(tokN(p.token))}${p.human?'':' · '+t('lbl.computer')}${iControl(p.id)&&MODE!=='local'?' · '+t('lbl.you'):''}</div></div><div class="cash">${fmt(p.cash)}</div></div>
-    <div class="status">${status}</div>${prev}<div class="actions">${btns.join('')}</div>${wait}`;
+    <div class="status">${status}</div>${prev}<div class="actions">${btns.join('')}</div>${wait}<div class="ttimer" id="tTimer" hidden><i></i><span></span></div>`;
+  drawTimer();
   el.querySelectorAll('[data-act]').forEach(b=>b.addEventListener('click',()=>act(b.dataset.act,b.dataset.i)));
 }
+let tWarned=null;
+function drawTimer(){
+  const el=$('tTimer'); if(!el) return;
+  if(!TDL||!V||V.over||V.status!=='play'){el.hidden=true; return;}
+  const left=Math.max(0,Math.min(TDL.total,TDL.end-Date.now())), sec=Math.ceil(left/1000), mine=iControl(TDL.actor);
+  el.hidden=false; el.classList.toggle('low',sec<=10); el.classList.toggle('mine',mine);
+  el.querySelector('i').style.transform=`scaleX(${left/TDL.total})`;
+  const who=V.players[TDL.actor]; el.querySelector('span').textContent=`⏱ ${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}${who&&!mine?' · '+who.name:''}`;
+  if(mine&&sec<=10&&sec>0&&tWarned!==TDL.end){tWarned=TDL.end; try{navigator.vibrate&&navigator.vibrate(120);}catch(e){} sfx('pay');}
+}
+setInterval(drawTimer,250);
 function act(a,i){
   switch(a){
     case 'roll':case 'buy':case 'decline':case 'end':case 'fine':case 'card':dispatch({t:a}); break;
@@ -2332,16 +2410,17 @@ function optsHTML(s,pfx){
   return `<label class="opt"><input type="checkbox" id="${pfx}Daret" ${s.daret?'checked':''}><div><b>${t('opt.daret')}</b><span>${t('opt.daretD')}</span></div></label>
    <label class="opt"><input type="checkbox" id="${pfx}Dlala" ${s.dlala?'checked':''}><div><b>${t('opt.dlala')}</b><span>${t('opt.dlalaD')}</span></div></label>
    <label class="opt"><div style="flex:1"><b>${t('opt.len')}</b><span>${t('opt.lenD')}</span><div><select class="field" id="${pfx}Rounds">${[0,15,25,40].map(v=>`<option value="${v}" ${+s.rounds===v?'selected':''}>${v?t('opt.rounds',{n:v}):t('opt.until')}</option>`).join('')}</select></div></div></label>
+   <label class="opt"><div style="flex:1"><b>${t('opt.timer')}</b><span>${t('opt.timerD')}</span><div><select class="field" id="${pfx}Timer">${[0,30,60,90,120].map(v=>`<option value="${v}" ${+(s.timer||0)===v?'selected':''}>${v===0?t('opt.off'):v<120?t('opt.sec',{n:v}):t('opt.min',{n:v/60})}</option>`).join('')}</select></div></div></label>
    <label class="opt"><input type="checkbox" id="${pfx}Fast" ${s.fast?'checked':''}><div><b>${t('opt.fast')}</b><span>${t('opt.fastD')}</span></div></label>`;
 }
-function readOpts(pfx){return {daret:$(pfx+'Daret').checked,dlala:$(pfx+'Dlala').checked,rounds:+$(pfx+'Rounds').value,fast:$(pfx+'Fast').checked};}
-function bindOpts(pfx,cb){['Daret','Dlala','Rounds','Fast'].forEach(k=>{const e=$(pfx+k); if(e) e.onchange=()=>cb(readOpts(pfx));});}
+function readOpts(pfx){return {daret:$(pfx+'Daret').checked,dlala:$(pfx+'Dlala').checked,rounds:+$(pfx+'Rounds').value,fast:$(pfx+'Fast').checked,timer:$(pfx+'Timer')?+$(pfx+'Timer').value:0};}
+function bindOpts(pfx,cb){['Daret','Dlala','Rounds','Fast','Timer'].forEach(k=>{const e=$(pfx+k); if(e) e.onchange=()=>cb(readOpts(pfx));});}
 
 /* ============================================================
    LOCAL SETUP
    ============================================================ */
 let seats=['Hamza','Salma','Youssef','Imane','Karim','Nadia','Omar','Zineb'].map((n,i)=>({name:n,token:i,human:i===0,on:i<4}));
-let localOpts={daret:true,dlala:true,rounds:25,fast:false};
+let localOpts={daret:true,dlala:true,rounds:25,fast:false,timer:0};
 function renderSetup(){
   $('seats').innerHTML=seats.map((s,i)=>`<div class="seat ${s.on?'':'off'}"><button class="tok" data-pick="${i}" aria-label="${esc(t('aria.seatTok',{n:i+1}))}" style="width:56px">${coinHTML(s.token,`style="box-shadow:0 0 0 2px ${COLORS[i]}"`)}</button>
     <div class="info"><div style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="on${i}" ${s.on?'checked':''} aria-label="${esc(t('aria.seatOn',{n:i+1}))}"><input class="field" id="nm${i}" value="${esc(s.name)}" maxlength="16" aria-label="${esc(t('aria.seatName',{n:i+1}))}" style="flex:1"></div>
@@ -2603,7 +2682,7 @@ function setLang(l){
   renderDock();
   if(modal){const k=modal.kind; closeModal(); if(k==='auction'||k==='treply') autoModals();}
 }
-window.__moropoly={get AU(){return AU;},get G(){return G;},get V(){return V;},get playing(){return playing;},dispatch,apply,freshGame,botDecide};
+window.__moropoly={get AU(){return AU;},get G(){return G;},get V(){return V;},get playing(){return playing;},dispatch,apply,freshGame,botDecide,eng:{pay,payDebts,goBankrupt,settle,commit:()=>commit(),timerTick}};
 })();
 </script>
 
