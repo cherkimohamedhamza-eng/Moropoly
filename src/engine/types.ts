@@ -71,7 +71,7 @@ export type Phase = 'roll' | 'buy' | 'end' | 'auction' | 'over';
 
 export interface Game {
   gid: string;
-  status: 'lobby' | 'play';
+  status: 'play';
   mode: string;
   code: string | null;
   hostCid: string | null;
@@ -101,6 +101,16 @@ export interface Game {
   anims: Anim[];
   /** online games: the last move number handled for each player */
   ack: Record<string, number>;
+
+  // set outside the engine, by whoever runs the game (this device, the in-browser host or the server)
+  updated?: number;
+  /** turn timer: when the current move times out, and the server's clock when the state was sent */
+  tEnd?: number | null;
+  tk?: string | null;
+  tNow?: number;
+  /** the table needs a code to join, and how many wrong codes each device has tried */
+  pinOn?: boolean;
+  denied?: Record<string, number>;
 }
 
 export interface Seat { name: string; token: number; human?: boolean; cid?: string | null }

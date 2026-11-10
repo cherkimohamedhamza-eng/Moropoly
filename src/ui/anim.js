@@ -6,7 +6,8 @@ import {cardText, fmt, spN, t, tl} from '../i18n/core';
 import {cellBox, layoutPawns, pawnSize, setDice, slotXY} from './board';
 import {$, esc, reduceMotion, sleep} from './dom';
 import {sfx} from './music';
-import {houseHTML, iControl} from './render';
+import {iControl} from './render';
+import {refresh} from '../react/store';
 import {speed} from './view';
 
 /* ---------- animations ---------- */
@@ -41,7 +42,7 @@ export async function runAnim(a){
       else if(a.f==='pay'){sfx('pay'); floatAt(a.pid,'−'+fmt(a.amt),'minus'); if(a.to>=0) setTimeout(()=>floatAt(a.to,'+'+fmt(a.amt),'plus'),300); await sleep(450*sp);}
       else if(a.f==='gain'||a.f==='go'){sfx('coin'); floatAt(a.pid,'+'+fmt(a.amt),'plus'); await sleep(350*sp);}
       else if(a.f==='daret'){sfx('coins'); floatAt(a.pid,t('fl.daret')+' +'+fmt(a.amt),'gold'); confettiAt(cellBox(20)); await sleep(700*sp);}
-      else if(a.f==='build'){sfx('build'); const h=$('h'+a.idx); if(h){const p=app.PEND||app.V; const pr=p.props[a.idx]; h.innerHTML=houseHTML(pr.houses); h.lastElementChild&&h.lastElementChild.classList.add('pop');} await sleep(220*sp);}
+      else if(a.f==='build'){sfx('build'); const p=app.PEND||app.V; app.boardFx.houses[a.idx]=p.props[a.idx].houses; app.boardFx.pop=a.idx; refresh(); await sleep(220*sp);}
       else if(a.f==='deal'){sfx('deal'); floatAt(a.pid,t('fl.deal'),'gold'); floatAt(a.to,t('fl.deal'),'gold'); await sleep(500*sp);}
       else if(a.f==='dlala'){sfx('gavel'); setEvent(t('ev.dlala')); await sleep(400);}
       else if(a.f==='bankrupt'){sfx('sad'); floatAt(a.pid,t('fl.bankrupt'),'minus'); await sleep(800*sp);}
@@ -52,7 +53,7 @@ export async function runAnim(a){
 }
 function pname(pid){const p=(app.PEND||app.V).players[pid]; return p?p.name:'';}
 export function setEvent(t){const e=$('eventLine'); if(e) e.textContent=t;}
-function highlight(i){document.querySelectorAll('.cell.land').forEach(c=>c.classList.remove('land')); const c=$('c'+i); if(c) c.classList.add('land');}
+function highlight(i){app.boardFx.hl=i; refresh();}
 function floatAt(pid,text,cls){
   const b=$('board'); const el=$('pw'+pid); if(!b) return;
   let x,y; if(el){const m=new DOMMatrix(getComputedStyle(el).transform); x=m.m41+pawnSize()/2; y=m.m42;} else {const c=cellBox(app.dpos[pid]||0); x=c.x; y=c.y;}

@@ -11,7 +11,7 @@ export interface RentOpts { railDouble?: boolean; util100?: boolean }
 interface GameExtra { mode?: string; code?: string | null; hostCid?: string | null; ack?: Record<string, number> }
 
 export function A(G: Game,o: Anim){G.seq=(G.seq||0)+1; o.n=G.seq; G.anims.push(o); if(G.anims.length>50) G.anims.splice(0,G.anims.length-50);}
-export function log(G: Game,k: string,p?: Record<string, unknown>){const e: [string, Record<string, unknown>]=[k,p||{}]; G.log.unshift(e); if(G.log.length>60) G.log.length=60; G.event=e;}
+export function log(G: Pick<Game,'log'|'event'>,k: string,p?: Record<string, unknown>){const e: [string, Record<string, unknown>]=[k,p||{}]; G.log.unshift(e); if(G.log.length>60) G.log.length=60; G.event=e;}
 export function freshGame(seats: Seat[],settings?: Partial<Settings>,extra?: GameExtra): Game{
   extra=extra||{};
   const G: Game={gid:rid(10),status:'play',mode:extra.mode||'local',code:extra.code||null,hostCid:extra.hostCid||null,

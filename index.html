@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' wss://broker.emqx.io:8084 wss://broker.hivemq.com:8884; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Moropoly: the Moroccan property game for 2 to 8 players.">
@@ -26,94 +26,30 @@
 
 <div id="app">
 <!-- ================= HOME ================= -->
-<section id="home" class="wrap">
-  <div class="home-top">
-    <canvas id="flag" width="168" height="116" data-i18n-aria="aria.flag"></canvas>
-    <div class="wm">MOROPOLY<span class="ar">مُوروبولي</span><span class="tif">ⵎⵓⵔⵓⴱⵓⵍⵉ</span></div>
-    <div class="sp"></div>
-    <span class="eyebrow" data-i18n="home.players"></span><div class="langsw"></div>
-  </div>
-  <div class="hero">
-    <div>
-      <div class="eyebrow" data-i18n="home.eyebrow"></div>
-      <h1 data-i18n="home.h1"></h1>
-      <p class="lead" data-i18n="home.lead"></p>
-      <div class="ctas">
-        <button class="btn red" id="hostBtn" data-i18n="home.host"></button>
-        <button class="btn" id="localBtn" data-i18n="home.local"></button>
-        <button class="btn ghost" id="installBtn" hidden data-i18n="home.install"></button>
-      </div>
-      <form class="joinrow" id="joinForm" autocomplete="off">
-        <input class="field" id="joinCode" maxlength="8" dir="ltr" data-i18n-ph="home.code" data-i18n-aria="home.code">
-        <button class="btn green" type="submit" data-i18n="home.join"></button>
-      </form>
-      <div class="note" id="onlineNote"></div>
-      <div class="mygames" id="myGames"></div>
-    </div>
-    <div class="hero-map"><svg id="map" viewBox="0 0 420 450" role="img" data-i18n-aria="aria.map"></svg></div>
-  </div>
-  <div class="parade" id="parade"></div>
-  <div class="marquee"><div class="track" id="mq1"></div></div>
-  <div class="marquee rev"><div class="track" id="mq2"></div></div>
-  <div class="feats">
-    <div class="feat"><div class="k" style="color:var(--red-hi)">الدلالة</div><h3 data-i18n="feat.dlala"></h3><p data-i18n="feat.dlalaP"></p></div>
-    <div class="feat"><div class="k" style="color:var(--green-hi)">دارت</div><h3 data-i18n="feat.daret"></h3><p data-i18n="feat.daretP"></p></div>
-    <div class="feat"><div class="k" style="color:var(--silver-hi)">مكتوب · بركة</div><h3 data-i18n="feat.cards"></h3><p data-i18n="feat.cardsP"></p></div>
-    <div class="feat"><div class="k" style="color:var(--red-hi)">عكاشة</div><h3 data-i18n="feat.jail"></h3><p data-i18n="feat.jailP"></p></div>
-  </div>
-  <div class="sketch">
-    <img src="assets/board.webp" alt="Moropoly board concept sketch">
-    <div><div class="eyebrow" data-i18n="sk.eyebrow"></div><h2 class="h2" data-i18n="sk.h2"></h2><p class="muted" data-i18n="sk.p"></p></div>
-  </div>
-</section>
+<section id="home" class="wrap"></section>
 
 <!-- ================= LOCAL SETUP ================= -->
-<section id="setup" class="wrap screen" hidden>
-  <div class="bar-top"><button class="btn ghost sm" data-home data-i18n="back"></button><div class="sp"></div><div class="langsw"></div></div>
-  <div class="eyebrow" data-i18n="setup.eyebrow"></div>
-  <h2 class="h2" data-i18n="setup.h2"></h2>
-  <p class="muted" data-i18n="setup.p"></p>
-  <div class="seats" id="seats"></div>
-  <div class="sec" data-i18n="sec.rules"></div>
-  <div class="opts" id="optsLocal"></div>
-  <div class="ctas" style="margin-top:20px"><button class="btn red" id="startLocal" data-i18n="btn.startGame"></button><button class="btn" id="demoLocal" data-i18n="btn.demo"></button><button class="btn" id="resumeLocal" hidden data-i18n="btn.resume"></button><span class="muted" id="seatCount"></span></div>
-</section>
+<section id="setup" class="wrap screen" hidden></section>
 
 <!-- ================= LOBBY ================= -->
 <section id="lobby" class="wrap screen" hidden></section>
 
 <!-- ================= GAME ================= -->
 <section id="game" class="wrap screen" hidden>
-  <div class="gamebar">
-    <span class="mini-flag"><svg viewBox="-1 -1 2 2"><path d="M0,-0.95L0.56,0.77L-0.9,-0.29H0.9L-0.56,0.77Z" fill="none" stroke="#006233" stroke-width=".13" stroke-linejoin="miter"/></svg></span>
-    <div class="wm" style="font-size:16px">MOROPOLY</div>
-    <span class="muted" id="roundMeta"></span>
-    <div class="sp"></div>
-    <span class="chipcode" id="codeChip" hidden dir="ltr"></span>
-    <div class="langsw"></div>
-    <button class="btn ghost sm" id="mySeatBtn" hidden data-i18n="btn.mySeat"></button>
-    <button class="btn ghost sm" id="leaveBtn" data-i18n="btn.leave"></button>
-  </div>
+  <div class="gamebar" id="gameBar"></div>
   <div id="bannerSlot"></div>
   <div class="layout">
     <div class="board-wrap"><div class="board-box"><div class="board" id="board"></div></div></div>
     <aside class="side">
       <div class="turn" id="turnCard"></div>
-      <div>
-        <div class="tabs" role="tablist" id="tabs">
-          <button role="tab" aria-selected="true" data-tab="players" data-i18n="tab.players"></button>
-          <button role="tab" aria-selected="false" data-tab="deeds" data-i18n="tab.deeds"></button>
-          <button role="tab" aria-selected="false" data-tab="log" data-i18n="tab.log"></button>
-          <button role="tab" aria-selected="false" data-tab="book" data-i18n="tab.book"></button>
-        </div>
-        <div class="tabpanel" id="tabpanel"></div>
-      </div>
+      <div id="sideTabs"></div>
     </aside>
   </div>
 </section>
 </div>
-<div class="dock" id="dock"><div class="dock-panel" id="dockPanel" hidden></div><button class="dock-btn" id="dockBtn" aria-label="Open music controls"><span class="eq"><i></i><i></i><i></i><i></i></span><svg class="note" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18.5a3 3 0 1 1-2-2.83V5.5l12-2.5v12a3 3 0 1 1-2-2.83V7.4l-8 1.7v9.4z" fill="#15181d"/></svg></button></div>
-<div id="modalRoot"></div>
+<div class="dock" id="dock"></div>
+<div id="windows"></div>
+<div id="reactModal" data-react></div>
 <div class="toasts" id="toasts"></div>
 
 <script type="module" src="/src/main.js"></script>

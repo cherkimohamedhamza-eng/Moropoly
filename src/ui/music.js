@@ -2,13 +2,14 @@
 import {app} from '../app/state';
 import {t} from '../i18n/core';
 import {lsGet, lsSet} from '../lib/storage';
-import {$, esc, toast} from './dom';
+import {toast} from './dom';
+import {refresh} from '../react/store';
 
 /* ============================================================
    MUSIC & SOUND (synthesised in the browser, nothing to download)
    ============================================================ */
-const TRACKS=[{src:'assets/midnight-oud-plucks.mp3',k:'oud',ic:'🌙'},{src:'assets/andalusian-sunset.mp3',k:'guitar',ic:'🌅'},{src:'assets/chaabi-wedding.mp3',k:'chaabi',ic:'🥁'}];
-const curTrack=()=>TRACKS[(AU.set.track>=0&&AU.set.track<TRACKS.length)?AU.set.track:0];
+export const TRACKS=[{src:'assets/midnight-oud-plucks.mp3',k:'oud',ic:'🌙'},{src:'assets/andalusian-sunset.mp3',k:'guitar',ic:'🌅'},{src:'assets/chaabi-wedding.mp3',k:'chaabi',ic:'🥁'}];
+export const curTrack=()=>TRACKS[(AU.set.track>=0&&AU.set.track<TRACKS.length)?AU.set.track:0];
 export const AU={ctx:null,master:null,music:null,sfx:null,rev:null,unlocked:false,noise:null,ks:{},els:[],cur:0,playing:false,xfading:false,loop:null,
   set:Object.assign({music:true,sfx:true,vol:0.3,track:0},lsGet('moropoly.audio.v2')||{})};
 
@@ -89,7 +90,7 @@ function startMusic(){
   AU.playing=true; clearInterval(AU.loop); AU.loop=setInterval(checkLoop,250); applyVolumes(); renderDock();
 }
 function stopMusic(){AU.playing=false; AU.xfading=false; clearInterval(AU.loop); AU.els.forEach(e=>{try{e.a.pause();}catch(x){}}); renderDock();}
-function setTrack(i){
+export function setTrack(i){
   if(!(i>=0&&i<TRACKS.length)) return;
   const same=i===AU.set.track&&AU.playing; AU.set.track=i; AU.set.music=true; saveAudio();
   if(same){renderDock(); return;}
@@ -97,8 +98,8 @@ function setTrack(i){
   AU.els.forEach(e=>{try{e.a.pause(); if(e.g) e.g.disconnect(); e.a.removeAttribute('src'); e.a.load();}catch(x){}});
   AU.els=[]; AU.cur=0; unlockAudio(); applyVolumes(); startMusic(); renderDock();
 }
-function toggleMusic(on){AU.set.music=on==null?!AU.set.music:on; saveAudio(); applyVolumes(); if(AU.set.music) startMusic(); else setTimeout(()=>{if(!AU.set.music) stopMusic();},300); renderDock();}
-function unlockAudio(){if(AU.unlocked) return; AU.unlocked=true; const c=actx(); if(c&&c.state==='suspended') c.resume(); if(AU.set.music) startMusic();}
+export function toggleMusic(on){AU.set.music=on==null?!AU.set.music:on; saveAudio(); applyVolumes(); if(AU.set.music) startMusic(); else setTimeout(()=>{if(!AU.set.music) stopMusic();},300); renderDock();}
+export function unlockAudio(){if(AU.unlocked) return; AU.unlocked=true; const c=actx(); if(c&&c.state==='suspended') c.resume(); if(AU.set.music) startMusic();}
 ['pointerdown','keydown'].forEach(ev=>addEventListener(ev,unlockAudio,{passive:true}));
 document.addEventListener('visibilitychange',()=>{
   if(!AU.ctx) return;
@@ -134,25 +135,11 @@ export function sfx(name){
       [0,.25,.5,.75,1,1.25].forEach(d=>{doum(t+d,.7,b); qraqeb(t+d+.12,.7,b);}); break;}
   }
 }
-/* --- music dock UI --- */
-export function renderDock(){
-  const d=$('dock'); if(!d) return;
-  const on=AU.set.music&&AU.playing;
-  $('dockBtn').classList.toggle('on',on); $('dockBtn').setAttribute('aria-label',on?t('dk.ariaOn'):t('dk.aria'));
-  const p=$('dockPanel'); if(p.hidden) return;
-  p.innerHTML=`<div class="dk-row"><b>${t('dk.music')}</b><button class="sw" role="switch" aria-checked="${AU.set.music}" id="dkMusic" aria-label="${t('dk.music')}"><i></i></button></div>
-    <div class="dk-tracks" role="group" aria-label="${t('dk.pick')}">${TRACKS.map((tr,i)=>{const sel=curTrack()===tr; return `<button type="button" class="dk-track" data-trk="${i}" aria-pressed="${sel&&AU.set.music}"><span class="ar" style="min-width:auto">${tr.ic}</span><span><b>${esc(t('trk.'+tr.k))}</b><small>${esc(t('trk.'+tr.k+'.d'))}${sel&&on?' · '+t('dk.loop'):''}</small></span></button>`;}).join('')}</div>
-    <label class="dk-row" for="dkVol"><span>${t('dk.vol')}</span><input type="range" id="dkVol" min="0" max="1" step="0.05" value="${AU.set.vol}"><span class="muted" id="dkVolN" style="min-width:34px;text-align:end">${Math.round(AU.set.vol*100)}%</span></label>
-    <div class="dk-row"><b>${t('dk.sfx')}</b><button class="sw" role="switch" aria-checked="${AU.set.sfx}" id="dkSfx" aria-label="${t('dk.sfx')}"><i></i></button></div>
-    <div class="muted" style="font-size:11.5px">${t('dk.m')}</div>`;
-  $('dkMusic').onclick=()=>toggleMusic();
-  p.querySelectorAll('[data-trk]').forEach(b=>b.onclick=e=>{e.stopPropagation(); setTrack(+b.dataset.trk);});
-  $('dkSfx').onclick=()=>{AU.set.sfx=!AU.set.sfx; saveAudio(); applyVolumes(); renderDock(); if(AU.set.sfx) sfx('coin');};
-  $('dkVol').oninput=e=>{AU.set.vol=+e.target.value; $('dkVolN').textContent=Math.round(AU.set.vol*100)+'%'; saveAudio(); applyVolumes();};
-}
+/* --- music dock: the controls are React (src/react/MusicDock.tsx) --- */
+export function renderDock(){refresh();}
+export function toggleSfx(){AU.set.sfx=!AU.set.sfx; saveAudio(); applyVolumes(); refresh(); if(AU.set.sfx) sfx('coin');}
+export function setVolume(v){AU.set.vol=v; saveAudio(); applyVolumes(); refresh();}
+/** the M key turns the music on and off */
 export function initDock(){
-  $('dockBtn').onclick=e=>{e.stopPropagation(); unlockAudio(); const p=$('dockPanel'); p.hidden=!p.hidden; renderDock();};
-  document.addEventListener('click',e=>{const p=$('dockPanel'); if(!p.hidden&&!e.target.closest('#dock')){p.hidden=true;}});
   addEventListener('keydown',e=>{if((e.key==='m'||e.key==='M')&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){unlockAudio(); toggleMusic(); toast(AU.set.music?t('toast.musicOn'):t('toast.musicOff'));}});
-  renderDock();
 }

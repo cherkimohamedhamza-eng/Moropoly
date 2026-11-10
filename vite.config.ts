@@ -1,4 +1,5 @@
-import type { Plugin } from 'vite';
+import { loadEnv, type Plugin } from 'vite';
+import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
@@ -37,13 +38,34 @@ function serviceWorker(): Plugin {
   };
 }
 
-export default defineConfig({
-  base: './',
-  build: {
-    assetsDir: 'app',
-  },
-  plugins: [serviceWorker()],
-  test: {
-    include: ['tests/**/*.test.ts'],
-  },
+// The page may only connect to its own address, plus the game server when that lives somewhere else
+// (VITE_GAME_SERVER, e.g. https://moropoly.example.workers.dev when the site itself stays on GitHub Pages).
+function connectPolicy(server: string | undefined): Plugin {
+  return {
+    name: 'moropoly-connect-policy',
+    transformIndexHtml(html) {
+      if (!server) return html;
+      const origin = new URL(server).origin;
+      return html.replace("connect-src 'self'", `connect-src 'self' ${origin} ${origin.replace(/^http/, 'ws')}`);
+    },
+  };
+}
+
+// `npm run dev` serves the site; `npm run dev:server` runs the game server, which the site reaches through /api
+const LOCAL_SERVER = { '/api': { target: 'http://127.0.0.1:8787', ws: true } };
+
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), 'VITE_');
+  return {
+    base: './',
+    build: {
+      assetsDir: 'app',
+    },
+    server: { proxy: LOCAL_SERVER },
+    preview: { proxy: LOCAL_SERVER },
+    plugins: [react(), serviceWorker(), connectPolicy(env.VITE_GAME_SERVER)],
+    test: {
+      include: ['tests/**/*.test.ts'],
+    },
+  };
 });

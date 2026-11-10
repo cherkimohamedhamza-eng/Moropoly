@@ -1,0 +1,15 @@
+// The game server (and, when deployed together, the website) on Cloudflare.
+// Local: `npm run dev:server`. Deploy: `npm run deploy` (needs `npx wrangler login` once).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "moropoly",
+  "main": "server/worker.ts",
+  "compatibility_date": "2026-10-01",
+  // the built website; requests that match no file reach the worker (the /api routes)
+  "assets": { "directory": "./dist", "binding": "ASSETS" },
+  "durable_objects": {
+    "bindings": [{ "name": "ROOMS", "class_name": "GameRoom" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["GameRoom"] }],
+  "observability": { "enabled": true }
+}

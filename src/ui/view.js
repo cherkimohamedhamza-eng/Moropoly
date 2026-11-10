@@ -8,12 +8,11 @@ import {range} from '../engine/util';
 import {fmt, t} from '../i18n/core';
 import {runAnim} from './anim';
 import {buildBoard, syncDpos} from './board';
-import {$, esc, toast} from './dom';
-import {goHome} from './home';
-import {renderLangSwitch} from './lang';
+import {$, toast} from './dom';
 import {renderLobby} from './lobby';
-import {autoModals, openModal, openSeat} from './modals';
+import {autoModals, openInstallHelp, openSeat} from './modals';
 import {renderAll, renderTurn} from './render';
+import {refresh} from '../react/store';
 
 /* ============================================================
    VIEW: state → screen with animations
@@ -28,18 +27,22 @@ export function initPWA(){
   if(import.meta.env.PROD&&'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')) navigator.serviceWorker.register('sw.js').catch(()=>{});
   const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
   if(standalone) return;
-  addEventListener('beforeinstallprompt',e=>{e.preventDefault(); deferredPrompt=e; $('installBtn').hidden=false;});
-  if(/iphone|ipad|ipod/i.test(navigator.userAgent)) $('installBtn').hidden=false;
-  addEventListener('appinstalled',()=>{$('installBtn').hidden=true; toast(t('pwa.installed'));});
-  $('installBtn').onclick=async()=>{
-    if(deferredPrompt){deferredPrompt.prompt(); try{await deferredPrompt.userChoice;}catch(e){} deferredPrompt=null; $('installBtn').hidden=true; return;}
-    openModal('inst',`<div class="hd"><h2>${t('pwa.title')}</h2><button class="x" data-close aria-label="${t('aria.close')}">×</button></div><div class="bd"><p>${t('pwa.ios')}</p><p>${t('pwa.android')}</p><p class="muted">${t('pwa.note')}</p></div>`);
-  };
+  const offer=on=>{app.home.canInstall=on; refresh();};
+  addEventListener('beforeinstallprompt',e=>{e.preventDefault(); deferredPrompt=e; offer(true);});
+  if(/iphone|ipad|ipod/i.test(navigator.userAgent)) offer(true);
+  addEventListener('appinstalled',()=>{offer(false); toast(t('pwa.installed'));});
+}
+/** the home page's install button: the browser's own install prompt, or how to do it by hand */
+export async function installApp(){
+  if(deferredPrompt){deferredPrompt.prompt(); try{await deferredPrompt.userChoice;}catch(e){} deferredPrompt=null; app.home.canInstall=false; refresh(); return;}
+  openInstallHelp();
 }
 export function seatedIn(ns){return !!(ns&&ns.players&&ns.players.some(p=>p.cid===app.myCid));}
+/** someone else runs this game: the host inside Claude, or the game server */
+const isGuest=()=>app.MODE==='guest'||app.MODE==='online';
 function guestGate(ns){
   // returns true when this state was handled by the join flow (code screen)
-  if(app.MODE!=='guest'||!ns||!ns.players) return false;
+  if(!isGuest()||!ns||!ns.players) return false;
   const seated=seatedIn(ns), d=(ns.denied&&ns.denied[app.myCid])||0;
   if(app.JOIN.base==null){app.JOIN.base=d; app.JOIN.denied=d;}
   if(d>app.JOIN.denied){app.JOIN.denied=d; app.JOIN.pin=null; app.JOIN.sent=false; app.JOIN.wrong=true;}
@@ -58,21 +61,9 @@ function guestGate(ns){
   return false;
 }
 function showPinGate(ns,checking){
-  show('lobby');
   const code=ns.code||app.NET.code||'';
-  $('lobby').innerHTML=`<div class="bar-top"><button class="btn ghost sm" data-home>${t('back')}</button><div class="sp"></div><div class="langsw"></div><span class="chipcode" dir="ltr">${esc(t('chip.game',{c:code.toUpperCase()}))}</span></div>
-   <form class="card" id="pinForm" style="max-width:460px;margin:40px auto;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center" autocomplete="off">
-     <div class="parade" style="margin:4px 0 6px">${[0,1,3].map((k,i)=>`<div class="coin" style="animation-delay:${i*.3}s"><img src="${TOKENS[k].img}" alt=""></div>`).join('')}</div>
-     <h2 class="h2">${t('pin.title')}</h2><p class="muted" style="margin:0">${t('pin.help')}</p>
-     <input class="field" id="pinInput" inputmode="numeric" pattern="[0-9]*" maxlength="6" dir="ltr" placeholder="${esc(t('pin.ph'))}" aria-label="${esc(t('pin.ph'))}" style="font-family:var(--f-display);font-size:24px;letter-spacing:.4em;text-align:center;width:220px" ${checking?'disabled':''}>
-     <div class="muted" id="pinMsg" style="min-height:1.4em;color:${app.JOIN.wrong&&!checking?'var(--red-hi)':'var(--dim)'}">${checking?t('pin.checking'):app.JOIN.wrong?t('pin.wrong'):''}</div>
-     <button class="btn red" type="submit" ${checking?'disabled':''}>${t('pin.join')}</button>
-   </form>`;
-  $('lobby').querySelectorAll('.langsw').forEach(renderLangSwitch);
-  $('lobby').querySelector('[data-home]').onclick=goHome;
-  const inp=$('pinInput'); if(inp&&!checking) inp.focus();
-  $('pinForm').onsubmit=e=>{e.preventDefault(); const v=(inp.value||'').replace(/\D/g,''); if(v.length<4){$('pinMsg').textContent=t('pin.bad'); return;}
-    app.JOIN.pin=v; app.JOIN.wrong=false; app.JOIN.sent=false; guestGate(ns);};
+  app.lobbyPanel={kind:'pin',code,checking:!!checking,wrong:app.JOIN.wrong,submit:v=>{app.JOIN.pin=v; app.JOIN.wrong=false; app.JOIN.sent=false; guestGate(ns);}};
+  show('lobby'); refresh();
 }
 export let TDL=null;
 export function onState(ns){
@@ -95,7 +86,7 @@ export function onState(ns){
   welcomeLate(ns,wasSeated);
 }
 function welcomeLate(ns,wasSeated){
-  if(app.MODE!=='guest'||ns.status!=='play'||wasSeated||!seatedIn(ns)||app.JOIN.welcomed===ns.gid) return;
+  if(!isGuest()||ns.status!=='play'||wasSeated||!seatedIn(ns)||app.JOIN.welcomed===ns.gid) return;
   app.JOIN.welcomed=ns.gid;
   toast(t('seat.joinedMid',{a:fmt(START_CASH)}));
   setTimeout(()=>{if(!app.modal) openSeat();},400);
