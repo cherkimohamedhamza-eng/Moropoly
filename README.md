@@ -12,7 +12,10 @@ npm run dev          # the site at http://localhost:5173; it reaches the game se
 npm test             # rules, the online table, and a replay of games against the original version
 npm run build        # type-check and build the site into dist/
 node scripts/check-server.mjs [address]   # two pretend players against a running game server
+npm run cards        # re-make the property card images (see below)
 ```
+
+The property cards in `public/assets/card-NN.webp` are rendered from one design, `scripts/cards/cards.html`, with the paintings in `scripts/cards/paintings/`. `npm run cards` screenshots each card with Chrome or Edge and saves it as WebP; it needs an internet connection for the fonts. Change the design or a painting there, never the image files by hand.
 
 Games on one device don't need the game server; only online play does. To try online play with two players on one computer, open the invite link in a second browser profile, or at `http://[::1]:5173/…` (a different address keeps a separate player identity).
 
