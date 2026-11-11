@@ -42,11 +42,13 @@ The engine, online code and React screens are TypeScript; the code in `src/app`,
 - Finished tables are deleted after a day, abandoned ones after 30 days.
 
 ## Hosting
-The site is static (`dist/`); online play needs the game server, which runs on Cloudflare Workers with Durable Objects (the free plan is enough for a hobby game).
+moropoly.win runs on Cloudflare (Workers with Durable Objects, free plan): one Worker, `moropoly`, serves both the site and the game server. It lives in the Cloudflare account that holds the domain, which `wrangler.jsonc` names.
 
-**Everything on Cloudflare (simplest).** One Worker serves the site and the game server from the same address:
-1. `npx wrangler login` once, then `npm run deploy`. The site and server come up at `https://moropoly.<your-subdomain>.workers.dev`.
-2. To use moropoly.win, add it to Cloudflare and attach it to the Worker (Workers & Pages → moropoly → Settings → Domains & Routes). GitHub Pages is then no longer needed.
+To publish a new version:
+1. `npx wrangler login` once, as a login with access to that account.
+2. `npm run deploy` (type-checks, builds and uploads; it takes under a minute and open games carry on).
 3. Check it: `node scripts/check-server.mjs https://moropoly.win`.
 
-**Site on GitHub Pages, server on Cloudflare.** Deploy the server as above, then build the site with the server's address, `VITE_GAME_SERVER=https://… npm run build`, and publish `dist/` to Pages, for example from a GitHub Actions workflow (Pages → Build and deployment → Source: **GitHub Actions**). Pages can no longer serve the repository files directly, because the site has to be built first.
+GitHub Pages is no longer used for the site.
+
+**Hosting it elsewhere.** Remove `account_id` and `routes` from `wrangler.jsonc` (and set `workers_dev` to true) to deploy to your own Cloudflare account at `https://moropoly.<your-subdomain>.workers.dev`. To keep the site on a static host while the server runs on Cloudflare, build it with the server's address, `VITE_GAME_SERVER=https://… npm run build`, and publish `dist/`.

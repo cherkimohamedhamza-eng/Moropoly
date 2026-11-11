@@ -5,6 +5,10 @@
   "name": "moropoly",
   "main": "server/worker.ts",
   "compatibility_date": "2026-10-01",
+  // the Cloudflare account that holds moropoly.win
+  "account_id": "a89ca64879dc8efa571f4e281a9a4782",
+  "workers_dev": false,
+  "routes": [{ "pattern": "moropoly.win", "custom_domain": true }],
   // the built website; requests that match no file reach the worker (the /api routes)
   "assets": { "directory": "./dist", "binding": "ASSETS" },
   "durable_objects": {
