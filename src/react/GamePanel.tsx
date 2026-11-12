@@ -4,10 +4,10 @@ import {useEffect, useState, type CSSProperties, type ReactNode} from 'react';
 import {amHost, dispatch, hostAct} from '../app/authority';
 import {hostOnline, onlineCids} from '../app/online';
 import {app} from '../app/state';
-import {JAIL_FINE, SP} from '../engine/data';
+import {JAIL_FINE, RIAD_PREMIUM, SP} from '../engine/data';
 import {canBuild, canMort, canRiad, canSell, canUnmort, netWorth, rentFor, riadCost} from '../engine/engine';
 import type {Game} from '../engine/types';
-import {colorOf, ownedBy, ownsGroup, priceOf, unmortCost} from '../engine/util';
+import {colorOf, groupIdx, houseCost, ownedBy, ownsGroup, priceOf, unmortCost} from '../engine/util';
 import {cityN, fmt, spN, t, tl, tokN} from '../i18n/core';
 import {goHome} from '../ui/home';
 import {openAuction, openConfirmBankrupt, openDeed, openGameOver, openSeat, openTrade, openTradeReply} from '../ui/modals';
@@ -213,6 +213,10 @@ function PlayersTab({G}: {G: Game}) {
   );
 }
 
+/** one action on a property in My deeds: what it does, and what it costs or pays */
+const DeedAct = ({label, amt, off, on, cls = ''}: {label: string; amt: string; off: boolean; on: () => void; cls?: string}) =>
+  <button className={'dact ' + cls} disabled={off} onClick={on}><b>{label}</b><span>{amt}</span></button>;
+
 /** the properties of whoever plays on this device, with building, selling and mortgaging */
 function DeedsTab({G}: {G: Game}) {
   const seats = mySeats();
@@ -225,30 +229,43 @@ function DeedsTab({G}: {G: Game}) {
   const act = (ty: 'build' | 'riad' | 'sell' | 'mort' | 'unmort', i: number) => dispatch({t: ty, i}, pid);
   return (
     <>
-      <div className="muted" style={{fontSize: 12.5, marginBottom: 8}}>{can ? t('dd.help') : t('dd.notTurn', {p: p.name})}</div>
+      <div className="muted" style={{fontSize: 12.5, marginBottom: 8}}>{can ? t('dd.help', {n: Math.round(RIAD_PREMIUM * 100)}) : t('dd.notTurn', {p: p.name})}</div>
       <div className="deeds">
         {owned.map(i => {
           const s = SP[i], pr = G.props[i];
-          const level = s.t !== 'prop' ? (s.t === 'rail' ? t('lv.station') : t('lv.utility')) : pr.houses === 5 ? t('lv.riad') : pr.houses ? t('lv.dar', {n: pr.houses}) : t('lv.none');
+          const prop = s.t === 'prop' ? s : null;
+          const full = !!prop && ownsGroup(G, pid, prop.g);
+          const group = prop ? groupIdx(prop.g) : [];
+          const level = pr.houses === 5 ? t('lv.riad') : pr.houses ? t('lv.dar', {n: pr.houses}) : t('lv.none');
+          const rent = !pr.mort && s.t !== 'util' ? fmt(rentFor(G, i)) : '';
+          const built = group.some(j => G.props[j].houses > 0);   // buildings have to be sold before a rahn
           return (
-            <div key={i} className="drow">
-              <div className="th">{s.art && <img src={s.art} alt="" />}<i style={{background: colorOf(i)}} /></div>
-              <div style={{minWidth: 0}}>
-                <button className="btn ghost sm" style={{border: 0, padding: 0, fontWeight: 600}} onClick={() => openDeed(i)}>{spN(i)}</button>
-                <div className="muted" style={{fontSize: 12}}>{pr.mort ? t('lv.mort') : level}{s.t === 'prop' && !pr.mort ? ' · ' + t('dd.rent', {a: fmt(rentFor(G, i))}) : ''}</div>
+            <div key={i} className={'drow' + (pr.mort ? ' mort' : '')}>
+              <button className="th" onClick={() => openDeed(i)} aria-label={spN(i)}>
+                {s.art ? <img src={s.art} alt="" /> : <span>{s.t === 'util' ? s.glyph : '🚄'}</span>}
+              </button>
+              <div className="dinfo">
+                <button className="dname" onClick={() => openDeed(i)}>{spN(i)}</button>
+                <div className="dmeta">
+                  {prop ? <><i className="dot" style={{background: colorOf(i)}} /><span>{full ? cityN(prop.g) : t('dd.part', {n: group.filter(j => G.props[j].owner === pid).length, m: group.length, c: cityN(prop.g)})}</span></>
+                    : <span>{s.t === 'rail' ? t('lv.station') : t('lv.utility')}</span>}
+                  {pr.mort ? <span className="tag">{t('lv.mort')}</span>
+                    : full && <><span className="pips" aria-hidden="true">{pr.houses === 5 ? <b>✦</b> : [0, 1, 2, 3].map(k => <i key={k} className={k < pr.houses ? 'on' : ''} />)}</span><span>{level}</span></>}
+                </div>
               </div>
+              {rent && <div className="drent"><small>{t('dd.rent')}</small><b>{rent}</b></div>}
               <div className="acts">
-                {s.t === 'prop' && (
+                {prop && full && (
                   <>
-                    <button className="btn sm" disabled={!(can && canBuild(G, i, pid))} onClick={() => act('build', i)}>{pr.houses >= 4 ? t('btn.addRiad') : t('btn.addDar')}</button>
-                    {pr.houses < 5 && !(pr.houses >= 4 && canBuild(G, i, pid)) && ownsGroup(G, pid, s.g) &&
-                      <button className="btn sm gold" disabled={!(can && canRiad(G, i, pid))} onClick={() => act('riad', i)}>{t('btn.riadNow', {a: fmt(riadCost(G, i))})}</button>}
-                    <button className="btn sm" disabled={!(can && canSell(G, i, pid))} onClick={() => act('sell', i)}>{t('btn.sell')}</button>
+                    {pr.houses < 5 && <DeedAct label={pr.houses === 4 ? t('btn.addRiad') : t('btn.addDar')} amt={fmt(houseCost(i))} off={!(can && canBuild(G, i, pid))} on={() => act('build', i)} />}
+                    {pr.houses < 5 && !(pr.houses >= 4 && group.every(j => G.props[j].houses >= 4)) &&
+                      <DeedAct cls="gold" label={t('btn.riadNow')} amt={fmt(riadCost(G, i))} off={!(can && canRiad(G, i, pid))} on={() => act('riad', i)} />}
+                    {pr.houses > 0 && <DeedAct cls="plus" label={t('btn.sell')} amt={'+' + fmt(houseCost(i) / 2)} off={!(can && canSell(G, i, pid))} on={() => act('sell', i)} />}
                   </>
                 )}
                 {pr.mort
-                  ? <button className="btn sm" disabled={!(can && canUnmort(G, i, pid))} onClick={() => act('unmort', i)}>{t('btn.lift', {a: fmt(unmortCost(i))})}</button>
-                  : <button className="btn sm" disabled={!(can && canMort(G, i, pid))} onClick={() => act('mort', i)}>{t('btn.rahn', {a: fmt(priceOf(i) / 2)})}</button>}
+                  ? <DeedAct label={t('btn.lift')} amt={fmt(unmortCost(i))} off={!(can && canUnmort(G, i, pid))} on={() => act('unmort', i)} />
+                  : !built && <DeedAct cls="plus" label={t('btn.rahn')} amt={'+' + fmt(priceOf(i) / 2)} off={!(can && canMort(G, i, pid))} on={() => act('mort', i)} />}
               </div>
             </div>
           );

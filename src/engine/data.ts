@@ -61,6 +61,7 @@ export const SP: Space[]=[
 SP.forEach((s,i)=>{if(s.t==='prop') s.art=ART(i);}); SP[30].art=ART(30); SP[10].art=ART(30);
 export const RAILS=[5,15,25,35], UTILS=[12,28], RAIL_RENT=[250,500,1000,2000];
 export const SALARY=2000, JAIL_FINE=500, START_CASH=15000;
+export const RIAD_PREMIUM=0.5; // the extra share paid for building a riad in one go ("Riad now"), on top of the missing dars
 export const TOKENS: Token[]=['Red petit taxi','Blue petit taxi','Al Boraq','Camel','Koutoubia','Berrad teapot','Ferry','Post scooter','Courier scooter','Fishing boat'].map((n,k)=>({name:n,img:`assets/tok-${k}.webp`,g:['🚕','🚙','🚄','🐪','🕌','🫖','⛴️','🛵','📦','🚤'][k]}));
 export const COLORS=['#e5484d','#3e9be0','#c9cfd8','#e3b34a','#17a862','#9b7bf0','#f07fb0','#2fc2c2'];
 export const BOT_NAMES=['Salma','Youssef','Imane','Karim','Nadia','Omar','Zineb','Mehdi','Hiba','Anas'];

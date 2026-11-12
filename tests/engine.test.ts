@@ -4,7 +4,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { actorOf, apply, canBuild, canSell, freshGame, netWorth, pay, rentFor } from '../src/engine/engine';
 import { botDecide } from '../src/engine/bots';
-import { RAILS, SP, START_CASH } from '../src/engine/data';
+import { RAILS, RIAD_PREMIUM, SP, START_CASH } from '../src/engine/data';
 import { isOwnable, range, unmortCost } from '../src/engine/util';
 import type { Game, Settings } from '../src/engine/types';
 
@@ -252,13 +252,23 @@ describe('building', () => {
     G.props[3].mort = true;
     expect(canBuild(G, 1, 0)).toBe(false);
   });
-  it('can put a riad up in one go, paying for the missing dars', () => {
+  it('can put a riad up in one go, paying for the missing dars plus a premium', () => {
     const G = game();
     own(G, 0, 1, 3);
     G.props[1].houses = 1;
     expect(apply(G, 0, { t: 'riad', i: 1 })).toBe(true);
     expect(G.props[1].houses).toBe(5);
-    expect(G.players[0].cash).toBe(START_CASH - 4 * 500);
+    expect(G.players[0].cash).toBe(START_CASH - 4 * 500 * (1 + RIAD_PREMIUM)); // 3,000 DH
+  });
+  it('does not give the riad premium back: selling and net worth go by the normal dar cost', () => {
+    const G = game();
+    own(G, 0, 1, 3);
+    expect(apply(G, 0, { t: 'riad', i: 1 })).toBe(true);
+    expect(G.players[0].cash).toBe(START_CASH - 5 * 500 * (1 + RIAD_PREMIUM)); // 3,750 DH
+    expect(apply(G, 0, { t: 'sell', i: 1 })).toBe(true);
+    expect(G.props[1].houses).toBe(4);
+    expect(G.players[0].cash).toBe(START_CASH - 5 * 500 * (1 + RIAD_PREMIUM) + 250);
+    expect(netWorth(G, G.players[0])).toBe(G.players[0].cash + 400 + 450 + 4 * 500);
   });
   it('sells back at half price, from the most built property first', () => {
     const G = game();

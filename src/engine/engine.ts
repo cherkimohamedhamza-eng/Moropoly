@@ -2,7 +2,7 @@
    ENGINE (pure on G; runs on the authority only)
    ============================================================ */
 import {BARAKA, MEKTOUB} from './cards';
-import {COLORS, JAIL_FINE, RAILS, RAIL_RENT, SALARY, SP, START_CASH, UTILS} from './data';
+import {COLORS, JAIL_FINE, RAILS, RAIL_RENT, RIAD_PREMIUM, SALARY, SP, START_CASH, UTILS} from './data';
 import {alive, groupIdx, houseCost, isOwnable, ownedBy, ownsGroup, priceOf, range, rid, rnd6, shuffle, unmortCost} from './util';
 import type {Action, Anim, Deck, Game, Payee, Player, Seat, Settings} from './types';
 
@@ -100,7 +100,7 @@ export function repairs(G: Game,p: Player,perDar: number,perRiad: number){
 }
 export function netWorth(G: Game,p: Player){let w=p.cash; ownedBy(G,p.id).forEach(i=>{const pr=G.props[i]; w+=pr.mort?priceOf(i)/2:priceOf(i); if(pr.houses) w+=pr.houses*houseCost(i);}); return w;}
 export function canBuild(G: Game,i: number,pid: number){const s=SP[i],pr=G.props[i]; if(s.t!=='prop'||pr.owner!==pid||pr.houses>=5||!ownsGroup(G,pid,s.g)) return false; const gi=groupIdx(s.g); if(gi.some(j=>G.props[j].mort)) return false; if(pr.houses>Math.min(...gi.map(j=>G.props[j].houses))) return false; return G.players[pid].cash>=houseCost(i);}
-export function riadCost(G: Game,i: number){return (5-G.props[i].houses)*houseCost(i);}
+export function riadCost(G: Game,i: number){return Math.round((5-G.props[i].houses)*houseCost(i)*(1+RIAD_PREMIUM));}
 export function canRiad(G: Game,i: number,pid: number){const s=SP[i],pr=G.props[i]; if(s.t!=='prop'||pr.owner!==pid||pr.houses>=5||!ownsGroup(G,pid,s.g)) return false; if(groupIdx(s.g).some(j=>G.props[j].mort)) return false; return G.players[pid].cash>=riadCost(G,i);}
 export function canSell(G: Game,i: number,pid: number){const s=SP[i],pr=G.props[i]; if(s.t!=='prop'||pr.owner!==pid||pr.houses===0) return false; return pr.houses>=Math.max(...groupIdx(s.g).map(j=>G.props[j].houses));}
 export function canMort(G: Game,i: number,pid: number){const s=SP[i],pr=G.props[i]; if(pr.owner!==pid||pr.mort) return false; if(s.t==='prop'&&groupIdx(s.g).some(j=>G.props[j].houses>0)) return false; return true;}

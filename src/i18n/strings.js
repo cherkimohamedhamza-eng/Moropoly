@@ -105,7 +105,7 @@ S('btn.seeBoard','See board','Voir le plateau','اعرض اللوحة');
 S('pill.trade','Your trade offer · tap to finish','Votre offre d’échange · touchez pour finir','عرض التبادل · المس للإكمال');
 S('pill.treply','Tbadel (trade) offer for you · tap to answer','Offre de Tbadel (échange) pour vous · touchez pour répondre','عرض تبادل لك · المس للرد');
 S('pill.auction','Dlala (auction) · tap to open','Dlala (enchère) · touchez pour ouvrir','الدلالة · المس للفتح');
-S('btn.riadNow','Riad now · {a}','Riad direct · {a}','رياض مباشرة · {a}');
+S('btn.riadNow','Riad now','Riad direct','رياض مباشرة');
 S('log.riadNow','{p} builds a riad straight away on {s}.','{p} construit directement un riad sur {s}.','{p} يبني رياضًا مباشرة في {s}.');
 S('fate.tap','Tap to continue','Touchez pour continuer','المس للمتابعة');
 S('btn.end','End turn','Fin du tour','أنهِ الدور'); S('btn.build','Build','Construire','ابنِ');
@@ -121,10 +121,10 @@ S('btn.letBot','Let computer play','Laisser l’ordinateur jouer','دع الحا
 S('st.bankrupt','Bankrupt','En faillite','مفلس'); S('st.inJail','In 3okacha','À 3okacha','في عكاشة'); S('st.goojf','get-out card','carte de sortie','بطاقة خروج'); S('st.worth','worth {a}','fortune {a}','الثروة {a}');
 S('dd.watching','You are watching this game.','Vous regardez cette partie.','أنت تتابع هذه اللعبة.');
 S('dd.none','{p} owns no property yet. Buy a free tile when you land on it, or win one at the Dlala.','{p} n’a encore aucune propriété. Achetez une case libre en vous y arrêtant, ou gagnez-en une à la Dlala.','{p} لا يملك أي عقار بعد. اشترِ خانة حرة عندما تصل إليها، أو اربح واحدة في الدلالة.');
-S('dd.help','Own a whole city to build a dar (house), then a riad (hotel). Build evenly across the city. Rich? “Riad now” builds the riad in one go.','Possédez toute une ville pour construire une dar (maison), puis un riad (hôtel). Construisez de façon égale dans la ville. Assez d’argent ? « Riad direct » construit le riad d’un coup.','امتلك مدينة كاملة لتبني دارًا ثم رياضًا. ابنِ بالتساوي في كل المدينة. لديك ما يكفي؟ «رياض مباشرة» يبني الرياض دفعة واحدة.');
+S('dd.help','Own a whole city to build a dar (house), then a riad (hotel). Build evenly across the city. In a hurry? “Riad now” builds the riad in one go, for {n}% more.','Possédez toute une ville pour construire une dar (maison), puis un riad (hôtel). Construisez de façon égale dans la ville. Pressé ? « Riad direct » construit le riad d’un coup, pour {n} % de plus.','امتلك مدينة كاملة لتبني دارًا ثم رياضًا. ابنِ بالتساوي في كل المدينة. مستعجل؟ «رياض مباشرة» يبني الرياض دفعة واحدة بزيادة {n}%.');
 S('dd.notTurn','You can build, sell and mortgage on {p}’s turn.','Vous pouvez construire, vendre et hypothéquer pendant le tour de {p}.','يمكنك البناء والبيع والرهن خلال دور {p}.');
 S('lv.station','Station','Gare','محطة'); S('lv.utility','Utility','Service public','مرفق'); S('lv.riad','Riad','Riad','رياض'); S('lv.dar','{n} dar','{n} dar','{n} دار'); S('lv.none','No buildings','Aucun bâtiment','بلا بنايات'); S('lv.mort','Mortgaged','Hypothéqué','مرهون');
-S('dd.rent','rent {a}','loyer {a}','الكراء {a}'); S('btn.addRiad','+ Riad','+ Riad','+ رياض'); S('btn.addDar','+ Dar','+ Dar','+ دار'); S('btn.sell','Sell','Vendre','بع'); S('btn.lift','Lift {a}','Lever {a}','فكّ {a}'); S('btn.rahn','Rahn +{a}','Rahn +{a}','رهن +{a}');
+S('dd.rent','Rent','Loyer','الكراء'); S('dd.part','{n} of {m} in {c}','{n} sur {m} à {c}','{n} من {m} في {c}'); S('btn.addRiad','+ Riad','+ Riad','+ رياض'); S('btn.addDar','+ Dar','+ Dar','+ دار'); S('btn.sell','Sell','Vendre','بع'); S('btn.lift','Lift rahn','Lever le rahn','فكّ الرهن'); S('btn.rahn','Rahn','Rahn','رهن');
 /* deed */
 S('dm.labels',()=>['Rent','With 1 dar','With 2 dars','With 3 dars','With 4 dars','With a riad'],()=>['Loyer','Avec 1 dar','Avec 2 dars','Avec 3 dars','Avec 4 dars','Avec un riad'],()=>['الكراء','مع دار واحدة','مع داريْن','مع 3 دور','مع 4 دور','مع رياض']);
 S('dm.price','Price','Prix','الثمن'); S('dm.allCity','All of {c}, no buildings','Tout {c}, sans bâtiment','كل {c} بلا بنايات'); S('dm.each','Each dar or riad','Chaque dar ou riad','كل دار أو رياض'); S('dm.rahn','Rahn (mortgage)','Rahn (hypothèque)','الرهن');
