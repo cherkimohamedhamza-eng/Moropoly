@@ -97,7 +97,7 @@ function Square({i, V, landed}: {i: number; V: Game; landed: boolean}) {
       const label = s.t === 'mektoub' ? t('b.mektoub') : s.t === 'baraka' ? t('b.baraka') : spN(i);
       const sub = s.t === 'rail' || s.t === 'util' ? num(s.price) : s.t === 'tax' ? t('b.pay', {n: num(s.amount)}) : '';
       inner = <>
-        <div className="bar" style={{background: BAND[s.t]}} />
+        <div className="bar" style={{background: s.band || BAND[s.t]}} />
         <div className="art"><img src={s.tile} srcSet={s.tileSet} sizes="(max-width: 520px) 10vw, 70px" alt="" loading="lazy" /></div>
         <div className="body"><div className="nm">{label}</div>{sub && <div className="pr">{sub}</div>}</div>
       </>;

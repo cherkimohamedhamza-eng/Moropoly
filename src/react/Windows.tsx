@@ -159,7 +159,7 @@ function DeedWindow({i}: {i: number}) {
     rows = [row('p', t('dm.price'), fmt(s.price)), ...RAIL_RENT.map((r, k) => row(k, t('dm.stations', {n: k + 1}), fmt(r)))];
     note = t('dm.railNote');
   } else if (s.t === 'util') {
-    head = <div className="head" style={{background: BAND.util}}><div className="ar">{s.ar}</div>{!ar && <div className="lt">{s.glyph} {nm}</div>}</div>;
+    head = <div className="head" style={{background: s.band || BAND.util}}><div className="ar">{s.ar}</div>{!ar && <div className="lt">{s.glyph} {nm}</div>}</div>;
     rows = [row('p', t('dm.price'), fmt(s.price)), row('1', t('dm.util1'), t('dm.x40')), row('2', t('dm.util2'), t('dm.x100'))];
     note = noteN(i);
   } else {

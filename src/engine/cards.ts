@@ -25,7 +25,7 @@ export const MEKTOUB: Card[]=[
  {text:'A tourist paid full price for your carpet. Collect 1,000 DH.',act:(G,p)=>gain(G,p,1000)},
  {text:'Akhannouch raised the fuel prices again! Pay 2,100 DH.',act:(G,p)=>payTax(G,p,2100,'fuel')},
  {text:'Parking at Morocco Mall. Pay 100 DH.',act:(G,p)=>payTax(G,p,100,'parking')},
- {text:'Maroc Telecom fibre is down again… Pay 500 DH for the repair.',act:(G,p)=>payTax(G,p,500,'fiber')},
+ {text:'Maroc Tilikom fibre is down again… Pay 500 DH for the repair.',act:(G,p)=>payTax(G,p,500,'fiber')},
  {text:'The mqaddem caught you renovating without a permit. Pay 1,000 DH in bribes or a 2,000 DH fine. You pay the 1,000 DH.',act:(G,p)=>payTax(G,p,1000,'mqaddem')}
 ];
 export const BARAKA: Card[]=[

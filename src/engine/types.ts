@@ -5,7 +5,7 @@ export type GroupId = 'brown' | 'lblue' | 'pink' | 'orange' | 'red' | 'yellow' |
 export interface Group { city: string; ar: string; color: string; house: number }
 
 /** `art` is the square's full card picture; `tile` (with `tileSet`, the same picture at two widths) is just its painting, for the board's tile */
-interface BaseSpace { name: string; ar: string; art?: string; tile?: string; tileSet?: string }
+interface BaseSpace { name: string; ar: string; art?: string; tile?: string; tileSet?: string; /** a colour band of its own, instead of its kind's */ band?: string }
 export interface PropSpace extends BaseSpace { t: 'prop'; g: GroupId; price: number; rent: number[]; note: string }
 export interface RailSpace extends BaseSpace { t: 'rail'; price: number }
 export interface UtilSpace extends BaseSpace { t: 'util'; price: number; kind: string; glyph: string }
