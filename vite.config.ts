@@ -27,8 +27,11 @@ function serviceWorker(): Plugin {
         .map(f => relative(outDir, f).replace(/\\/g, '/'))
         .filter(f => OFFLINE.test(f))
         .sort();
+      // The 3D models (.glb) are fetched only when the table view needs them, so they are not in the list of files to
+      // download in advance; but they do count for the version, so a changed model is not served from an old cache.
+      const models = walk(outDir).map(f => relative(outDir, f).replace(/\\/g, '/')).filter(f => f.endsWith('.glb')).sort();
       const hash = createHash('sha256');
-      for (const f of files) hash.update(f).update(readFileSync(join(outDir, f)));
+      for (const f of [...files, ...models]) hash.update(f).update(readFileSync(join(outDir, f)));
       const version = 'moropoly-' + hash.digest('hex').slice(0, 12);
       const sw = readFileSync(join(root, 'src/sw.js'), 'utf8')
         .replace(/^const VERSION=.*;$/m, `const VERSION='${version}';`)

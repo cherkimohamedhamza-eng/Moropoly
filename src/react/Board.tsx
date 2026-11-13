@@ -31,13 +31,20 @@ export function Board() {
       <div className="center" dir={ar ? 'rtl' : 'ltr'}>
         <svg className="star" viewBox="-1 -1 2 2" aria-hidden="true"><path d={STAR_PATH} fill="none" strokeWidth=".05" strokeLinejoin="miter" /></svg>
         <div className="ttl"><div className="tif">ⵎⵓⵔⵓⴱⵓⵍⵉ</div><div className="ar">مُوروبولي</div><div className="lat">MOROPOLY</div></div>
-        {/* the dice turn by an inline transform the animation sets */}
+        {/* The dice. The canvas shows the 3D model (ui/dice3d.js); the CSS cubes under it are what you see until
+            the model has loaded or where WebGL is missing (ui/board.js setDice turns them and shades their faces) */}
         <div className="dice" id="dice">
+          <canvas className="dice-gl" id="diceGl" aria-hidden="true" />
           {[0, 1].map(k => (
-            <div key={k} className="die" id={'d' + k}>
-              {[1, 2, 3, 4, 5, 6].map(f => (
-                <div key={f} className={'face f' + f}>{range(9).map(j => <i key={j} style={{visibility: PIPS[f].includes(j) ? 'visible' : 'hidden'}} />)}</div>
-              ))}
+            <div key={k} className="dslot">
+              <div className="dview" id={'dv' + k}>
+                <div className="die" id={'d' + k}>
+                  {[1, 2, 3, 4, 5, 6].map(f => (
+                    <div key={f} className={'face f' + f}>{range(9).map(j => <i key={j} style={{visibility: PIPS[f].includes(j) ? 'visible' : 'hidden'}} />)}</div>
+                  ))}
+                  {[1, 2, 3, 4, 5, 6].map(f => <span key={'c' + f} className={'core f' + f} />)}
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -49,7 +56,7 @@ export function Board() {
         {V.players.filter(p => !p.bankrupt).map(p => (
           <div key={p.id} className={`pawn${p.id === V.cur && !V.over ? ' cur' : ''}${p.inJail ? ' jailed' : ''}`} id={'pw' + p.id} title={p.name}
             style={{'--pc': p.color} as CSSProperties}>
-            <TokenFace token={p.token} />
+            <TokenFace key={p.token} token={p.token} />
           </div>
         ))}
       </div>
@@ -60,7 +67,7 @@ export function Board() {
 function TokenFace({token}: {token: number}) {
   const [broken, setBroken] = useState(false);
   const tk = TOKENS[token] || TOKENS[0];
-  return broken ? <span className="g">{tk.g}</span> : <img src={tk.img} alt="" onError={() => setBroken(true)} />;
+  return broken ? <span className="g">{tk.g}</span> : <img src={tk.piece} srcSet={tk.pieceSet} sizes="(max-width: 520px) 11vw, 80px" alt="" onError={() => setBroken(true)} />;   // ui/board.js layoutPawns sets the exact size
 }
 
 function Square({i, V, landed}: {i: number; V: Game; landed: boolean}) {
@@ -82,7 +89,7 @@ function Square({i, V, landed}: {i: number; V: Game; landed: boolean}) {
       const houses = fx.houses[i] ?? pr!.houses;
       inner = <>
         <div className="bar" style={{background: GROUPS[s.g].color}} id={'h' + i}><Houses n={houses} pop={fx.pop === i} /></div>
-        <div className="art"><img src={s.art} alt="" loading="lazy" /></div>
+        <div className="art"><img src={s.tile} srcSet={s.tileSet} sizes="(max-width: 520px) 10vw, 70px" alt="" loading="lazy" /></div>
         <div className="body"><div className="nm">{spN(i)}</div><div className="pr">{num(s.price)}</div></div>
       </>;
     }
@@ -105,6 +112,6 @@ function Square({i, V, landed}: {i: number; V: Game; landed: boolean}) {
 
 /** the dars on a property, or its riad; the one just built pops */
 function Houses({n, pop}: {n: number; pop: boolean}) {
-  if (n === 5) return <span className={'riad' + (pop ? ' pop' : '')}>✦</span>;
+  if (n === 5) return <span className={'riad' + (pop ? ' pop' : '')} />;
   return <>{range(n).map(k => <span key={k} className={'dar' + (pop && k === n - 1 ? ' pop' : '')} />)}</>;
 }

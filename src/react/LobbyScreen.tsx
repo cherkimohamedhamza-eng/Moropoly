@@ -26,7 +26,7 @@ export function LobbyScreen() {
 const GameChip = ({code}: {code: string}) => <span className="chipcode" dir="ltr">{t('chip.game', {c: code.toUpperCase()})}</span>;
 const Parade = ({tokens, style}: {tokens: number[]; style: React.CSSProperties}) => (
   <div className="parade" style={style}>
-    {tokens.map((k, i) => <div key={k} className="coin" style={{animationDelay: `${i * 0.3}s`}}><img src={TOKENS[k].img} alt="" /></div>)}
+    {tokens.map((k, i) => <div key={k} className="coin" style={{animationDelay: `${i * 0.3}s`}}><img src={TOKENS[k].img} srcSet={TOKENS[k].set} sizes="64px" alt="" /></div>)}
   </div>
 );
 

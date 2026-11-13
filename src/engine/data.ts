@@ -58,10 +58,10 @@ export const SP: Space[]=[
  {t:'tax',name:"L'3ers",ar:'العرس',amount:1000,why:'wedding'},
  {t:'prop',g:'dblue',name:'Ain Diab',ar:'عين الذياب',price:4000,rent:R(50,200,600,1400,1700,2000),note:'The corniche at sunset.'}
 ];
-SP.forEach((s,i)=>{if(s.t==='prop') s.art=ART(i);}); SP[30].art=ART(30); SP[10].art=ART(30);
+SP.forEach((s,i)=>{if(s.t==='prop'){s.art=ART(i); s.tile=`assets/art-${pad2(i)}.webp`; s.tileSet=`assets/art-${pad2(i)}-112.webp 112w, ${s.tile} 224w`;}}); SP[30].art=ART(30); SP[10].art=ART(30);
 export const RAILS=[5,15,25,35], UTILS=[12,28], RAIL_RENT=[250,500,1000,2000];
 export const SALARY=2000, JAIL_FINE=500, START_CASH=15000;
 export const RIAD_PREMIUM=0.5; // the extra share paid for building a riad in one go ("Riad now"), on top of the missing dars
-export const TOKENS: Token[]=['Red petit taxi','Blue petit taxi','Al Boraq','Camel','Koutoubia','Berrad teapot','Ferry','Post scooter','Courier scooter','Fishing boat'].map((n,k)=>({name:n,img:`assets/tok-${k}.webp`,g:['🚕','🚙','🚄','🐪','🕌','🫖','⛴️','🛵','📦','🚤'][k]}));
+export const TOKENS: Token[]=['Red petit taxi','Blue petit taxi','Al Boraq','Camel','Koutoubia','Berrad teapot','Ferry','Post scooter','Courier scooter','Fishing boat','Hassan Tower'].map((n,k)=>({name:n,img:`assets/tok-${k}.webp`,set:`assets/tok-${k}-96.webp 96w, assets/tok-${k}-192.webp 192w, assets/tok-${k}.webp 288w`,piece:`assets/piece-${k}.webp`,pieceSet:[80,112,160,224].map(w=>`assets/piece-${k}-${w}.webp ${w}w`).join(', ')+`, assets/piece-${k}.webp 320w`,g:['🚕','🚙','🚄','🐪','🕌','🫖','⛴️','🛵','📦','🚤','🗼'][k]}));
 export const COLORS=['#e5484d','#3e9be0','#c9cfd8','#e3b34a','#17a862','#9b7bf0','#f07fb0','#2fc2c2'];
 export const BOT_NAMES=['Salma','Youssef','Imane','Karim','Nadia','Omar','Zineb','Mehdi','Hiba','Anas'];

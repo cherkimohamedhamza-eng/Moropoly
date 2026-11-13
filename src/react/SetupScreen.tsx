@@ -42,7 +42,7 @@ export function SetupScreen() {
         {seats.map((s, i) => (
           <div key={i} className={`seat ${s.on ? '' : 'off'}`}>
             <button className="tok" aria-label={t('aria.seatTok', {n: i + 1})} style={{width: 56}} onClick={() => setPicking(i)}>
-              <Coin token={s.token} style={{boxShadow: `0 0 0 2px ${COLORS[i]}`}} />
+              <Coin token={s.token} style={{boxShadow: `0 0 0 4px ${COLORS[i]}`}} />
             </button>
             <div className="info">
               <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>

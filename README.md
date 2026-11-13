@@ -13,9 +13,25 @@ npm test             # rules, the online table, and a replay of games against th
 npm run build        # type-check and build the site into dist/
 node scripts/check-server.mjs [address]   # two pretend players against a running game server
 npm run cards        # re-make the property card images (see below)
+npm run tiles        # re-cut the small paintings the board's tiles show (from scripts/cards/paintings/)
+npm run dice         # re-make the 3D die model (needs Blender on the PATH)
+npm run buildings    # re-make the dar and riad pictures (needs Blender on the PATH)
+npm run pieces       # re-make the eleven player pieces (needs Blender on the PATH; about fifteen minutes)
+npm run models       # re-make the 3D models the table view draws live (needs Blender on the PATH; about a minute)
+npm run wood         # re-make the wooden table top behind the board (needs Blender on the PATH)
 ```
 
 The property cards in `public/assets/card-NN.webp` are rendered from one design, `scripts/cards/cards.html`, with the paintings in `scripts/cards/paintings/`. `npm run cards` screenshots each card with Chrome or Edge and saves it as WebP; it needs an internet connection for the fonts. Change the design or a painting there, never the image files by hand.
+
+The dice are a 3D model, `public/assets/die.glb`, made by `scripts/dice/make-die.py` in Blender (a rounded cube with drilled pips) and drawn in the browser with three.js (`src/ui/dice3d.js`). three.js is fetched the first time dice are shown; until then, and where WebGL is missing, plain CSS dice show instead.
+
+The dars and riads on the board are 3D models too, built and rendered by `scripts/buildings/make-buildings.py` in Blender. They never turn, so they are pictures rather than live models.
+
+The eleven player pieces are 3D models as well: cast-metal figures with no pedestal; on the board each stands on a spot in its player's colour. `scripts/pieces/make-pieces.py` holds the base, the camera, the light and the modelling helpers; each piece is one file in `scripts/pieces/models/`. Every piece is rendered twice: `tok-N`, a portrait for the round token coins in the menus, and `piece-N`, the piece standing in a fixed frame for the pawns on the board (the `.pawn` styles rely on that frame).
+
+For buildings and pieces Blender renders large masters into `scripts/.renders/` (not kept in git), on the graphics card when it can. `scripts/finish-renders.mjs` then shrinks and sharpens them into `public/assets/` at the sizes they are really shown at, because a browser that shrinks a picture several times blurs it; the game picks the nearest size (`srcset` for the pieces, `image-set` for the buildings).
+
+**Table view.** The board is flat by default, on a wooden table top (`public/assets/wood.webp`, rendered by `scripts/table/make-wood.py`). A "Table view" button in the game bar switches to an optional 3D scene: a wooden table, the board lying on it, and live models of the pieces, buildings and dice with real light and shadows (`src/ui/table3d.js`; a button in the game bar switches to the flat board, `src/ui/tableview.js`). The board's face is not redrawn: it is the same HTML board, laid into the scene with three.js's CSS3DRenderer, so tiles, text and clicks work as before; the scene copies each frame where the flat board has its pawns, buildings and dice. The models are `public/assets/models/*.glb`, exported by the same Blender scripts (`npm run models`). They are plain, uncompressed .glb on purpose: the page's Content-Security-Policy allows neither WebAssembly nor blob workers, which the Draco and Meshopt decoders need.
 
 Games on one device don't need the game server; only online play does. To try online play with two players on one computer, open the invite link in a second browser profile, or at `http://[::1]:5173/…` (a different address keeps a separate player identity).
 

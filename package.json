@@ -11,7 +11,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "deploy": "npm run build && wrangler deploy",
-    "cards": "node scripts/cards/make-cards.mjs"
+    "cards": "node scripts/cards/make-cards.mjs",
+    "tiles": "node scripts/cards/make-tile-art.mjs",
+    "dice": "blender -b -P scripts/dice/make-die.py",
+    "buildings": "blender -b -P scripts/buildings/make-buildings.py && node scripts/finish-renders.mjs",
+    "pieces": "blender -b -P scripts/pieces/make-pieces.py && node scripts/finish-renders.mjs",
+    "models": "blender -b -P scripts/buildings/make-buildings.py -- --glb && blender -b -P scripts/pieces/make-pieces.py -- --glb",
+    "wood": "blender -b -P scripts/table/make-wood.py && node scripts/finish-renders.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261110.1",
@@ -27,6 +33,7 @@
   },
   "dependencies": {
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "three": "^0.187.0"
   }
 }

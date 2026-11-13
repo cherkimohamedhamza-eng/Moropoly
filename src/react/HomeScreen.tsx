@@ -81,7 +81,7 @@ function ParadeCoin({k}: {k: number}) {
   const name = tokN(k);
   return (
     <div className="coin" style={{animationDelay: `${(k * 0.27).toFixed(2)}s`}} title={name}>
-      {broken ? <span className="g">{TOKENS[k].g}</span> : <img src={TOKENS[k].img} alt={name} onError={() => setBroken(true)} />}
+      {broken ? <span className="g">{TOKENS[k].g}</span> : <img src={TOKENS[k].img} srcSet={TOKENS[k].set} sizes="76px" alt={name} onError={() => setBroken(true)} />}
       <span>{name}</span>
     </div>
   );

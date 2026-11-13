@@ -112,7 +112,7 @@ h1,h2,h3{text-wrap:balance}
 .seats{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
 .seat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;gap:12px;align-items:center;min-width:0}
 .seat.off{opacity:.45}
-.seat .coin{width:56px;height:56px;padding:3px}
+.seat .coin{width:56px;height:56px;padding:0;background:none}
 .seat .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
 .seat .info .field{padding:6px 10px;border-radius:9px}
 .seg{display:inline-flex;border:1px solid var(--line-2);border-radius:999px;overflow:hidden;align-self:flex-start}
@@ -124,7 +124,7 @@ h1,h2,h3{text-wrap:balance}
 .opt span{color:var(--dim);font-size:12.5px}
 .opt select{margin-top:6px;padding:6px 8px}
 .sec{font-family:var(--f-display);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--silver);margin:26px 0 10px}
-.tokgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;max-width:520px}
+.tokgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;max-width:600px}
 .tok{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;color:var(--dim);position:relative}
 .tok .coin{width:100%;max-width:78px;height:auto;aspect-ratio:1}
 .tok[aria-pressed="true"] .coin{box-shadow:0 0 0 3px var(--green-hi),0 10px 30px rgba(0,0,0,.5)}
@@ -149,29 +149,69 @@ h1,h2,h3{text-wrap:balance}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 384px;gap:20px;align-items:start}
 @media (max-width:1000px){.layout{grid-template-columns:minmax(0,1fr)}}
 .board-wrap{display:flex;justify-content:center;min-width:0}
-.board-box{container-type:inline-size;container-name:board;width:min(100%,calc(100vh - 92px),1000px)}
-.board{width:100%;aspect-ratio:1;position:relative;display:grid;grid-template-columns:1.6fr repeat(9,1fr) 1.6fr;grid-template-rows:1.6fr repeat(9,1fr) 1.6fr;gap:.3cqi;padding:1.6cqi;box-sizing:border-box;border-radius:2cqi;background:var(--metal);box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 0 0 .25cqi rgba(255,255,255,.7)}
+/* The board sits on a wooden table top (a Blender render, scripts/table/make-wood.py), darkened towards its edges. */
+.board-box{container-type:inline-size;container-name:board;width:min(100%,calc(100vh - 92px),1000px);box-sizing:border-box;padding:clamp(7px,1.7vw,22px);border-radius:clamp(12px,2vw,24px);
+  background:radial-gradient(120% 120% at 30% 20%,transparent 40%,rgba(0,0,0,.5)),linear-gradient(rgba(12,7,3,.22),rgba(12,7,3,.22)),url(/assets/wood.webp) center/cover #2a1a10;
+  box-shadow:0 24px 60px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.08),inset 0 2px 0 rgba(255,255,255,.07)}
+/* Table view (.table asks for it, .live3d is set while it runs; src/ui/tableview.js, src/ui/table3d.js): a 3D scene with
+   a wooden table, the board lying on it and live models standing on the board. The board itself is this same HTML,
+   laid into the scene (.table-dom) under the 3D picture (.table-gl), which is see-through where the board shows.
+   While it runs, the flat board's own pawns, buildings and dice are hidden: the scene draws them, copying their
+   places. Cards and floating numbers stay HTML and are stretched by --up so they look upright on the tilted board. */
+.board-box.table{width:min(100%,calc((100vh - 92px)*1.22),1100px)}
+.table-stage{position:relative;width:100%;overflow:hidden;border-radius:18px;background:#0c0806;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.table-stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;background:radial-gradient(120% 95% at 50% 55%,transparent 55%,rgba(0,0,0,.55) 100%)}
+.table-dom{position:absolute;inset:0}
+.table-gl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.board-box.live3d{--up:1.27;padding:0;background:none;box-shadow:none}        /* the scene brings its own table */
+.board-box.live3d .board{box-shadow:none}
+.board-box.live3d .pawn>*,.board-box.live3d .pawn::before,.board-box.live3d .pawn::after,.board-box.live3d .dar,.board-box.live3d .riad,.board-box.live3d .dice,.board-box.live3d .dice *{visibility:hidden!important}
+.board-box.live3d .card3d,.board-box.live3d .floater{scale:1 var(--up)}
+.board{width:100%;aspect-ratio:1;position:relative;display:grid;grid-template-columns:1.6fr repeat(9,1fr) 1.6fr;grid-template-rows:1.6fr repeat(9,1fr) 1.6fr;gap:.3cqi;padding:1.6cqi;box-sizing:border-box;border-radius:2cqi;background:var(--metal);box-shadow:0 1.6cqi 2.8cqi rgba(0,0,0,.62),0 .4cqi .6cqi rgba(0,0,0,.55),inset 0 0 0 .22cqi rgba(255,255,255,.82),inset 0 .55cqi .7cqi rgba(255,255,255,.5),inset 0 -.55cqi .8cqi rgba(0,0,0,.3)}
+/* Depth without changing the board: ::before is the dark well the tiles are set into, ::after a soft light from the
+   upper left with a little darkening at the edges, over the tiles but under the cards and the pawns. */
+.board::before{content:"";position:absolute;inset:1.22cqi;border-radius:1.05cqi;background:#08100d;box-shadow:inset 0 .35cqi 1cqi #000,0 0 0 .1cqi rgba(255,255,255,.4);pointer-events:none}
+.board::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:4;background:radial-gradient(85% 75% at 20% 10%,rgba(255,244,222,.14),transparent 62%),radial-gradient(125% 125% at 50% 50%,transparent 60%,rgba(0,0,0,.22))}
 .board::before{content:"";position:absolute;inset:1.05cqi;border-radius:1.2cqi;background:linear-gradient(90deg,var(--red) 0 50%,var(--green) 50%);pointer-events:none;z-index:0}
 .board::after{content:"";position:absolute;inset:1.5cqi;border-radius:.9cqi;background:#1a1e24;pointer-events:none;z-index:0}
-.cell{position:relative;overflow:hidden;display:flex;min-width:0;min-height:0;cursor:pointer;background:linear-gradient(180deg,#fafbfc,var(--tile-2));color:var(--ink);font-size:1.25cqi;line-height:1.1;text-align:center;border-radius:.45cqi;z-index:1}
+.cell{position:relative;overflow:hidden;display:flex;min-width:0;min-height:0;cursor:pointer;background:linear-gradient(180deg,#fafbfc,var(--tile-2));color:var(--ink);font-size:1.25cqi;line-height:1.1;text-align:center;border-radius:.45cqi;z-index:1;box-shadow:0 .16cqi .34cqi rgba(0,0,0,.6),inset 0 0 0 .07cqi rgba(255,255,255,.9),inset 0 -.32cqi .5cqi rgba(15,25,40,.1)}
 .cell:hover{filter:brightness(1.05)}
 .cell .bar{flex:0 0 17%;display:flex;align-items:center;justify-content:center;gap:.35cqi;position:relative}
-.cell .art{flex:0 0 38%;min-height:0;min-width:0;overflow:hidden;position:relative}
+.cell .bar::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,0) 46%,rgba(0,0,0,.16))}   /* a sheen on the colour band */
+.cell .art::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 .55cqi rgba(0,0,0,.4)}                                              /* the picture sits behind its frame */
+/* A tile is a small sibling of the property cards: the same cream paper and warm ink, a thin inlaid line round the
+   edge, the city's colour band, the card's painting in its own dark frame (only the painting: the full card, with its
+   border and lettering, is what opens when the tile is tapped), then the name and the price. */
+.cell:not(.corner){background:linear-gradient(180deg,#f9f0da,#eee1c0);color:#2b1d12;outline:.07cqi solid rgba(138,90,43,.5);outline-offset:-.24cqi}
+.cell .art{flex:0 0 45%;min-height:0;min-width:0;overflow:hidden;position:relative;margin:.34cqi .46cqi 0;border-radius:.14cqi;box-shadow:0 0 0 .08cqi rgba(43,29,18,.8),0 .12cqi .24cqi rgba(43,29,18,.3)}
+.s-t .art{margin:0 .46cqi .34cqi}
 .cell .art img{width:100%;height:100%;object-fit:cover;display:block}
 .cell .body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25cqi;padding:.3cqi;min-width:0;min-height:0}
-.cell .nm{font-weight:700;font-size:1.12cqi;text-wrap:balance;overflow-wrap:anywhere}
-.cell .pr{font-size:1.05cqi;font-variant-numeric:tabular-nums;color:var(--ink-dim);font-weight:600}
+.cell .nm{font-weight:700;font-size:1.1cqi;text-wrap:balance;overflow-wrap:anywhere}
+.cell .pr{font-size:1.05cqi;font-variant-numeric:tabular-nums;color:#9c4a22;font-weight:700}
 .cell .ico{font-family:var(--f-ar);font-weight:700;font-size:2.1cqi;line-height:1}
 .cell .glyph{font-size:2.2cqi;line-height:1}
 .s-b{flex-direction:column}.s-t{flex-direction:column-reverse}.s-l{flex-direction:row-reverse}.s-r{flex-direction:row}
 .s-l .bar,.s-r .bar{flex-basis:14%;flex-direction:column}
-.s-l .art,.s-r .art{flex-basis:34%}
+.s-l .art,.s-r .art{flex-basis:33%}
+.s-l .nm,.s-r .nm{font-size:1.02cqi;overflow-wrap:normal;hyphens:auto}
+.s-l .art{margin:.46cqi .34cqi .46cqi 0}.s-r .art{margin:.46cqi 0 .46cqi .34cqi}
 .own{position:absolute;pointer-events:none}
 .s-b .own{left:0;right:0;bottom:0;height:1cqi}.s-t .own{left:0;right:0;top:0;height:1cqi}.s-l .own{top:0;bottom:0;left:0;width:1cqi}.s-r .own{top:0;bottom:0;right:0;width:1cqi}
 .cell.mort .body{background:repeating-linear-gradient(135deg,transparent 0 .7cqi,rgba(193,39,45,.14) .7cqi 1.3cqi)}
 .cell.mort .art{filter:grayscale(1) opacity(.5)}
-.dar{width:1.05cqi;height:1.05cqi;background:var(--green);border:.14cqi solid #fff;border-radius:.2cqi;box-shadow:0 .1cqi .3cqi rgba(0,0,0,.35)}
-.riad{width:2cqi;height:1.3cqi;background:var(--red);border:.16cqi solid #fff;border-radius:.3cqi;display:grid;place-items:center;color:#fff;font-size:.9cqi}
+/* Dars and riads are pictures of 3D models (scripts/buildings/make-buildings.py). Each box is the building itself;
+   the picture is larger because it also holds the shadow, so ::before places it around the box. Buildings are
+   bigger than the colour band they stand on and spill onto the tile, away from its edge. */
+.cell .bar{z-index:2;gap:0}
+.s-b .bar{align-items:flex-start}.s-t .bar{align-items:flex-end}.s-l .bar{align-items:flex-end}.s-r .bar{align-items:flex-start}
+.dar,.riad{position:relative;flex:0 0 auto;transform-origin:50% 90%}
+.dar::before,.riad::before{content:"";position:absolute;background:center/100% 100% no-repeat;filter:drop-shadow(0 0 .07cqi rgba(255,255,255,.95))}
+.dar{width:2.1cqi;height:2.06cqi;margin:0 -.14cqi}
+.s-l .dar,.s-r .dar{margin:-.1cqi 0}
+.dar::before{left:-10.3%;top:-24.7%;width:148.5%;height:151.6%;background-image:url(/assets/dar-32.webp);background-image:image-set(url(/assets/dar-32.webp) 1x,url(/assets/dar.webp) 2x)}
+.riad{width:2.3cqi;height:2.42cqi}       /* about a dar's size: a riad replaces four dars, it does not take more room */
+.riad::before{left:-7.7%;top:-8.7%;width:134.9%;height:128.0%;background-image:url(/assets/riad-48.webp);background-image:image-set(url(/assets/riad-48.webp) 1x,url(/assets/riad.webp) 2x)}
 .pop{animation:popin .5s cubic-bezier(.3,1.7,.5,1)}
 @keyframes popin{0%{transform:scale(0)}100%{transform:scale(1)}}
 .corner{flex-direction:column;align-items:center;justify-content:center;gap:.4cqi;padding:.6cqi;color:#fff}
@@ -189,39 +229,81 @@ h1,h2,h3{text-wrap:balance}
 .c-gojail .big{color:var(--red-hi)}
 .cell.land{box-shadow:inset 0 0 0 .4cqi var(--gold);z-index:2}
 @container board (max-width:600px){.cell .art{display:none}.cell .nm{font-size:1.45cqi}.cell .pr{font-size:1.3cqi}.corner .tiny{display:none}}
-.center{grid-area:2/2/11/11;position:relative;z-index:1;border-radius:1cqi;overflow:hidden;background:radial-gradient(120% 90% at 50% 40%,#0c4a2c,var(--green-deep) 60%,#03140c);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6cqi;color:#fff}
-.center .star{position:absolute;inset:0;margin:auto;width:70%;height:70%;opacity:.12;pointer-events:none}
+.center{grid-area:2/2/11/11;position:relative;z-index:1;border-radius:1cqi;overflow:hidden;background:radial-gradient(120% 95% at 40% 32%,#11603a,var(--green-deep) 58%,#031109);box-shadow:inset 0 0 0 .14cqi rgba(0,0,0,.65),inset 0 .6cqi 1.7cqi rgba(0,0,0,.75),inset 0 0 7cqi rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6cqi;color:#fff}
+.center::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;mix-blend-mode:soft-light;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1.1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}   /* the weave of the felt */
+.center>.ttl,.center>.event,.center>.dice{position:relative;z-index:1}
+.center .star{position:absolute;inset:0;margin:auto;width:70%;height:70%;opacity:.14;pointer-events:none}
 .center .star path{stroke:var(--silver-hi)}
 .center>*{position:relative}
 .ttl{display:flex;flex-direction:column;align-items:center;line-height:1}
 .ttl .tif{font-family:var(--f-tif);font-size:2cqi;letter-spacing:.34em;color:var(--silver)}
 .ttl .ar{font-family:var(--f-ar);font-weight:700;font-size:5.6cqi;line-height:1.35;margin-top:.2cqi;color:#fff}
 .ttl .lat{font-family:var(--f-display);font-weight:800;font-size:4.6cqi;letter-spacing:.14em;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
-.dice{display:flex;gap:3cqi;perspective:60cqi;--ds:7cqi;height:var(--ds)}
-.die{width:var(--ds);height:var(--ds);position:relative;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.2,.9,.25,1.05)}
-.face{position:absolute;inset:0;border-radius:1.2cqi;background:linear-gradient(145deg,#fff,#dfe3e8);box-shadow:inset 0 0 0 .25cqi rgba(0,0,0,.08);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:1cqi;box-sizing:border-box;backface-visibility:hidden}
-.face i{width:1.3cqi;height:1.3cqi;border-radius:50%;background:var(--ink);place-self:center;visibility:hidden}
-.face.f1 i:nth-child(5){background:var(--red)}
-.f1{transform:translateZ(calc(var(--ds)/2))}.f6{transform:rotateY(180deg) translateZ(calc(var(--ds)/2))}
-.f2{transform:rotateY(90deg) translateZ(calc(var(--ds)/2))}.f5{transform:rotateY(-90deg) translateZ(calc(var(--ds)/2))}
-.f3{transform:rotateX(90deg) translateZ(calc(var(--ds)/2))}.f4{transform:rotateX(-90deg) translateZ(calc(var(--ds)/2))}
-.dice.jump .die{animation:diehop 1s ease}
-@keyframes diehop{0%{translate:0 0}30%{translate:0 -4cqi}60%{translate:0 0}75%{translate:0 -1cqi}100%{translate:0 0}}
+.dice{position:relative;display:flex;gap:4.4cqi;--ds:5.8cqi;--dt:.9s;padding:2.2cqi 0 1.8cqi}
+.dice-gl{position:absolute;left:50%;top:50%;width:40cqi;height:26cqi;translate:-50% calc(-50% - 1cqi);pointer-events:none;visibility:hidden;z-index:2}
+.dice.gl .dice-gl{visibility:visible}
+.dice.gl .dslot{visibility:hidden}
+.dslot{position:relative;width:var(--ds);height:var(--ds);perspective:34cqi}
+.dslot::before{content:"";position:absolute;left:-18%;right:-34%;top:38%;bottom:-52%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.62),rgba(0,0,0,.28) 55%,transparent);filter:blur(.35cqi)}
+.dview{width:100%;height:100%;transform-style:preserve-3d;transform:rotateX(-58deg) rotateY(-22deg) rotateX(90deg);transition:transform var(--dt) cubic-bezier(.2,.9,.25,1.05)}
+.dslot:nth-child(2) .dview{transform:rotateX(-58deg) rotateY(22deg) rotateX(90deg)}
+.die{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform var(--dt) cubic-bezier(.2,.9,.25,1.05)}
+.face{position:absolute;inset:0;border-radius:.95cqi;background:linear-gradient(145deg,#fff,#eceef1 60%,#e1e4e9);box-shadow:inset 0 0 0 .12cqi rgba(255,255,255,.9),inset 0 0 .9cqi rgba(40,50,70,.16);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:.85cqi;box-sizing:border-box;backface-visibility:hidden;--tz:calc(var(--ds)/2)}
+.face::after{content:"";position:absolute;inset:0;border-radius:inherit;background:#0e1826;opacity:var(--sh,0);transition:opacity var(--dt) ease;pointer-events:none}
+.face i{width:1.12cqi;height:1.12cqi;border-radius:50%;background:radial-gradient(circle at 38% 32%,#3b424d,var(--ink) 62%);box-shadow:inset 0 .12cqi .2cqi rgba(0,0,0,.65),0 .06cqi 0 rgba(255,255,255,.75);place-self:center;visibility:hidden}
+.face.f1 i:nth-child(5){width:1.7cqi;height:1.7cqi;background:radial-gradient(circle at 38% 32%,var(--red-hi),var(--red) 62%)}
+.core{position:absolute;inset:.28cqi;background:#cdd2d9;backface-visibility:hidden;--tz:calc(var(--ds)/2 - .28cqi)}
+.f1{transform:translateZ(var(--tz))}.f6{transform:rotateY(180deg) translateZ(var(--tz))}
+.f2{transform:rotateY(90deg) translateZ(var(--tz))}.f5{transform:rotateY(-90deg) translateZ(var(--tz))}
+.f3{transform:rotateX(90deg) translateZ(var(--tz))}.f4{transform:rotateX(-90deg) translateZ(var(--tz))}
+.dice.jump .dview{animation:diehop var(--dt) cubic-bezier(.3,0,.5,1)}
+.dice.jump .dslot::before{animation:dieshadow var(--dt) cubic-bezier(.3,0,.5,1)}
+.dice.jump .dslot:nth-child(2) .dview,.dice.jump .dslot:nth-child(2)::before{animation-delay:.05s}
+@keyframes diehop{0%{translate:0 0;scale:1}26%{translate:0 -5.2cqi;scale:1.22}56%{translate:0 0;scale:1}70%{translate:0 -1.5cqi;scale:1.06}84%{translate:0 0;scale:1}92%{translate:0 -.4cqi}100%{translate:0 0;scale:1}}
+@keyframes dieshadow{0%{scale:1;opacity:1}26%{scale:.55;opacity:.35;translate:1.6cqi 1.4cqi}56%{scale:1;opacity:1;translate:0 0}70%{scale:.86;opacity:.75;translate:.4cqi .4cqi}84%{scale:1;opacity:1;translate:0 0}100%{scale:1;opacity:1}}
 .event{max-width:64cqi;min-height:2.4cqi;text-align:center;font-size:1.75cqi;font-weight:500;color:#e7efe9;padding:0 2cqi}
 .stage{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;z-index:5}
-.reveal{width:24cqi;aspect-ratio:2/3;border-radius:1.4cqi;overflow:hidden;box-shadow:0 2cqi 5cqi rgba(0,0,0,.6),0 0 0 .4cqi #fff;background:var(--metal);animation:flipin .7s cubic-bezier(.2,.9,.3,1.2) both;position:relative}
+.reveal{width:24cqi;aspect-ratio:2/3;border-radius:1.4cqi;overflow:hidden;box-shadow:0 0 0 .4cqi #fff;background:var(--metal);position:relative}
 .reveal img{width:100%;height:100%;object-fit:cover;display:block}
 .reveal .cap{position:absolute;inset:auto 0 0;padding:4cqi 1.2cqi 1cqi;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;font-weight:700;font-size:1.8cqi;text-align:center}
-.reveal.out{animation:flipout .45s ease-in forwards}
-@keyframes flipin{0%{transform:perspective(80cqi) rotateY(90deg) scale(.6);opacity:0}100%{transform:none;opacity:1}}
-@keyframes flipout{to{transform:perspective(80cqi) rotateY(-90deg) scale(.7);opacity:0}}
-.fate{width:38cqi;border-radius:1.6cqi;padding:2cqi 2.4cqi;text-align:center;color:#fff;box-shadow:0 2cqi 5cqi rgba(0,0,0,.55),0 0 0 .35cqi rgba(255,255,255,.85);animation:flipin .6s cubic-bezier(.2,.9,.3,1.2) both}
+/* A revealed card is a real two-sided card: .c3-body turns in 3D (front, back and three layers between them for
+   its thickness), .c3-shadow is its shadow on the felt. --ox/--oy: the square it lifts off, from the board's middle
+   (--oy is divided by --up because in table view the whole card is stretched upwards by that much). */
+.card3d{position:relative;perspective:95cqi;--ox:0px;--oy:0px;--ct:.85s;--cr:1.4cqi;--s0:.27;pointer-events:auto}
+.card3d.fate3{--cr:1.6cqi;--s0:.15;cursor:pointer}
+.c3-body{position:relative;transform-style:preserve-3d;border-radius:var(--cr);animation:c3in var(--ct) cubic-bezier(.3,.7,.3,1) both}
+.c3-front,.c3-back{backface-visibility:hidden}
+.c3-front{transform:translateZ(.22cqi)}
+.c3-back{position:absolute;inset:0;border-radius:var(--cr);overflow:hidden;transform:rotateY(180deg) translateZ(.22cqi);background:#f5ead0;box-shadow:0 0 0 .4cqi #fff;display:grid;place-items:center}
+.c3-back img{width:100%;height:100%;object-fit:cover;display:block}
+.c3-edge{position:absolute;inset:0;border-radius:var(--cr);background:#e6d9ba;box-shadow:0 0 0 .4cqi #ddd8cc}
+.c3-edge:nth-child(1){transform:translateZ(-.11cqi)}.c3-edge:nth-child(3){transform:translateZ(.11cqi)}
+.fate3.mektoub .c3-back{background:radial-gradient(circle at 50% 45%,#b3262c,#5d0f13)}
+.fate3.baraka .c3-back{background:radial-gradient(circle at 50% 45%,#0a7a43,#032c16)}
+.fate3 .c3-back{box-shadow:0 0 0 .35cqi rgba(255,255,255,.85),inset 0 0 0 .9cqi rgba(255,255,255,.14)}
+.fate3 .c3-back .k{font-family:var(--f-ar);font-weight:700;font-size:9cqi;line-height:1;color:rgba(255,255,255,.92)}
+.fate3 .c3-edge{background:#efe9e0}
+.c3-shadow{position:absolute;inset:3% 2% -2%;border-radius:var(--cr);background:rgba(0,0,0,.6);animation:c3shadow var(--ct) cubic-bezier(.3,.7,.3,1) both}
+.card3d.out{animation:c3fade .42s ease-in forwards}
+.card3d.out .c3-body{animation:c3out .42s ease-in forwards}
+@keyframes c3in{
+  0%{transform:translate3d(var(--ox),calc(var(--oy) / var(--up, 1)),0) rotateX(0deg) rotateY(180deg) rotateZ(-10deg) scale(var(--s0))}
+  50%{transform:translate3d(calc(var(--ox)*.3),calc(calc(var(--oy) / var(--up, 1))*.3 - 4cqi),14cqi) rotateX(22deg) rotateY(98deg) rotateZ(-4deg) scale(.9)}
+  100%{transform:translate3d(0,0,0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1)}
+}
+@keyframes c3shadow{
+  0%{transform:translate(var(--ox),calc(var(--oy) / var(--up, 1))) scale(var(--s0));opacity:.85;filter:blur(.3cqi)}
+  50%{transform:translate(calc(var(--ox)*.3),calc(calc(var(--oy) / var(--up, 1))*.3 + 4cqi)) scale(.98);opacity:.3;filter:blur(2.8cqi)}
+  100%{transform:translate(0,1.9cqi) scale(1);opacity:.62;filter:blur(1.7cqi)}
+}
+@keyframes c3out{to{transform:translate3d(0,2cqi,0) rotateX(0deg) rotateY(-170deg) rotateZ(6deg) scale(.35)}}
+@keyframes c3fade{0%,45%{opacity:1}100%{opacity:0}}
+.fate{width:38cqi;border-radius:1.6cqi;padding:2cqi 2.4cqi;text-align:center;color:#fff;box-shadow:0 0 0 .35cqi rgba(255,255,255,.85)}
 .fate.mektoub{background:linear-gradient(150deg,#d43a40,#7e161b)}
 .fate.baraka{background:linear-gradient(150deg,#0b8a4c,#03401f)}
 .fate .k{font-family:var(--f-ar);font-weight:700;font-size:4cqi;line-height:1}
 .fate .kl{font-family:var(--f-display);letter-spacing:.2em;font-size:1.1cqi;text-transform:uppercase;opacity:.85;margin-top:.4cqi}
 .fate .tx{font-size:1.9cqi;margin-top:1.2cqi;line-height:1.3}
-.fate.out{animation:flipout .45s ease-in forwards}
 .fate{pointer-events:auto;cursor:pointer;position:relative;overflow:hidden;width:46cqi}.fate .tx{font-size:2.5cqi}
 .fate .tap{font-size:1.25cqi;opacity:.7;margin-top:1.4cqi}
 .fate .timer{position:absolute;left:0;bottom:0;height:.6cqi;width:100%;background:rgba(255,255,255,.75);transform-origin:left;animation:fatetime linear forwards}
@@ -234,13 +316,17 @@ h1,h2,h3{text-wrap:balance}
 #modalRoot:not(.min) .modal-pill{display:none}
 @media (max-width:700px){body.ingame .modal-pill{bottom:calc(120px + env(safe-area-inset-bottom,0px))}}
 .pawnlayer{position:absolute;inset:0;pointer-events:none;z-index:6}
-.pawn{position:absolute;left:0;top:0;width:var(--ps);height:var(--ps);border-radius:50%;padding:.28cqi;box-sizing:border-box;background:var(--metal);box-shadow:0 .5cqi 1.2cqi rgba(0,0,0,.5);will-change:transform}
-.pawn img,.pawn .g{width:100%;height:100%;border-radius:50%;object-fit:cover;display:grid;place-items:center;font-size:2cqi;background:#222}
-.pawn::after{content:"";position:absolute;inset:-.25cqi;border-radius:50%;border:.35cqi solid var(--pc)}
-.pawn.cur{z-index:3}
-.pawn.cur::before{content:"";position:absolute;inset:-1cqi;border-radius:50%;border:.3cqi solid var(--gold);animation:ring 1.4s ease-out infinite}
+.pawn{position:absolute;left:0;top:0;width:var(--ps);height:var(--ps);transition:transform .25s ease}
+/* A pawn is a picture of the 3D piece (scripts/pieces/make-pieces.py): 384 x 512, with the point it stands on 50% across
+   and 80% down. It is placed so that point is the middle of the pawn's box; the figure rises above it, over the
+   squares behind. */
+.pawn img{position:absolute;left:-56.5%;top:-177.2%;width:213%;height:auto;aspect-ratio:3/4;max-width:none}
+.pawn .g{position:absolute;inset:0;display:grid;place-items:center;font-size:2.4cqi;border-radius:50%;background:#222}
+/* the player's colour: a solid spot on the board that the piece stands on */
+.pawn::after{content:"";position:absolute;left:-6%;right:-6%;top:50%;height:63%;translate:0 -50%;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--pc) 82%,#fff),var(--pc) 78%);box-shadow:0 0 0 .14cqi rgba(255,255,255,.95),0 0 0 .26cqi rgba(0,0,0,.35),0 .25cqi .5cqi rgba(0,0,0,.45);z-index:-1}
+.pawn.cur::before{content:"";position:absolute;left:-26%;right:-26%;top:50%;height:85%;translate:0 -50%;border-radius:50%;border:.3cqi solid var(--gold);animation:ring 1.4s ease-out infinite;z-index:-1}
 @keyframes ring{0%{transform:scale(.8);opacity:1}100%{transform:scale(1.35);opacity:0}}
-.pawn.jailed img{filter:grayscale(.6)}
+.pawn.jailed img{filter:grayscale(.85) brightness(.8)}
 .floater{position:absolute;z-index:8;font-family:var(--f-display);font-weight:800;font-size:2cqi;pointer-events:none;white-space:nowrap;text-shadow:0 .2cqi .6cqi rgba(0,0,0,.7);animation:floatup 1.5s ease-out forwards}
 .floater.plus{color:#7dffb4}.floater.minus{color:#ff8a8f}.floater.gold{color:var(--gold)}
 @keyframes floatup{0%{transform:translate(-50%,0) scale(.6);opacity:0}15%{transform:translate(-50%,-1cqi) scale(1.15);opacity:1}100%{transform:translate(-50%,-7cqi) scale(1);opacity:0}}
@@ -252,7 +338,7 @@ h1,h2,h3{text-wrap:balance}
 .turn{background:var(--metal-soft);border:1px solid var(--line-2);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
 .turn::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,var(--red) 50%,var(--green) 50%)}
 .who{display:flex;align-items:center;gap:12px}
-.who .coin{width:52px;height:52px;padding:3px}
+.who .coin{width:52px;height:52px;padding:0;background:none}
 .who .n{font-family:var(--f-display);font-weight:700;font-size:15px}
 .who .cash{font-family:var(--f-display);font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;font-size:15px}
 .status{color:var(--dim);font-size:13px;min-height:1.4em}
@@ -267,8 +353,8 @@ h1,h2,h3{text-wrap:balance}
 .tabpanel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px;max-height:58vh;overflow:auto;margin-top:8px}
 @media (max-width:1000px){.tabpanel{max-height:none}}
 .plist{display:flex;flex-direction:column;gap:8px}
-.prow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px;border-radius:12px;background:var(--panel-2)}
-.prow .coin{width:40px;height:40px;padding:2px}
+.prow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:8px;border-radius:12px;background:var(--panel-2)}
+.prow .coin{width:40px;height:40px;padding:0;background:none;margin:3px 0 3px 3px}      /* no silver rim: the ring in the player's colour sits right on the token */
 .prow.active{box-shadow:inset 0 0 0 1px var(--gold)}
 .prow.out{opacity:.4}
 .prow .nm{font-weight:600}
@@ -396,7 +482,7 @@ button,.cell,.tok{touch-action:manipulation}
   .feats{margin-top:30px}.parade .coin{width:58px;height:58px}
 }
 @container board (max-width:480px){
-  .cell .art{display:block;flex:1 1 auto}
+  .cell .art{display:block;flex:1 1 auto;margin:.3cqi}
   .s-b .bar,.s-t .bar{flex-basis:14%}
   .cell.s-b .body,.cell.s-t .body,.cell.s-l .body,.cell.s-r .body{padding:.2cqi}
   .cell[data-t="prop"] .body{display:none}

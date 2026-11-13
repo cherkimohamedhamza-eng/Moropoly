@@ -10,12 +10,13 @@ import type {Game} from '../engine/types';
 import {colorOf, groupIdx, houseCost, ownedBy, ownsGroup, priceOf, unmortCost} from '../engine/util';
 import {cityN, fmt, spN, t, tl, tokN} from '../i18n/core';
 import {goHome} from '../ui/home';
+import {tableView, toggleView} from '../ui/tableview';
 import {openAuction, openConfirmBankrupt, openDeed, openGameOver, openSeat, openTrade, openTradeReply} from '../ui/modals';
 import {sfx} from '../ui/music';
 import {iControl, mySeats, setTab} from '../ui/render';
 import {TDL, seatedIn} from '../ui/view';
 import {Coin, LangSwitch, Rich} from './common';
-import {useRefresh} from './store';
+import {refresh, useRefresh} from './store';
 
 const playingGame = (): Game | null => (app.V && app.V.status === 'play' ? (app.V as Game) : null);
 
@@ -34,6 +35,7 @@ export function GameBar() {
       {G?.code && <span className="chipcode" id="codeChip" dir="ltr">{t('chip.game', {c: G.code.toUpperCase()})}</span>}
       <LangSwitch />
       {G && app.MODE !== 'local' && seatedIn(G) && !G.over && <button className="btn ghost sm" id="mySeatBtn" onClick={openSeat}>{t('btn.mySeat')}</button>}
+      {G && <button className="btn ghost sm" id="viewBtn" onClick={() => { toggleView(); refresh(); }}>{t(tableView() ? 'btn.viewFlat' : 'btn.viewTable')}</button>}
       <button className="btn ghost sm" id="leaveBtn" onClick={goHome}>{t('btn.leave')}</button>
     </>
   );
@@ -123,7 +125,7 @@ export function TurnCard() {
   return (
     <>
       <div className="who">
-        <Coin token={p.token} />
+        <Coin token={p.token} style={{boxShadow: `0 0 0 4px ${p.color}, 0 0 0 5px rgba(0,0,0,.45)`}} />
         <div style={{flex: 1, minWidth: 0}}>
           <div className="n">{p.name}</div>
           <div className="muted" style={{fontSize: 12}}>{tokN(p.token)}{p.human ? '' : ' · ' + t('lbl.computer')}{iControl(p.id) && app.MODE !== 'local' ? ' · ' + t('lbl.you') : ''}</div>
@@ -192,7 +194,7 @@ function PlayersTab({G}: {G: Game}) {
       {G.players.map(p => {
         const owned = ownedBy(G, p.id).sort((a, b) => a - b);
         const hostControl = amHost() && p.cid && p.cid !== app.myCid && !p.bankrupt && !G.over;
-        const ring: CSSProperties = {boxShadow: `0 0 0 2px ${p.color}`};
+        const ring: CSSProperties = {boxShadow: `0 0 0 4px ${p.color}, 0 0 0 5px rgba(0,0,0,.45)`};   // the player's colour, thick enough to see at a glance
         return (
           <div key={p.id} className={`prow ${p.id === G.cur ? 'active' : ''} ${p.bankrupt ? 'out' : ''}`}>
             <Coin token={p.token} style={ring} />

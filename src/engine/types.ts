@@ -4,7 +4,8 @@
 export type GroupId = 'brown' | 'lblue' | 'pink' | 'orange' | 'red' | 'yellow' | 'green' | 'dblue';
 export interface Group { city: string; ar: string; color: string; house: number }
 
-interface BaseSpace { name: string; ar: string; art?: string }
+/** `art` is the square's full card picture; `tile` (with `tileSet`, the same picture at two widths) is just its painting, for the board's tile */
+interface BaseSpace { name: string; ar: string; art?: string; tile?: string; tileSet?: string }
 export interface PropSpace extends BaseSpace { t: 'prop'; g: GroupId; price: number; rent: number[]; note: string }
 export interface RailSpace extends BaseSpace { t: 'rail'; price: number }
 export interface UtilSpace extends BaseSpace { t: 'util'; price: number; kind: string; glyph: string }
@@ -13,7 +14,10 @@ export interface PlainSpace extends BaseSpace { t: 'go' | 'jail' | 'parking' | '
 export type Space = PropSpace | RailSpace | UtilSpace | TaxSpace | PlainSpace;
 export type OwnableSpace = PropSpace | RailSpace | UtilSpace;
 
-export interface Token { name: string; img: string; g: string }
+/** a player piece: `img` is its portrait for the round coins, `piece` the picture of it standing on the board, `g` an emoji if
+ *  neither loads. `set` and `pieceSet` list the same pictures at several widths (an img srcset), so the browser takes the one
+ *  nearest the size it is shown at: a picture shrunk a lot looks blurred. scripts/finish-renders.mjs makes those sizes. */
+export interface Token { name: string; img: string; set: string; piece: string; pieceSet: string; g: string }
 
 export type Deck = 'mektoub' | 'baraka';
 export interface CardRef { deck: Deck; id: number }

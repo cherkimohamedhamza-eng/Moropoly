@@ -20,7 +20,7 @@ export function Coin({token, style}: {token: number; style?: CSSProperties}) {
   const [broken, setBroken] = useState(false);
   return (
     <span className="coin" style={style}>
-      {broken ? <span className="g">{tk.g}</span> : <img src={tk.img} alt={tk.name} onError={() => setBroken(true)} />}
+      {broken ? <span className="g">{tk.g}</span> : <img src={tk.img} srcSet={tk.set} sizes="64px" alt={tk.name} onError={() => setBroken(true)} />}
     </span>
   );
 }
