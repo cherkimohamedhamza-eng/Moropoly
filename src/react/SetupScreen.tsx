@@ -1,20 +1,23 @@
 // Setting up a game on this device: who plays, as which token, human or computer, and the house rules.
 import {useState} from 'react';
-import {COLORS} from '../engine/data';
+import {COLORS, TOKENS} from '../engine/data';
+import type {CSSProperties} from 'react';
 import type {Settings} from '../engine/types';
 import {t, tokN} from '../i18n/core';
 import {lsGet} from '../lib/storage';
 import {goHome} from '../ui/home';
 import {resumeLocal, startLocal} from '../ui/setup';
-import {BackButton, Coin, LangSwitch, Modal, RulesOptions, TokenGrid} from './common';
+import {BackButton, LangSwitch, Modal, RulesOptions, TokenGrid} from './common';
 import {useRefresh} from './store';
 
 interface SeatDraft { name: string; token: number; human: boolean; on: boolean }
 const NAMES = ['Hamza', 'Salma', 'Youssef', 'Imane', 'Karim', 'Nadia', 'Omar', 'Zineb'];
+/** the pieces the seats start with: a spread of the eleven (the other three are a tap away) */
+const START_TOKENS = [0, 10, 3, 1, 4, 5, 2, 9];
 
 export function SetupScreen() {
   useRefresh();
-  const [seats, setSeats] = useState<SeatDraft[]>(() => NAMES.map((n, i) => ({name: n, token: i, human: i === 0, on: i < 4})));
+  const [seats, setSeats] = useState<SeatDraft[]>(() => NAMES.map((n, i) => ({name: n, token: START_TOKENS[i], human: i === 0, on: i < 4})));
   const [opts, setOpts] = useState<Settings>({daret: true, dlala: true, rounds: 25, fast: false, timer: 0});
   const [picking, setPicking] = useState<number | null>(null);
 
@@ -40,26 +43,24 @@ export function SetupScreen() {
       <p className="muted">{t('setup.p')}</p>
       <div className="seats">
         {seats.map((s, i) => (
-          <div key={i} className={`seat ${s.on ? '' : 'off'}`}>
-            <button className="tok" aria-label={t('aria.seatTok', {n: i + 1})} style={{width: 56}} onClick={() => setPicking(i)}>
-              <Coin token={s.token} style={{boxShadow: `0 0 0 4px ${COLORS[i]}`}} />
+          <div key={i} className={`seat ${s.on ? '' : 'off'}`} style={{'--pc': COLORS[i]} as CSSProperties}>
+            <input type="checkbox" className="switch seat-on" checked={s.on} aria-label={t('aria.seatOn', {n: i + 1})} onChange={e => edit(i, {on: e.target.checked})} />
+            <button className="seat-piece" aria-label={t('aria.seatTok', {n: i + 1})} title={t('aria.seatTok', {n: i + 1})} onClick={() => setPicking(i)}>
+              <img src={TOKENS[s.token].piece} srcSet={TOKENS[s.token].pieceSet} sizes="154px" alt="" />
+              <span className="seat-change" aria-hidden="true">⇄ {t('setup.change')}</span>
             </button>
-            <div className="info">
-              <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
-                <input type="checkbox" checked={s.on} aria-label={t('aria.seatOn', {n: i + 1})} onChange={e => edit(i, {on: e.target.checked})} />
-                <input className="field" value={s.name} maxLength={16} aria-label={t('aria.seatName', {n: i + 1})} style={{flex: 1}} onChange={e => edit(i, {name: e.target.value})} />
-              </div>
-              <span className="seg">
-                <button aria-pressed={s.human} onClick={() => edit(i, {human: true})}>{t('seg.human')}</button>
-                <button aria-pressed={!s.human} onClick={() => edit(i, {human: false})}>{t('seg.computer')}</button>
-              </span>
-            </div>
+            <div className="seat-tok">{tokN(s.token)}</div>
+            <input className="field" value={s.name} maxLength={16} aria-label={t('aria.seatName', {n: i + 1})} onChange={e => edit(i, {name: e.target.value})} />
+            <span className="seg">
+              <button aria-pressed={s.human} onClick={() => edit(i, {human: true})}>{t('seg.human')}</button>
+              <button aria-pressed={!s.human} onClick={() => edit(i, {human: false})}>{t('seg.computer')}</button>
+            </span>
           </div>
         ))}
       </div>
       <div className="sec">{t('sec.rules')}</div>
       <div className="opts"><RulesOptions settings={opts} onChange={setOpts} /></div>
-      <div className="ctas" style={{marginTop: 20}}>
+      <div className="ctas setup-go">
         <button className="btn red" disabled={playing < 2} onClick={() => startLocal(seats.filter(s => s.on), opts)}>{t('btn.startGame')}</button>
         <button className="btn" onClick={() => startLocal(seats.map(s => ({name: s.name, token: s.token, human: false})), {...opts, fast: true})}>{t('btn.demo')}</button>
         {canResume && <button className="btn" onClick={resumeLocal}>{t('btn.resume')}</button>}

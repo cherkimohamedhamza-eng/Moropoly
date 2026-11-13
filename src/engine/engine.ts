@@ -8,6 +8,10 @@ import type {Action, Anim, Deck, Game, Payee, Player, Seat, Settings} from './ty
 
 /** how rent is worked out for a landing caused by a card */
 export interface RentOpts { railDouble?: boolean; util100?: boolean }
+/** the house rules that have numbers, with the classic value when a game does not set them */
+export const startCash=(s?: Partial<Settings>)=>s?.cash??START_CASH;
+export const salary=(G: Game)=>G.settings.salary??SALARY;
+export const jailFine=(G: Game)=>G.settings.fine??JAIL_FINE;
 interface GameExtra { mode?: string; code?: string | null; hostCid?: string | null; ack?: Record<string, number> }
 
 export function A(G: Game,o: Anim){G.seq=(G.seq||0)+1; o.n=G.seq; G.anims.push(o); if(G.anims.length>50) G.anims.splice(0,G.anims.length-50);}
@@ -15,12 +19,12 @@ export function log(G: Pick<Game,'log'|'event'>,k: string,p?: Record<string, unk
 export function freshGame(seats: Seat[],settings?: Partial<Settings>,extra?: GameExtra): Game{
   extra=extra||{};
   const G: Game={gid:rid(10),status:'play',mode:extra.mode||'local',code:extra.code||null,hostCid:extra.hostCid||null,
-    players:seats.map((s,i)=>({id:i,cid:s.cid||null,name:s.name,token:s.token,human:!!s.human,color:COLORS[i],cash:START_CASH,pos:0,inJail:false,jailTurns:0,goojf:[],bankrupt:false,owes:-1,mt:''})),
+    players:seats.map((s,i)=>({id:i,cid:s.cid||null,name:s.name,token:s.token,human:!!s.human,color:COLORS[i],cash:startCash(settings),pos:0,inJail:false,jailTurns:0,goojf:[],bankrupt:false,owes:-1,mt:''})),
     props:{},cur:0,phase:'roll',dice:[3,4],doubles:0,rollAgain:false,daret:0,round:1,turn:1,log:[],settings:Object.assign({daret:true,dlala:true,rounds:25,fast:false,timer:0},settings),
     decks:{mektoub:shuffle(range(MEKTOUB.length)),baraka:shuffle(range(BARAKA.length))},
     pending:null,auction:null,trade:null,card:null,event:'',winner:null,over:false,landed:-1,seq:0,anims:[],ack:extra.ack||{}};
   SP.forEach((s,i)=>{if(isOwnable(i)) G.props[i]={owner:-1,houses:0,mort:false};});
-  log(G,'start',{n:G.players.length,a:START_CASH});
+  log(G,'start',{n:G.players.length,a:startCash(settings)});
   return G;
 }
 export function gain(G: Game,p: Player,amt: number){p.cash+=amt; log(G,'collect',{p:p.name,a:amt}); A(G,{k:'fx',f:'gain',pid:p.id,amt});}
@@ -57,7 +61,7 @@ export function rentFor(G: Game,i: number,opts?: RentOpts){
 function moveBy(G: Game,p: Player,n: number){
   if(n<=0) return; const from=p.pos; p.pos=(from+n)%40;
   A(G,{k:'move',pid:p.id,from,steps:n});
-  if(from+n>=40){p.cash+=SALARY; log(G,'passGo',{p:p.name,a:SALARY}); A(G,{k:'fx',f:'go',pid:p.id,amt:SALARY});}
+  if(from+n>=40){const a=salary(G); p.cash+=a; log(G,'passGo',{p:p.name,a}); A(G,{k:'fx',f:'go',pid:p.id,amt:a});}
   G.landed=p.pos;
 }
 export function moveTo(G: Game,p: Player,t: number){moveBy(G,p,(t-p.pos+40)%40);}
@@ -71,6 +75,7 @@ export function land(G: Game,p: Player,opts?: RentOpts){
       if(pr.owner===-1){G.pending={type:'buy',idx:i}; log(G,'forSale',{p:p.name,s:i,a:s.price}); A(G,{k:'fx',f:'deed',pid:p.id,idx:i});}
       else if(pr.owner===p.id) log(G,'home',{p:p.name,s:i});
       else if(pr.mort) log(G,'mortNoRent',{s:i,o:G.players[pr.owner].name});
+      else if(G.settings.jailRent===false&&G.players[pr.owner].inJail) log(G,'jailNoRent',{s:i,o:G.players[pr.owner].name});
       else pay(G,p,pr.owner,rentFor(G,i,opts),'rent',{s:i});
       break;}
     case 'tax': payTax(G,p,s.amount,s.why); break;
@@ -80,7 +85,9 @@ export function land(G: Game,p: Player,opts?: RentOpts){
       if(G.settings.daret&&G.daret>0){const a=G.daret; G.daret=0; p.cash+=a; log(G,'daret',{p:p.name,a}); A(G,{k:'fx',f:'daret',pid:p.id,amt:a});}
       else log(G,'tea',{p:p.name});
       break;
-    case 'go': log(G,'landGo',{p:p.name}); break;
+    case 'go': log(G,'landGo',{p:p.name});
+      if(G.settings.goDouble){const a=salary(G); p.cash+=a; log(G,'goDouble',{p:p.name,a}); A(G,{k:'fx',f:'go',pid:p.id,amt:a});}
+      break;
     case 'jail': log(G,'visit',{p:p.name}); break;
   }
 }
@@ -101,7 +108,7 @@ export function repairs(G: Game,p: Player,perDar: number,perRiad: number){
 export function netWorth(G: Game,p: Player){let w=p.cash; ownedBy(G,p.id).forEach(i=>{const pr=G.props[i]; w+=pr.mort?priceOf(i)/2:priceOf(i); if(pr.houses) w+=pr.houses*houseCost(i);}); return w;}
 export function canBuild(G: Game,i: number,pid: number){const s=SP[i],pr=G.props[i]; if(s.t!=='prop'||pr.owner!==pid||pr.houses>=5||!ownsGroup(G,pid,s.g)) return false; const gi=groupIdx(s.g); if(gi.some(j=>G.props[j].mort)) return false; if(pr.houses>Math.min(...gi.map(j=>G.props[j].houses))) return false; return G.players[pid].cash>=houseCost(i);}
 export function riadCost(G: Game,i: number){return Math.round((5-G.props[i].houses)*houseCost(i)*(1+RIAD_PREMIUM));}
-export function canRiad(G: Game,i: number,pid: number){const s=SP[i],pr=G.props[i]; if(s.t!=='prop'||pr.owner!==pid||pr.houses>=5||!ownsGroup(G,pid,s.g)) return false; if(groupIdx(s.g).some(j=>G.props[j].mort)) return false; return G.players[pid].cash>=riadCost(G,i);}
+export function canRiad(G: Game,i: number,pid: number){const s=SP[i],pr=G.props[i]; if(G.settings.riadNow===false||s.t!=='prop'||pr.owner!==pid||pr.houses>=5||!ownsGroup(G,pid,s.g)) return false; if(groupIdx(s.g).some(j=>G.props[j].mort)) return false; return G.players[pid].cash>=riadCost(G,i);}
 export function canSell(G: Game,i: number,pid: number){const s=SP[i],pr=G.props[i]; if(s.t!=='prop'||pr.owner!==pid||pr.houses===0) return false; return pr.houses>=Math.max(...groupIdx(s.g).map(j=>G.props[j].houses));}
 export function canMort(G: Game,i: number,pid: number){const s=SP[i],pr=G.props[i]; if(pr.owner!==pid||pr.mort) return false; if(s.t==='prop'&&groupIdx(s.g).some(j=>G.props[j].houses>0)) return false; return true;}
 export function canUnmort(G: Game,i: number,pid: number){const pr=G.props[i]; return pr.owner===pid&&pr.mort&&G.players[pid].cash>=unmortCost(i);}
@@ -196,7 +203,7 @@ function applyCore(G: Game,seat: number,a: Action){
         G.rollAgain=false;
         if(dbl){p.inJail=false;p.jailTurns=0;log(G,'jailDouble',{p:p.name});moveBy(G,p,d1+d2);land(G,p);}
         else{p.jailTurns++;
-          if(p.jailTurns>=3){p.inJail=false;p.jailTurns=0;payTax(G,p,JAIL_FINE,'jail');moveBy(G,p,d1+d2);land(G,p);}
+          if(p.jailTurns>=3){p.inJail=false;p.jailTurns=0;payTax(G,p,jailFine(G),'jail');moveBy(G,p,d1+d2);land(G,p);}
           else log(G,'jailStay',{p:p.name,d1,d2,n:p.jailTurns});}
       } else {
         if(dbl){G.doubles++; if(G.doubles>=3){log(G,'threeDoubles',{p:p.name}); sendToJail(G,p); settle(G); return true;}}
@@ -233,8 +240,8 @@ function applyCore(G: Game,seat: number,a: Action){
       if(!isCur||!free||G.phase!=='end'||p.cash<0) return false;
       nextTurn(G); return true;}
     case 'fine':{
-      if(!isCur||!free||!p.inJail||G.phase!=='roll'||p.cash<JAIL_FINE) return false;
-      payTax(G,p,JAIL_FINE,'jail'); p.inJail=false; p.jailTurns=0; return true;}
+      if(!isCur||!free||!p.inJail||G.phase!=='roll'||p.cash<jailFine(G)) return false;
+      payTax(G,p,jailFine(G),'jail'); p.inJail=false; p.jailTurns=0; return true;}
     case 'card':{
       if(!isCur||!free||!p.inJail||G.phase!=='roll'||!p.goojf.length) return false;
       const c=p.goojf.pop()!; G.decks[c.deck].push(c.id); p.inJail=false; p.jailTurns=0; log(G,'useCard',{p:p.name}); return true;}

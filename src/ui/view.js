@@ -2,7 +2,8 @@
 import {commit, sendIntent} from '../app/authority';
 import {app, inClaude, myName} from '../app/state';
 import {botDecide} from '../engine/bots';
-import {START_CASH, TOKENS} from '../engine/data';
+import {TOKENS} from '../engine/data';
+import {startCash} from '../engine/engine';
 import {actorOf, apply} from '../engine/engine';
 import {range} from '../engine/util';
 import {fmt, t} from '../i18n/core';
@@ -88,7 +89,7 @@ export function onState(ns){
 function welcomeLate(ns,wasSeated){
   if(!isGuest()||ns.status!=='play'||wasSeated||!seatedIn(ns)||app.JOIN.welcomed===ns.gid) return;
   app.JOIN.welcomed=ns.gid;
-  toast(t('seat.joinedMid',{a:fmt(START_CASH)}));
+  toast(t('seat.joinedMid',{a:fmt(startCash(app.V&&app.V.settings))}));
   setTimeout(()=>{if(!app.modal) openSeat();},400);
 }
 async function play(){

@@ -4,7 +4,7 @@
 import {useEffect, useState, type ReactNode} from 'react';
 import {commit, dispatch, lobbyJoin, playJoin, sendIntent} from '../app/authority';
 import {app, saveName} from '../app/state';
-import {GROUPS, RAIL_RENT, SP} from '../engine/data';
+import {BAND, GROUPS, RAIL_RENT, SP} from '../engine/data';
 import {netWorth, tradeable} from '../engine/engine';
 import type {Action, Game} from '../engine/types';
 import {alive, colorOf, isOwnable, ownedBy, priceOf} from '../engine/util';
@@ -155,16 +155,16 @@ function DeedWindow({i}: {i: number}) {
     ];
     note = noteN(i);
   } else if (s.t === 'rail') {
-    head = <div className="head" style={{background: '#4a5059'}}><div className="ar">{s.ar}</div>{!ar && <div className="lt">🚄 {nm}</div>}</div>;
+    head = <div className="head" style={{background: BAND.rail}}><div className="ar">{s.ar}</div>{!ar && <div className="lt">🚄 {nm}</div>}</div>;
     rows = [row('p', t('dm.price'), fmt(s.price)), ...RAIL_RENT.map((r, k) => row(k, t('dm.stations', {n: k + 1}), fmt(r)))];
     note = t('dm.railNote');
   } else if (s.t === 'util') {
-    head = <div className="head" style={{background: '#7d8792'}}><div className="ar">{s.ar}</div>{!ar && <div className="lt">{s.glyph} {nm}</div>}</div>;
+    head = <div className="head" style={{background: BAND.util}}><div className="ar">{s.ar}</div>{!ar && <div className="lt">{s.glyph} {nm}</div>}</div>;
     rows = [row('p', t('dm.price'), fmt(s.price)), row('1', t('dm.util1'), t('dm.x40')), row('2', t('dm.util2'), t('dm.x100'))];
     note = noteN(i);
   } else {
     note = s.t === 'tax' ? t('info.tax', {a: fmt(s.amount || 0), d: V && V.settings && V.settings.daret ? t('info.taxDaret') : ''}) : t('info.' + s.t);
-    head = <div className="head" style={{background: s.t === 'go' || s.t === 'mektoub' || s.t === 'gojail' ? 'var(--red)' : 'var(--green)'}}><div className="ar">{s.ar}</div>{!ar && <div className="lt">{nm}</div>}</div>;
+    head = <div className="head" style={{background: BAND[s.t] || (s.t === 'go' || s.t === 'gojail' ? 'var(--red)' : 'var(--green)')}}><div className="ar">{s.ar}</div>{!ar && <div className="lt">{nm}</div>}</div>;
   }
   const pr = props && isOwnable(i) ? props[i] : null;
   const owner = pr ? (pr.owner >= 0 ? t('dm.owned', {p: V!.players[pr.owner].name, m: pr.mort ? t('dm.mortSuffix') : ''}) : t('dm.forSale')) : '';

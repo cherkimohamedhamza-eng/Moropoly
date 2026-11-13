@@ -1,6 +1,6 @@
 /* ---------- computer players ---------- */
-import {GROUPS, JAIL_FINE, RAILS, SP} from './data';
-import {actorOf} from './engine';
+import {GROUPS, RAILS, SP} from './data';
+import {actorOf, jailFine} from './engine';
 import {groupIdx, ownedBy, ownsGroup, priceOf} from './util';
 import type {Action, Game, GroupId, Trade} from './types';
 
@@ -31,7 +31,7 @@ export function botDecide(G: Game): {seat: number; a: Action} | null{
   if(G.auction){const au=G.auction; const cap=Math.min(wantValue(G,seat,au.idx)*(0.85+Math.random()*0.3),p.cash-res/2); const gap=cap-au.high; return {seat,a:gap>=100?{t:'bid',inc:gap>1500?500:100}:{t:'pass'}};}
   if(p.mt!==`${G.turn}:${G.phase}`&&(G.phase==='roll'||G.phase==='end')) return {seat,a:{t:'manage'}};
   if(G.phase==='roll'){
-    if(p.inJail){if(p.goojf.length) return {seat,a:{t:'card'}}; if(p.cash>JAIL_FINE+res&&G.round<12) return {seat,a:{t:'fine'}};}
+    if(p.inJail){if(p.goojf.length) return {seat,a:{t:'card'}}; if(p.cash>jailFine(G)+res&&G.round<12) return {seat,a:{t:'fine'}};}
     return {seat,a:{t:'roll'}};
   }
   if(G.phase==='buy'){const i=G.pending!.idx,price=priceOf(i); const want=wantValue(G,seat,i)>=price*1.15||p.cash-price>=res; return {seat,a:{t:(want&&p.cash>=price)?'buy':'decline'}};}

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { Room, KEEP_OVER } from '../src/online/room';
 import type { Game } from '../src/engine/types';
-import type { Lobby } from '../src/online/table';
+import { cleanSettings, type Lobby } from '../src/online/table';
 
 const HOST = 'khost', ANA = 'kana', BOB = 'kbob';
 const T0 = 1_000_000;
@@ -160,5 +160,13 @@ describe('the turn timer', () => {
     expect(r.tick(T0 + 33000)).toBe(true);
     expect(G(r).log.some(e => e[0] === 'timeUp')).toBe(true);
     expect(G(r).log.some(e => e[0] === 'rolls')).toBe(true);
+  });
+});
+
+describe('the house rules a host sends', () => {
+  it('keeps the choices on offer and drops anything else', () => {
+    expect(cleanSettings({ cash: 30000, salary: 3000, fine: 250, goDouble: true, riadNow: false, jailRent: false }))
+      .toEqual({ cash: 30000, salary: 3000, fine: 250, goDouble: true, riadNow: false, jailRent: false });
+    expect(cleanSettings({ cash: 999999, salary: -5, fine: 0, goDouble: 'yes' as unknown as boolean })).toEqual({});
   });
 });

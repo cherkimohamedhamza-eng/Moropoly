@@ -6,6 +6,8 @@
 <!--
   One Moropoly card per page, full-bleed at 360x540 CSS px, for scripts/cards/make-cards.mjs.
     cards.html?card=32     a painted card (01 03 06 ... 39)
+    cards.html?card=05     a station, utility or tax card (05 15 25 35 12 28 04 38)
+    cards.html?card=mektoub   the Mektoub card, and ?card=baraka the Baraka card
     cards.html?card=back   the card back
     cards.html             a list of links
   The card markup below is copied from the approved sheet (Cards-Properties). The only changes are
@@ -1479,6 +1481,638 @@ html.index #index { display: block; }
 
 
 <div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 13px; line-height: 1; letter-spacing: 0.12em; margin-right: -0.12em; white-space: nowrap">GO DIRECTLY TO 3OKACHA</div>
+
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+</div>
+</div>
+<svg aria-hidden="true" width="360" height="540" viewBox="0 0 360 540" style="position: absolute; left: 0; top: 0; display: block; pointer-events: none">
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 12.75)"></rect>
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 511.25)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(28.75 30) rotate(90)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(347.25 30) rotate(90)"></rect>
+<g fill="none" stroke="#2b1d12" stroke-width="1.25">
+<rect x="12.125" y="12.125" width="335.75" height="515.75"></rect>
+<rect x="29.375" y="29.375" width="301.25" height="481.25"></rect>
+<rect x="37.625" y="37.625" width="284.75" height="464.75"></rect>
+</g>
+<g fill="#2b1d12">
+<rect x="37.5" y="166.25" width="285" height="1.25"></rect>
+<rect x="37.5" y="438.5" width="285" height="1.25"></rect>
+</g>
+<g transform="translate(12.75 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(12.75 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+</svg>
+</div>
+
+<div class="card" data-card="05" style="position: relative; width: 360px; height: 540px; overflow: hidden; background: #f5ead0; color: #2b1d12">
+<div style="position: absolute; left: 38.25px; top: 38.25px; width: 283.5px; height: 463.5px; display: flex; flex-direction: column; overflow: hidden; background: #f5ead0">
+<div style="height: 128.625px; flex: none; box-sizing: border-box; padding: 0 12px 0.625px; display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: center; background: #3d434c; color: #fbf3df">
+<div dir="rtl" lang="ar" style="font-family: 'Amiri', 'Traditional Arabic', serif; font-weight: 700; font-size: 24px; line-height: 30px; white-space: nowrap">محطة طنجة</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 16px; letter-spacing: 0.22em; padding-left: 0.22em">STATION</div>
+<div style="min-height: 29px; display: flex; align-items: center; justify-content: center">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 27px; line-height: 1.05; letter-spacing: 0.02em; text-align: center; text-wrap: balance">TANGER TGV</div>
+</div>
+</div>
+</div>
+<div style="flex: 1 1 0; min-height: 0; position: relative; overflow: hidden; background: #d8c39a">
+<img src="paintings/p-05.webp" alt="Painting for TANGER TGV" style="position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%">
+</div>
+<div style="height: 62.625px; flex: none; box-sizing: border-box; padding-top: 0.625px; display: flex; align-items: center; justify-content: center; gap: 12px; background: #f5ead0; color: #2b1d12">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+
+<div style="display: flex; align-items: baseline; gap: 9px; white-space: nowrap">
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">PRICE</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 22px; line-height: 1; letter-spacing: 0.01em; font-variant-numeric: lining-nums">2,000</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">DIRHAMS</span>
+</div>
+
+
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+</div>
+</div>
+<svg aria-hidden="true" width="360" height="540" viewBox="0 0 360 540" style="position: absolute; left: 0; top: 0; display: block; pointer-events: none">
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 12.75)"></rect>
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 511.25)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(28.75 30) rotate(90)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(347.25 30) rotate(90)"></rect>
+<g fill="none" stroke="#2b1d12" stroke-width="1.25">
+<rect x="12.125" y="12.125" width="335.75" height="515.75"></rect>
+<rect x="29.375" y="29.375" width="301.25" height="481.25"></rect>
+<rect x="37.625" y="37.625" width="284.75" height="464.75"></rect>
+</g>
+<g fill="#2b1d12">
+<rect x="37.5" y="166.25" width="285" height="1.25"></rect>
+<rect x="37.5" y="438.5" width="285" height="1.25"></rect>
+</g>
+<g transform="translate(12.75 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(12.75 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+</svg>
+</div>
+
+<div class="card" data-card="15" style="position: relative; width: 360px; height: 540px; overflow: hidden; background: #f5ead0; color: #2b1d12">
+<div style="position: absolute; left: 38.25px; top: 38.25px; width: 283.5px; height: 463.5px; display: flex; flex-direction: column; overflow: hidden; background: #f5ead0">
+<div style="height: 128.625px; flex: none; box-sizing: border-box; padding: 0 12px 0.625px; display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: center; background: #3d434c; color: #fbf3df">
+<div dir="rtl" lang="ar" style="font-family: 'Amiri', 'Traditional Arabic', serif; font-weight: 700; font-size: 24px; line-height: 30px; white-space: nowrap">محطة الرباط المدينة</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 16px; letter-spacing: 0.22em; padding-left: 0.22em">STATION</div>
+<div style="min-height: 29px; display: flex; align-items: center; justify-content: center">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 27px; line-height: 1.05; letter-spacing: 0.02em; text-align: center; text-wrap: balance">RABAT VILLE</div>
+</div>
+</div>
+</div>
+<div style="flex: 1 1 0; min-height: 0; position: relative; overflow: hidden; background: #d8c39a">
+<img src="paintings/p-15.webp" alt="Painting for RABAT VILLE" style="position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%">
+</div>
+<div style="height: 62.625px; flex: none; box-sizing: border-box; padding-top: 0.625px; display: flex; align-items: center; justify-content: center; gap: 12px; background: #f5ead0; color: #2b1d12">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+
+<div style="display: flex; align-items: baseline; gap: 9px; white-space: nowrap">
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">PRICE</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 22px; line-height: 1; letter-spacing: 0.01em; font-variant-numeric: lining-nums">2,000</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">DIRHAMS</span>
+</div>
+
+
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+</div>
+</div>
+<svg aria-hidden="true" width="360" height="540" viewBox="0 0 360 540" style="position: absolute; left: 0; top: 0; display: block; pointer-events: none">
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 12.75)"></rect>
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 511.25)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(28.75 30) rotate(90)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(347.25 30) rotate(90)"></rect>
+<g fill="none" stroke="#2b1d12" stroke-width="1.25">
+<rect x="12.125" y="12.125" width="335.75" height="515.75"></rect>
+<rect x="29.375" y="29.375" width="301.25" height="481.25"></rect>
+<rect x="37.625" y="37.625" width="284.75" height="464.75"></rect>
+</g>
+<g fill="#2b1d12">
+<rect x="37.5" y="166.25" width="285" height="1.25"></rect>
+<rect x="37.5" y="438.5" width="285" height="1.25"></rect>
+</g>
+<g transform="translate(12.75 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(12.75 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+</svg>
+</div>
+
+<div class="card" data-card="25" style="position: relative; width: 360px; height: 540px; overflow: hidden; background: #f5ead0; color: #2b1d12">
+<div style="position: absolute; left: 38.25px; top: 38.25px; width: 283.5px; height: 463.5px; display: flex; flex-direction: column; overflow: hidden; background: #f5ead0">
+<div style="height: 128.625px; flex: none; box-sizing: border-box; padding: 0 12px 0.625px; display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: center; background: #3d434c; color: #fbf3df">
+<div dir="rtl" lang="ar" style="font-family: 'Amiri', 'Traditional Arabic', serif; font-weight: 700; font-size: 24px; line-height: 30px; white-space: nowrap">محطة الواحة</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 16px; letter-spacing: 0.22em; padding-left: 0.22em">STATION</div>
+<div style="min-height: 29px; display: flex; align-items: center; justify-content: center">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 27px; line-height: 1.05; letter-spacing: 0.02em; text-align: center; text-wrap: balance">CASA OASIS</div>
+</div>
+</div>
+</div>
+<div style="flex: 1 1 0; min-height: 0; position: relative; overflow: hidden; background: #d8c39a">
+<img src="paintings/p-25.webp" alt="Painting for CASA OASIS" style="position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 55% 50%">
+</div>
+<div style="height: 62.625px; flex: none; box-sizing: border-box; padding-top: 0.625px; display: flex; align-items: center; justify-content: center; gap: 12px; background: #f5ead0; color: #2b1d12">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+
+<div style="display: flex; align-items: baseline; gap: 9px; white-space: nowrap">
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">PRICE</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 22px; line-height: 1; letter-spacing: 0.01em; font-variant-numeric: lining-nums">2,000</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">DIRHAMS</span>
+</div>
+
+
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+</div>
+</div>
+<svg aria-hidden="true" width="360" height="540" viewBox="0 0 360 540" style="position: absolute; left: 0; top: 0; display: block; pointer-events: none">
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 12.75)"></rect>
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 511.25)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(28.75 30) rotate(90)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(347.25 30) rotate(90)"></rect>
+<g fill="none" stroke="#2b1d12" stroke-width="1.25">
+<rect x="12.125" y="12.125" width="335.75" height="515.75"></rect>
+<rect x="29.375" y="29.375" width="301.25" height="481.25"></rect>
+<rect x="37.625" y="37.625" width="284.75" height="464.75"></rect>
+</g>
+<g fill="#2b1d12">
+<rect x="37.5" y="166.25" width="285" height="1.25"></rect>
+<rect x="37.5" y="438.5" width="285" height="1.25"></rect>
+</g>
+<g transform="translate(12.75 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(12.75 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+</svg>
+</div>
+
+<div class="card" data-card="35" style="position: relative; width: 360px; height: 540px; overflow: hidden; background: #f5ead0; color: #2b1d12">
+<div style="position: absolute; left: 38.25px; top: 38.25px; width: 283.5px; height: 463.5px; display: flex; flex-direction: column; overflow: hidden; background: #f5ead0">
+<div style="height: 128.625px; flex: none; box-sizing: border-box; padding: 0 12px 0.625px; display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: center; background: #3d434c; color: #fbf3df">
+<div dir="rtl" lang="ar" style="font-family: 'Amiri', 'Traditional Arabic', serif; font-weight: 700; font-size: 24px; line-height: 30px; white-space: nowrap">محطة مراكش</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 16px; letter-spacing: 0.22em; padding-left: 0.22em">STATION</div>
+<div style="min-height: 29px; display: flex; align-items: center; justify-content: center">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 27px; line-height: 1.05; letter-spacing: 0.02em; text-align: center; text-wrap: balance">MARRAKECH GARE</div>
+</div>
+</div>
+</div>
+<div style="flex: 1 1 0; min-height: 0; position: relative; overflow: hidden; background: #d8c39a">
+<img src="paintings/p-35.webp" alt="Painting for MARRAKECH GARE" style="position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 45% 50%">
+</div>
+<div style="height: 62.625px; flex: none; box-sizing: border-box; padding-top: 0.625px; display: flex; align-items: center; justify-content: center; gap: 12px; background: #f5ead0; color: #2b1d12">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+
+<div style="display: flex; align-items: baseline; gap: 9px; white-space: nowrap">
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">PRICE</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 22px; line-height: 1; letter-spacing: 0.01em; font-variant-numeric: lining-nums">2,000</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">DIRHAMS</span>
+</div>
+
+
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+</div>
+</div>
+<svg aria-hidden="true" width="360" height="540" viewBox="0 0 360 540" style="position: absolute; left: 0; top: 0; display: block; pointer-events: none">
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 12.75)"></rect>
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 511.25)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(28.75 30) rotate(90)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(347.25 30) rotate(90)"></rect>
+<g fill="none" stroke="#2b1d12" stroke-width="1.25">
+<rect x="12.125" y="12.125" width="335.75" height="515.75"></rect>
+<rect x="29.375" y="29.375" width="301.25" height="481.25"></rect>
+<rect x="37.625" y="37.625" width="284.75" height="464.75"></rect>
+</g>
+<g fill="#2b1d12">
+<rect x="37.5" y="166.25" width="285" height="1.25"></rect>
+<rect x="37.5" y="438.5" width="285" height="1.25"></rect>
+</g>
+<g transform="translate(12.75 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(12.75 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+</svg>
+</div>
+
+<div class="card" data-card="12" style="position: relative; width: 360px; height: 540px; overflow: hidden; background: #f5ead0; color: #2b1d12">
+<div style="position: absolute; left: 38.25px; top: 38.25px; width: 283.5px; height: 463.5px; display: flex; flex-direction: column; overflow: hidden; background: #f5ead0">
+<div style="height: 128.625px; flex: none; box-sizing: border-box; padding: 0 12px 0.625px; display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: center; background: #3f5b68; color: #fbf3df">
+<div dir="rtl" lang="ar" style="font-family: 'Amiri', 'Traditional Arabic', serif; font-weight: 700; font-size: 24px; line-height: 30px; white-space: nowrap">الكهرباء والماء</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 16px; letter-spacing: 0.22em; padding-left: 0.22em">ELECTRICITY & WATER</div>
+<div style="min-height: 29px; display: flex; align-items: center; justify-content: center">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 27px; line-height: 1.05; letter-spacing: 0.02em; text-align: center; text-wrap: balance">ONEE</div>
+</div>
+</div>
+</div>
+<div style="flex: 1 1 0; min-height: 0; position: relative; overflow: hidden; background: #d8c39a">
+<img src="paintings/p-12.webp" alt="Painting for ONEE" style="position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 40% 50%">
+</div>
+<div style="height: 62.625px; flex: none; box-sizing: border-box; padding-top: 0.625px; display: flex; align-items: center; justify-content: center; gap: 12px; background: #f5ead0; color: #2b1d12">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+
+<div style="display: flex; align-items: baseline; gap: 9px; white-space: nowrap">
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">PRICE</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 22px; line-height: 1; letter-spacing: 0.01em; font-variant-numeric: lining-nums">1,500</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">DIRHAMS</span>
+</div>
+
+
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+</div>
+</div>
+<svg aria-hidden="true" width="360" height="540" viewBox="0 0 360 540" style="position: absolute; left: 0; top: 0; display: block; pointer-events: none">
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 12.75)"></rect>
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 511.25)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(28.75 30) rotate(90)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(347.25 30) rotate(90)"></rect>
+<g fill="none" stroke="#2b1d12" stroke-width="1.25">
+<rect x="12.125" y="12.125" width="335.75" height="515.75"></rect>
+<rect x="29.375" y="29.375" width="301.25" height="481.25"></rect>
+<rect x="37.625" y="37.625" width="284.75" height="464.75"></rect>
+</g>
+<g fill="#2b1d12">
+<rect x="37.5" y="166.25" width="285" height="1.25"></rect>
+<rect x="37.5" y="438.5" width="285" height="1.25"></rect>
+</g>
+<g transform="translate(12.75 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(12.75 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+</svg>
+</div>
+
+<div class="card" data-card="28" style="position: relative; width: 360px; height: 540px; overflow: hidden; background: #f5ead0; color: #2b1d12">
+<div style="position: absolute; left: 38.25px; top: 38.25px; width: 283.5px; height: 463.5px; display: flex; flex-direction: column; overflow: hidden; background: #f5ead0">
+<div style="height: 128.625px; flex: none; box-sizing: border-box; padding: 0 12px 0.625px; display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: center; background: #3f5b68; color: #fbf3df">
+<div dir="rtl" lang="ar" style="font-family: 'Amiri', 'Traditional Arabic', serif; font-weight: 700; font-size: 24px; line-height: 30px; white-space: nowrap">اتصالات المغرب</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 16px; letter-spacing: 0.22em; padding-left: 0.22em">TELECOMS</div>
+<div style="min-height: 29px; display: flex; align-items: center; justify-content: center">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 27px; line-height: 1.05; letter-spacing: 0.02em; text-align: center; text-wrap: balance">MAROC TELECOM</div>
+</div>
+</div>
+</div>
+<div style="flex: 1 1 0; min-height: 0; position: relative; overflow: hidden; background: #d8c39a">
+<img src="paintings/p-28.webp" alt="Painting for MAROC TELECOM" style="position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%">
+</div>
+<div style="height: 62.625px; flex: none; box-sizing: border-box; padding-top: 0.625px; display: flex; align-items: center; justify-content: center; gap: 12px; background: #f5ead0; color: #2b1d12">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+
+<div style="display: flex; align-items: baseline; gap: 9px; white-space: nowrap">
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">PRICE</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 22px; line-height: 1; letter-spacing: 0.01em; font-variant-numeric: lining-nums">1,500</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">DIRHAMS</span>
+</div>
+
+
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+</div>
+</div>
+<svg aria-hidden="true" width="360" height="540" viewBox="0 0 360 540" style="position: absolute; left: 0; top: 0; display: block; pointer-events: none">
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 12.75)"></rect>
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 511.25)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(28.75 30) rotate(90)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(347.25 30) rotate(90)"></rect>
+<g fill="none" stroke="#2b1d12" stroke-width="1.25">
+<rect x="12.125" y="12.125" width="335.75" height="515.75"></rect>
+<rect x="29.375" y="29.375" width="301.25" height="481.25"></rect>
+<rect x="37.625" y="37.625" width="284.75" height="464.75"></rect>
+</g>
+<g fill="#2b1d12">
+<rect x="37.5" y="166.25" width="285" height="1.25"></rect>
+<rect x="37.5" y="438.5" width="285" height="1.25"></rect>
+</g>
+<g transform="translate(12.75 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(12.75 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+</svg>
+</div>
+
+<div class="card" data-card="04" style="position: relative; width: 360px; height: 540px; overflow: hidden; background: #f5ead0; color: #2b1d12">
+<div style="position: absolute; left: 38.25px; top: 38.25px; width: 283.5px; height: 463.5px; display: flex; flex-direction: column; overflow: hidden; background: #f5ead0">
+<div style="height: 128.625px; flex: none; box-sizing: border-box; padding: 0 12px 0.625px; display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: center; background: #7a2e22; color: #fbf3df">
+<div dir="rtl" lang="ar" style="font-family: 'Amiri', 'Traditional Arabic', serif; font-weight: 700; font-size: 24px; line-height: 30px; white-space: nowrap">الضرائب</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 16px; letter-spacing: 0.22em; padding-left: 0.22em">TAX</div>
+<div style="min-height: 29px; display: flex; align-items: center; justify-content: center">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 27px; line-height: 1.05; letter-spacing: 0.02em; text-align: center; text-wrap: balance">IMPÔTS</div>
+</div>
+</div>
+</div>
+<div style="flex: 1 1 0; min-height: 0; position: relative; overflow: hidden; background: #d8c39a">
+<img src="paintings/p-04.webp" alt="Painting for IMPÔTS" style="position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%">
+</div>
+<div style="height: 62.625px; flex: none; box-sizing: border-box; padding-top: 0.625px; display: flex; align-items: center; justify-content: center; gap: 12px; background: #f5ead0; color: #2b1d12">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+
+<div style="display: flex; align-items: baseline; gap: 9px; white-space: nowrap">
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">PAY</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 22px; line-height: 1; letter-spacing: 0.01em; font-variant-numeric: lining-nums">2,000</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">DIRHAMS</span>
+</div>
+
+
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+</div>
+</div>
+<svg aria-hidden="true" width="360" height="540" viewBox="0 0 360 540" style="position: absolute; left: 0; top: 0; display: block; pointer-events: none">
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 12.75)"></rect>
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 511.25)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(28.75 30) rotate(90)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(347.25 30) rotate(90)"></rect>
+<g fill="none" stroke="#2b1d12" stroke-width="1.25">
+<rect x="12.125" y="12.125" width="335.75" height="515.75"></rect>
+<rect x="29.375" y="29.375" width="301.25" height="481.25"></rect>
+<rect x="37.625" y="37.625" width="284.75" height="464.75"></rect>
+</g>
+<g fill="#2b1d12">
+<rect x="37.5" y="166.25" width="285" height="1.25"></rect>
+<rect x="37.5" y="438.5" width="285" height="1.25"></rect>
+</g>
+<g transform="translate(12.75 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(12.75 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+</svg>
+</div>
+
+<div class="card" data-card="38" style="position: relative; width: 360px; height: 540px; overflow: hidden; background: #f5ead0; color: #2b1d12">
+<div style="position: absolute; left: 38.25px; top: 38.25px; width: 283.5px; height: 463.5px; display: flex; flex-direction: column; overflow: hidden; background: #f5ead0">
+<div style="height: 128.625px; flex: none; box-sizing: border-box; padding: 0 12px 0.625px; display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: center; background: #7a2e22; color: #fbf3df">
+<div dir="rtl" lang="ar" style="font-family: 'Amiri', 'Traditional Arabic', serif; font-weight: 700; font-size: 24px; line-height: 30px; white-space: nowrap">العرس</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 16px; letter-spacing: 0.22em; padding-left: 0.22em">TAX</div>
+<div style="min-height: 29px; display: flex; align-items: center; justify-content: center">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 27px; line-height: 1.05; letter-spacing: 0.02em; text-align: center; text-wrap: balance">L’3ERS</div>
+</div>
+</div>
+</div>
+<div style="flex: 1 1 0; min-height: 0; position: relative; overflow: hidden; background: #d8c39a">
+<img src="paintings/p-38.webp" alt="Painting for L’3ERS" style="position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%">
+</div>
+<div style="height: 62.625px; flex: none; box-sizing: border-box; padding-top: 0.625px; display: flex; align-items: center; justify-content: center; gap: 12px; background: #f5ead0; color: #2b1d12">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+
+<div style="display: flex; align-items: baseline; gap: 9px; white-space: nowrap">
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">PAY</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 22px; line-height: 1; letter-spacing: 0.01em; font-variant-numeric: lining-nums">1,000</span>
+<span style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12px; line-height: 1; letter-spacing: 0.24em; margin-right: -0.24em">DIRHAMS</span>
+</div>
+
+
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+</div>
+</div>
+<svg aria-hidden="true" width="360" height="540" viewBox="0 0 360 540" style="position: absolute; left: 0; top: 0; display: block; pointer-events: none">
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 12.75)"></rect>
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 511.25)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(28.75 30) rotate(90)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(347.25 30) rotate(90)"></rect>
+<g fill="none" stroke="#2b1d12" stroke-width="1.25">
+<rect x="12.125" y="12.125" width="335.75" height="515.75"></rect>
+<rect x="29.375" y="29.375" width="301.25" height="481.25"></rect>
+<rect x="37.625" y="37.625" width="284.75" height="464.75"></rect>
+</g>
+<g fill="#2b1d12">
+<rect x="37.5" y="166.25" width="285" height="1.25"></rect>
+<rect x="37.5" y="438.5" width="285" height="1.25"></rect>
+</g>
+<g transform="translate(12.75 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(12.75 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+</svg>
+</div>
+
+<div class="card" data-card="mektoub" style="position: relative; width: 360px; height: 540px; overflow: hidden; background: #f5ead0; color: #2b1d12">
+<div style="position: absolute; left: 38.25px; top: 38.25px; width: 283.5px; height: 463.5px; display: flex; flex-direction: column; overflow: hidden; background: #f5ead0">
+<div style="height: 128.625px; flex: none; box-sizing: border-box; padding: 0 12px 0.625px; display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: center; background: #b3262c; color: #fbf3df">
+<div dir="rtl" lang="ar" style="font-family: 'Amiri', 'Traditional Arabic', serif; font-weight: 700; font-size: 24px; line-height: 30px; white-space: nowrap">مكتوب</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 16px; letter-spacing: 0.22em; padding-left: 0.22em">FATE</div>
+<div style="min-height: 29px; display: flex; align-items: center; justify-content: center">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 27px; line-height: 1.05; letter-spacing: 0.02em; text-align: center; text-wrap: balance">MEKTOUB</div>
+</div>
+</div>
+</div>
+<div style="flex: 1 1 0; min-height: 0; position: relative; overflow: hidden; background: #d8c39a">
+<img src="paintings/p-mektoub.webp" alt="Painting for MEKTOUB" style="position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%">
+</div>
+<div style="height: 62.625px; flex: none; box-sizing: border-box; padding-top: 0.625px; display: flex; align-items: center; justify-content: center; gap: 12px; background: #f5ead0; color: #2b1d12">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+
+<div style="white-space: nowrap; font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 15px; line-height: 1; letter-spacing: 0.28em; margin-right: -0.28em">TAKE A CARD</div>
+
+
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+</div>
+</div>
+<svg aria-hidden="true" width="360" height="540" viewBox="0 0 360 540" style="position: absolute; left: 0; top: 0; display: block; pointer-events: none">
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 12.75)"></rect>
+<rect x="0" y="0" width="300" height="16" fill="url(#mp-lattice)" transform="translate(30 511.25)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(28.75 30) rotate(90)"></rect>
+<rect x="0" y="0" width="480" height="16" fill="url(#mp-lattice)" transform="translate(347.25 30) rotate(90)"></rect>
+<g fill="none" stroke="#2b1d12" stroke-width="1.25">
+<rect x="12.125" y="12.125" width="335.75" height="515.75"></rect>
+<rect x="29.375" y="29.375" width="301.25" height="481.25"></rect>
+<rect x="37.625" y="37.625" width="284.75" height="464.75"></rect>
+</g>
+<g fill="#2b1d12">
+<rect x="37.5" y="166.25" width="285" height="1.25"></rect>
+<rect x="37.5" y="438.5" width="285" height="1.25"></rect>
+</g>
+<g transform="translate(12.75 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 12.75)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(12.75 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+<g transform="translate(331.25 511.25)">
+<rect x="-0.625" y="-0.625" width="17.25" height="17.25" fill="#8a5a2b" stroke="#2b1d12" stroke-width="1.25"></rect>
+<polygon points="8,1.78 9.82,3.6 12.4,3.6 12.4,6.18 14.22,8 12.4,9.82 12.4,12.4 9.82,12.4 8,14.22 6.18,12.4 3.6,12.4 3.6,9.82 1.78,8 3.6,6.18 3.6,3.6 6.18,3.6" fill="#f5ead0"></polygon>
+<circle cx="8" cy="8" r="1.5" fill="#b5532a"></circle>
+</g>
+</svg>
+</div>
+
+<div class="card" data-card="baraka" style="position: relative; width: 360px; height: 540px; overflow: hidden; background: #f5ead0; color: #2b1d12">
+<div style="position: absolute; left: 38.25px; top: 38.25px; width: 283.5px; height: 463.5px; display: flex; flex-direction: column; overflow: hidden; background: #f5ead0">
+<div style="height: 128.625px; flex: none; box-sizing: border-box; padding: 0 12px 0.625px; display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: center; background: #0a7a43; color: #fbf3df">
+<div dir="rtl" lang="ar" style="font-family: 'Amiri', 'Traditional Arabic', serif; font-weight: 700; font-size: 24px; line-height: 30px; white-space: nowrap">بركة</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 16px; letter-spacing: 0.22em; padding-left: 0.22em">BLESSING</div>
+<div style="min-height: 29px; display: flex; align-items: center; justify-content: center">
+<div style="font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 27px; line-height: 1.05; letter-spacing: 0.02em; text-align: center; text-wrap: balance">BARAKA</div>
+</div>
+</div>
+</div>
+<div style="flex: 1 1 0; min-height: 0; position: relative; overflow: hidden; background: #d8c39a">
+<img src="paintings/p-baraka.webp" alt="Painting for BARAKA" style="position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%">
+</div>
+<div style="height: 62.625px; flex: none; box-sizing: border-box; padding-top: 0.625px; display: flex; align-items: center; justify-content: center; gap: 12px; background: #f5ead0; color: #2b1d12">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
+
+<div style="white-space: nowrap; font-family: 'Jost', 'Century Gothic', 'Futura', sans-serif; font-weight: 700; font-size: 15px; line-height: 1; letter-spacing: 0.28em; margin-right: -0.28em">TAKE A CARD</div>
+
 
 <svg aria-hidden="true" width="13" height="13" viewBox="0 0 16 16" style="flex: none; display: block"><polygon points="8,0.93 10.07,3 13,3 13,5.93 15.07,8 13,10.07 13,13 10.07,13 8,15.07 5.93,13 3,13 3,10.07 0.93,8 3,5.93 3,3 5.93,3" fill="#b5532a"></polygon><circle cx="8" cy="8" r="1.7" fill="#f5ead0"></circle></svg>
 </div>

@@ -12,8 +12,8 @@ import sharp from 'sharp';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const FROM = path.join(here, 'paintings'), TO = path.join(here, '..', '..', 'public', 'assets');
 let made = 0;
-for (const file of fs.readdirSync(FROM).filter(f => /^p-\d+\.webp$/.test(f)).sort()) {
-  const id = file.match(/\d+/)[0];
+for (const file of fs.readdirSync(FROM).filter(f => /^p-(\d+|mektoub|baraka)\.webp$/.test(f)).sort()) {
+  const id = file.slice(2, -5);
   for (const w of [112, 224]) {
     await sharp(path.join(FROM, file))
       .resize(w, w, { fit: 'cover', position: 'centre', kernel: 'lanczos3' })

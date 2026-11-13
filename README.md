@@ -21,7 +21,7 @@ npm run models       # re-make the 3D models the table view draws live (needs Bl
 npm run wood         # re-make the wooden table top behind the board (needs Blender on the PATH)
 ```
 
-The property cards in `public/assets/card-NN.webp` are rendered from one design, `scripts/cards/cards.html`, with the paintings in `scripts/cards/paintings/`. `npm run cards` screenshots each card with Chrome or Edge and saves it as WebP; it needs an internet connection for the fonts. Change the design or a painting there, never the image files by hand.
+The cards in `public/assets/card-*.webp` (the 22 properties, the 4 stations, the 2 utilities, the 2 taxes, Mektoub and Baraka) are rendered from one design, `scripts/cards/cards.html`, with the paintings in `scripts/cards/paintings/`. The property paintings came with the original game; the others were made with ElevenLabs' image generator in the same style. The board's tiles show only the painting, cut by `npm run tiles`. `npm run cards` screenshots each card with Chrome or Edge and saves it as WebP; it needs an internet connection for the fonts. Change the design or a painting there, never the image files by hand.
 
 The dice are a 3D model, `public/assets/die.glb`, made by `scripts/dice/make-die.py` in Blender (a rounded cube with drilled pips) and drawn in the browser with three.js (`src/ui/dice3d.js`). three.js is fetched the first time dice are shown; until then, and where WebGL is missing, plain CSS dice show instead.
 

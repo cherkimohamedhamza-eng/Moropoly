@@ -1,8 +1,8 @@
 // What happens around the game itself: taking seats, joining late, the table code, the turn timer and the
 // host's controls. Pure functions on the table, shared by the game server and the in-browser host that is
 // still used when the game runs inside Claude.
-import {BOT_NAMES, COLORS, START_CASH, TOKENS} from '../engine/data';
-import {A, actorOf, apply, freshGame, log} from '../engine/engine';
+import {BOT_NAMES, CASH_CHOICES, COLORS, FINE_CHOICES, SALARY_CHOICES, TOKENS} from '../engine/data';
+import {A, actorOf, apply, freshGame, log, startCash} from '../engine/engine';
 import {range, rid} from '../engine/util';
 import type {Action, Anim, Game, LogEntry, Settings} from '../engine/types';
 
@@ -43,7 +43,10 @@ export function newLobby(code: string, hostCid: string | null, now: number, extr
 /** house rules from the lobby screen; anything unexpected is dropped */
 export function cleanSettings(s: Partial<Record<keyof Settings, unknown>>): Partial<Settings> {
   const out: Partial<Settings> = {};
-  for (const k of ['daret', 'dlala', 'fast'] as const) if (typeof s[k] === 'boolean') out[k] = s[k];
+  for (const k of ['daret', 'dlala', 'fast', 'goDouble', 'riadNow', 'jailRent'] as const) if (typeof s[k] === 'boolean') out[k] = s[k];
+  if (CASH_CHOICES.includes(s.cash as number)) out.cash = s.cash as number;
+  if (SALARY_CHOICES.includes(s.salary as number)) out.salary = s.salary as number;
+  if (FINE_CHOICES.includes(s.fine as number)) out.fine = s.fine as number;
   if ([0, 15, 25, 40].includes(s.rounds as number)) out.rounds = s.rounds as number;
   if ([0, 30, 60, 90, 120].includes(s.timer as number)) out.timer = s.timer as number;
   return out;
@@ -90,7 +93,7 @@ export function playJoin(G: Game, cid: string, a: JoinRequest, fallbackName: str
   if (!(tok >= 0 && tok < TOKENS.length) || used.has(tok)) tok = range(TOKENS.length).find(k => !used.has(k));
   if (tok == null) return false;
   const id = G.players.length;
-  G.players.push({id, cid, name, token: tok, human: true, color: COLORS[id % COLORS.length], cash: START_CASH, pos: 0, inJail: false, jailTurns: 0, goojf: [], bankrupt: false, owes: -1, mt: '', lateRound: G.round});
+  G.players.push({id, cid, name, token: tok, human: true, color: COLORS[id % COLORS.length], cash: startCash((G as Game).settings), pos: 0, inJail: false, jailTurns: 0, goojf: [], bankrupt: false, owes: -1, mt: '', lateRound: G.round});
   log(G, 'joinsMid', {p: name});
   A(G, {k: 'fx', f: 'joined', pid: id});
   return true;

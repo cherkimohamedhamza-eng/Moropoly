@@ -1,6 +1,7 @@
 // Animations: dice, pawn moves, money effects, cards and confetti.
 import {app} from '../app/state';
-import {SP, START_CASH} from '../engine/data';
+import {SP} from '../engine/data';
+import {startCash} from '../engine/engine';
 import {colorOf, range} from '../engine/util';
 import {cardText, fmt, spN, t, tl} from '../i18n/core';
 import {cellBox, layoutPawns, pawnSize, setDice, slotXY} from './board';
@@ -47,7 +48,7 @@ export async function runAnim(a){
       else if(a.f==='deal'){sfx('deal'); floatAt(a.pid,t('fl.deal'),'gold'); floatAt(a.to,t('fl.deal'),'gold'); await sleep(500*sp);}
       else if(a.f==='dlala'){sfx('gavel'); setEvent(t('ev.dlala')); await sleep(400);}
       else if(a.f==='bankrupt'){sfx('sad'); floatAt(a.pid,t('fl.bankrupt'),'minus'); await sleep(800*sp);}
-      else if(a.f==='joined'){sfx('deed'); confettiAt(cellBox(0)); floatAt(a.pid,'+'+fmt(START_CASH),'plus'); await sleep(500*speed());}
+      else if(a.f==='joined'){sfx('deed'); confettiAt(cellBox(0)); floatAt(a.pid,'+'+fmt(startCash((app.PEND||app.V).settings)),'plus'); await sleep(500*speed());}
       else if(a.f==='win'){sfx('zaghrouta'); confettiAt(null,260); await sleep(1200);}
       break;}
   }
@@ -88,6 +89,6 @@ async function revealArt(src,cap,ms,s,from,sp=1){
 async function showFate(deck,text,ms,from,sp=1){
   const st=$('stage'); if(!st) return;
   const word=deck==='mektoub'?'مكتوب':'بركة';
-  st.innerHTML=card3d('fate3 '+deck,`<div class="fate c3-front ${deck}"><div class="k">${word}</div><div class="kl">${t('fate.'+deck)}</div><div class="tx">${esc(text)}</div><div class="tap">${t('fate.tap')}</div><i class="timer" style="animation-duration:${Math.round(ms)}ms"></i></div>`,`<div class="k">${word}</div>`,from,sp,'role="button" tabindex="0"');
+  st.innerHTML=card3d('fate3 '+deck,`<div class="fate c3-front ${deck}"><div class="fate-art" style="background-image:url(assets/art-${deck}.webp)"></div><div class="k">${word}</div><div class="kl">${t('fate.'+deck)}</div><div class="tx">${esc(text)}</div><div class="tap">${t('fate.tap')}</div><i class="timer" style="animation-duration:${Math.round(ms)}ms"></i></div>`,`<div class="fate-back" style="background-image:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.45)),url(assets/art-${deck}.webp)"><div class="k">${word}</div></div>`,from,sp,'role="button" tabindex="0"');
   await new Promise(res=>{const tm=setTimeout(res,ms); const f=st.firstElementChild; const go=()=>{clearTimeout(tm); res();}; f.addEventListener('click',go,{once:true}); f.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ') go();});}); const r=st.firstElementChild; if(r){r.classList.add('out'); await sleep(420);} st.innerHTML='';
 }

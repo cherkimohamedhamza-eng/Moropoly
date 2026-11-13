@@ -4,8 +4,8 @@ import {useEffect, useState, type CSSProperties, type ReactNode} from 'react';
 import {amHost, dispatch, hostAct} from '../app/authority';
 import {hostOnline, onlineCids} from '../app/online';
 import {app} from '../app/state';
-import {JAIL_FINE, RIAD_PREMIUM, SP} from '../engine/data';
-import {canBuild, canMort, canRiad, canSell, canUnmort, netWorth, rentFor, riadCost} from '../engine/engine';
+import {RIAD_PREMIUM, SP} from '../engine/data';
+import {canBuild, canMort, canRiad, canSell, canUnmort, jailFine, netWorth, rentFor, riadCost} from '../engine/engine';
 import type {Game} from '../engine/types';
 import {colorOf, groupIdx, houseCost, ownedBy, ownsGroup, priceOf, unmortCost} from '../engine/util';
 import {cityN, fmt, spN, t, tl, tokN} from '../i18n/core';
@@ -90,11 +90,11 @@ export function TurnCard() {
       btn('decline', '', G.settings.dlala ? t('btn.dlala') : t('btn.pass'), () => dispatch({t: 'decline'})),
     );
   } else if (G.phase === 'roll') {
-    status = p.inJail ? t('tc.inJail', {p: p.name, n: p.jailTurns + 1, a: fmt(JAIL_FINE)}) : G.rollAgain ? t('tc.again') : t('tc.toRoll', {p: p.name});
+    status = p.inJail ? t('tc.inJail', {p: p.name, n: p.jailTurns + 1, a: fmt(jailFine(G))}) : G.rollAgain ? t('tc.again') : t('tc.toRoll', {p: p.name});
     if (mine) {
       btns.push(btn('roll', 'red', t('btn.roll'), () => dispatch({t: 'roll'})));
       if (p.inJail) {
-        btns.push(btn('fine', '', t('btn.payFine', {a: fmt(JAIL_FINE)}), () => dispatch({t: 'fine'}), p.cash < JAIL_FINE));
+        btns.push(btn('fine', '', t('btn.payFine', {a: fmt(jailFine(G))}), () => dispatch({t: 'fine'}), p.cash < jailFine(G)));
         if (p.goojf.length) btns.push(btn('card', '', t('btn.useCard'), () => dispatch({t: 'card'})));
       }
       btns.push(btn('trade', 'ghost', t('btn.tbadel'), openTrade));
@@ -260,7 +260,7 @@ function DeedsTab({G}: {G: Game}) {
                 {prop && full && (
                   <>
                     {pr.houses < 5 && <DeedAct label={pr.houses === 4 ? t('btn.addRiad') : t('btn.addDar')} amt={fmt(houseCost(i))} off={!(can && canBuild(G, i, pid))} on={() => act('build', i)} />}
-                    {pr.houses < 5 && !(pr.houses >= 4 && group.every(j => G.props[j].houses >= 4)) &&
+                    {G.settings.riadNow !== false && pr.houses < 5 && !(pr.houses >= 4 && group.every(j => G.props[j].houses >= 4)) &&
                       <DeedAct cls="gold" label={t('btn.riadNow')} amt={fmt(riadCost(G, i))} off={!(can && canRiad(G, i, pid))} on={() => act('riad', i)} />}
                     {pr.houses > 0 && <DeedAct cls="plus" label={t('btn.sell')} amt={'+' + fmt(houseCost(i) / 2)} off={!(can && canSell(G, i, pid))} on={() => act('sell', i)} />}
                   </>

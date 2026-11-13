@@ -2,9 +2,9 @@
 import {useEffect, useState, type CSSProperties, type ReactNode} from 'react';
 import {createPortal} from 'react-dom';
 import {app} from '../app/state';
-import {TOKENS} from '../engine/data';
+import {CASH_CHOICES, FINE_CHOICES, JAIL_FINE, RIAD_PREMIUM, SALARY, SALARY_CHOICES, START_CASH, TOKENS} from '../engine/data';
 import type {Settings} from '../engine/types';
-import {LANGS, t} from '../i18n/core';
+import {LANGS, fmt, t} from '../i18n/core';
 import {esc} from '../ui/dom';
 import {setLang} from '../ui/lang';
 
@@ -39,22 +39,45 @@ export function BackButton({onClick}: {onClick: () => void}) {
   return <button className="btn ghost sm" onClick={onClick}>{t('back')}</button>;
 }
 
-/** the house rules: Daret pot, dlala, game length, turn timer, fast animations */
+/** the house rules, in three groups: the money (starting money, salary, the 3okacha fine, double on Al Inṭilāq),
+ *  the rules (Daret pot, dlala, "Riad now", rent from 3okacha) and the game (length, turn timer, fast animations) */
 export function RulesOptions({settings, onChange}: {settings: Settings; onChange: (s: Settings) => void}) {
   const set = (patch: Partial<Settings>) => onChange({...settings, ...patch});
+  const pick = (key: 'cash' | 'salary' | 'fine', value: number, choices: number[]) => (
+    <select className="field" value={value} onChange={e => set({[key]: +e.target.value})}>
+      {choices.map(v => <option key={v} value={v}>{fmt(v)}</option>)}
+    </select>
+  );
+  const sw = (on: boolean, change: (v: boolean) => void, key: string, p?: Record<string, unknown>) => (
+    <label className="opt"><input type="checkbox" className="switch" checked={on} onChange={e => change(e.target.checked)} /><div><b>{t('opt.' + key)}</b><span>{t('opt.' + key + 'D', p)}</span></div></label>
+  );
+  const choice = (key: string, control: ReactNode) => (
+    <label className="opt"><div style={{flex: 1}}><b>{t('opt.' + key)}</b><span>{t('opt.' + key + 'D')}</span><div>{control}</div></div></label>
+  );
   return (
     <>
-      <label className="opt"><input type="checkbox" checked={!!settings.daret} onChange={e => set({daret: e.target.checked})} /><div><b>{t('opt.daret')}</b><span>{t('opt.daretD')}</span></div></label>
-      <label className="opt"><input type="checkbox" checked={!!settings.dlala} onChange={e => set({dlala: e.target.checked})} /><div><b>{t('opt.dlala')}</b><span>{t('opt.dlalaD')}</span></div></label>
-      <label className="opt"><div style={{flex: 1}}><b>{t('opt.len')}</b><span>{t('opt.lenD')}</span><div>
+      <div className="opt-group">{t('opt.gMoney')}</div>
+      {choice('cash', pick('cash', settings.cash ?? START_CASH, CASH_CHOICES))}
+      {choice('salary', pick('salary', settings.salary ?? SALARY, SALARY_CHOICES))}
+      {choice('fine', pick('fine', settings.fine ?? JAIL_FINE, FINE_CHOICES))}
+      {sw(!!settings.goDouble, v => set({goDouble: v}), 'goDouble')}
+      <div className="opt-group">{t('opt.gRules')}</div>
+      {sw(!!settings.daret, v => set({daret: v}), 'daret')}
+      {sw(!!settings.dlala, v => set({dlala: v}), 'dlala')}
+      {sw(settings.riadNow !== false, v => set({riadNow: v}), 'riadNow', {n: Math.round(RIAD_PREMIUM * 100)})}
+      {sw(settings.jailRent !== false, v => set({jailRent: v}), 'jailRent')}
+      <div className="opt-group">{t('opt.gGame')}</div>
+      {choice('len', (
         <select className="field" value={+settings.rounds} onChange={e => set({rounds: +e.target.value})}>
           {[0, 15, 25, 40].map(v => <option key={v} value={v}>{v ? t('opt.rounds', {n: v}) : t('opt.until')}</option>)}
-        </select></div></div></label>
-      <label className="opt"><div style={{flex: 1}}><b>{t('opt.timer')}</b><span>{t('opt.timerD')}</span><div>
+        </select>
+      ))}
+      {choice('timer', (
         <select className="field" value={+(settings.timer || 0)} onChange={e => set({timer: +e.target.value})}>
           {[0, 30, 60, 90, 120].map(v => <option key={v} value={v}>{v === 0 ? t('opt.off') : v < 120 ? t('opt.sec', {n: v}) : t('opt.min', {n: v / 60})}</option>)}
-        </select></div></div></label>
-      <label className="opt"><input type="checkbox" checked={!!settings.fast} onChange={e => set({fast: e.target.checked})} /><div><b>{t('opt.fast')}</b><span>{t('opt.fastD')}</span></div></label>
+        </select>
+      ))}
+      {sw(!!settings.fast, v => set({fast: v}), 'fast')}
     </>
   );
 }

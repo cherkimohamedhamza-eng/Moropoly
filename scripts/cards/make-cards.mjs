@@ -1,5 +1,5 @@
 // Renders the property cards (and the card back) from scripts/cards/cards.html into public/assets/.
-//   npm run cards                         all 24: card-NN.webp (720x1080) and card-back.webp
+//   npm run cards                         all 34: card-NN.webp (720x1080), card-mektoub, card-baraka and card-back.webp
 //   node scripts/cards/make-cards.mjs 32 back    only some of them
 // Serves this folder on 127.0.0.1, captures each card with headless Chrome at 2x (360x540 CSS px ->
 // 720x1080), checks the capture, and converts it to WebP with sharp. Set CHROME to use another browser.
@@ -15,7 +15,8 @@ import sharp from 'sharp';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.resolve(HERE, '..', '..', 'public', 'assets');
 const CARDS = ['01', '03', '06', '08', '09', '11', '13', '14', '16', '18', '19', '21', '23', '24',
-  '26', '27', '29', '30', '31', '32', '34', '37', '39', 'back'];
+  '26', '27', '29', '30', '31', '32', '34', '37', '39',
+  '04', '05', '12', '15', '25', '28', '35', '38', 'mektoub', 'baraka', 'back'];
 const W = 360, H = 540, SCALE = 2;
 const QUALITY = 72;
 const PARALLEL = 4;

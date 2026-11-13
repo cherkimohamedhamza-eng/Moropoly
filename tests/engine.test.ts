@@ -35,6 +35,51 @@ describe('a new game', () => {
   });
 });
 
+describe('house rules with numbers and the newer switches', () => {
+  it('starts everyone with the chosen money', () => {
+    const G = game(3, { cash: 30000 });
+    expect(G.players.map(p => p.cash)).toEqual([30000, 30000, 30000]);
+  });
+  it('pays the chosen salary for passing Al Inṭilāq', () => {
+    const G = game(2, { salary: 4000 });
+    G.players[0].pos = 38;
+    dice([2, 3]);                                  // 38 + 5 = 43: passes Al Inṭilāq onto square 3
+    apply(G, 0, { t: 'roll' });
+    expect(G.players[0].cash).toBe(START_CASH + 4000);
+  });
+  it('pays the salary twice for landing right on Al Inṭilāq when that rule is on, once when it is off', () => {
+    for (const goDouble of [true, false]) {
+      const G = game(2, { goDouble });
+      G.players[0].pos = 35;
+      dice([2, 3]);                                // 35 + 5 = 40: lands on Al Inṭilāq
+      apply(G, 0, { t: 'roll' });
+      expect(G.players[0].cash).toBe(START_CASH + (goDouble ? 4000 : 2000));
+    }
+  });
+  it('charges the chosen fine to leave 3okacha', () => {
+    const G = game(2, { fine: 1000 });
+    G.players[0].pos = 10; G.players[0].inJail = true;
+    expect(apply(G, 0, { t: 'fine' })).toBe(true);
+    expect(G.players[0].cash).toBe(START_CASH - 1000);
+  });
+  it('does not allow "Riad now" when that rule is off', () => {
+    const G = game(2, { riadNow: false });
+    own(G, 0, 1, 3);
+    expect(apply(G, 0, { t: 'riad', i: 1 })).toBe(false);
+    expect(G.props[1].houses).toBe(0);
+  });
+  it('collects no rent for a player in 3okacha when that rule is off', () => {
+    for (const jailRent of [true, false]) {
+      const G = game(2, { jailRent });
+      own(G, 1, 3);
+      G.players[1].pos = 10; G.players[1].inJail = true;
+      dice([1, 2]);                                // 0 + 3: Tabriket, owned by the jailed player
+      apply(G, 0, { t: 'roll' });
+      expect(G.players[0].cash).toBe(START_CASH - (jailRent ? rentFor(G, 3) : 0));
+    }
+  });
+});
+
 describe('rent', () => {
   it('is the base rent, doubled when the owner has the whole colour group', () => {
     const G = game();

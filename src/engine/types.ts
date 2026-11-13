@@ -52,6 +52,20 @@ export interface Player {
 export interface PropState { owner: number; houses: number; mort: boolean }
 
 export interface Settings {
+  /* The rules added later are optional: a game saved before them, or started without them, plays as it always did.
+     Read them through the helpers in engine.ts (startCash, salary, jailFine), which fall back to the classic values. */
+  /** money each player starts with (classic: START_CASH) */
+  cash?: number;
+  /** paid for passing Al Inṭilāq (classic: SALARY) */
+  salary?: number;
+  /** landing exactly on Al Inṭilāq pays the salary a second time */
+  goDouble?: boolean;
+  /** the fine for leaving 3okacha (classic: JAIL_FINE) */
+  fine?: number;
+  /** the "Riad now" shortcut can be used (on unless set to false) */
+  riadNow?: boolean;
+  /** players in 3okacha still collect rent (on unless set to false) */
+  jailRent?: boolean;
   /** taxes and fines go into a pot that whoever lands on Qahwa collects */
   daret: boolean;
   /** unbought properties go to auction */

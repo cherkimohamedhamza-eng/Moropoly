@@ -183,13 +183,22 @@ S('opt.daret','Daret pot','Cagnotte Daret','صندوق الدارت'); S('opt.da
 S('opt.dlala','Dlala auctions','Enchères Dlala','مزادات الدلالة'); S('opt.dlalaD','Unbought property goes to auction.','Une propriété non achetée part aux enchères.','العقار غير المُشترى يذهب إلى المزاد.');
 S('opt.len','Game length','Durée de la partie','مدة اللعبة'); S('opt.lenD','Richest player wins at the limit.','Le plus riche gagne à la fin.','الأغنى يفوز عند النهاية.');
 S('opt.until','Until one player is left','Jusqu’au dernier joueur','حتى يبقى لاعب واحد'); S('opt.rounds','{n} rounds','{n} tours','{n} جولة');
+S('opt.gMoney','Money','Argent','المال'); S('opt.gRules','Rules','Règles','القواعد'); S('opt.gGame','Game','Partie','اللعبة');
+S('opt.cash','Starting money','Argent de départ','المال في البداية'); S('opt.cashD','What each player starts with.','Ce que chaque joueur reçoit au départ.','ما يبدأ به كل لاعب.');
+S('opt.salary','Al Inṭilāq salary','Salaire d’Al Inṭilāq','راتب الانطلاق'); S('opt.salaryD','Paid every time you pass Al Inṭilāq.','Versé à chaque passage par Al Inṭilāq.','يُدفع كلما مررت بالانطلاق.');
+S('opt.fine','3okacha fine','Amende de 3okacha','غرامة عكاشة'); S('opt.fineD','What it costs to walk out of 3okacha.','Ce qu’il faut payer pour sortir de 3okacha.','ما تدفعه للخروج من عكاشة.');
+S('opt.goDouble','Double on Al Inṭilāq','Double sur Al Inṭilāq','مضاعف عند الانطلاق'); S('opt.goDoubleD','Land right on it and the salary is paid twice.','Tombez pile dessus et le salaire est versé deux fois.','إذا توقفت عليه تمامًا يُدفع الراتب مرتين.');
+S('opt.riadNow','“Riad now”','« Riad direct »','«رياض مباشرة»'); S('opt.riadNowD','Build a riad in one go, for {n}% more.','Construire un riad d’un coup, pour {n} % de plus.','بناء رياض دفعة واحدة بزيادة {n}%.');
+S('opt.jailRent','Rent from 3okacha','Loyers depuis 3okacha','الكراء من عكاشة'); S('opt.jailRentD','Players in 3okacha still collect their rent.','Les joueurs à 3okacha touchent toujours leurs loyers.','اللاعبون في عكاشة يواصلون تحصيل الكراء.');
+S('log.goDouble','{p} lands right on Al Inṭilāq and collects another {a}.','{p} tombe pile sur Al Inṭilāq et reçoit encore {a}.','{p} يتوقف تمامًا عند الانطلاق ويحصل على {a} إضافية.');
+S('log.jailNoRent','{o} is in 3okacha, so collects no rent for {s}.','{o} est à 3okacha et ne touche pas de loyer pour {s}.','{o} في عكاشة، فلا يقبض كراء {s}.');
 S('opt.fast','Fast animations','Animations rapides','حركات سريعة'); S('opt.fastD','Quicker dice and token moves.','Dés et pions plus rapides.','نرد وقطع أسرع.');
 /* setup */
 S('setup.eyebrow','Play on this device','Jouer sur cet appareil','العب على هذا الجهاز'); S('setup.h2','Who’s playing?','Qui joue ?','من يلعب؟');
 S('setup.p','Pass the screen around. Turn seats on or off, and let the computer take any empty chair.','Faites passer l’écran. Activez ou désactivez des places, et laissez l’ordinateur occuper les chaises vides.','مرّروا الشاشة بينكم. فعّلوا المقاعد أو عطّلوها، ودعوا الحاسوب يشغل أي كرسي فارغ.');
 S('btn.startGame','Start game','Commencer','ابدأ'); S('btn.demo','Watch 8 computer players','Regarder 8 joueurs ordinateur','شاهد 8 لاعبين من الحاسوب'); S('btn.resume','Resume saved game','Reprendre la partie','تابع اللعبة المحفوظة');
 S('setup.need2','Turn on at least 2 seats.','Activez au moins 2 places.','فعّل مقعدين على الأقل.'); S('setup.count','{n} players · {h} human','{n} joueurs · {h} humain(s)','{n} لاعبين · {h} بشر');
-S('seg.human','Human','Humain','إنسان'); S('seg.computer','Computer','Ordinateur','حاسوب');
+S('seg.human','Human','Humain','إنسان'); S('setup.change','Change','Changer','غيّر'); S('seg.computer','Computer','Ordinateur','حاسوب');
 S('tok.choose','Choose a token','Choisir un pion','اختر قطعة'); S('tok.swap','Picking a token another seat has swaps the two.','Choisir le pion d’une autre place les échange.','اختيار قطعة مقعد آخر يبدّل بينهما.');
 S('aria.seatTok','Choose token for seat {n}','Choisir le pion de la place {n}','اختر قطعة المقعد {n}'); S('aria.seatOn','Seat {n} playing','Place {n} active','المقعد {n} يلعب'); S('aria.seatName','Seat {n} name','Nom de la place {n}','اسم المقعد {n}');
 /* home */

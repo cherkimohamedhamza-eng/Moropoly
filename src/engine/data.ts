@@ -5,6 +5,8 @@ import type {Group, GroupId, Space, Token} from './types';
 
 const pad2=(n: number)=>String(n).padStart(2,'0');
 const ART=(i: number)=>`assets/card-${pad2(i)}.webp`;
+/** the colour band of the squares that are not properties, as on their cards */
+export const BAND: Record<string, string>={rail:'#3d434c',util:'#3f5b68',tax:'#7a2e22',mektoub:'#b3262c',baraka:'#0a7a43'};
 export const GROUPS: Record<GroupId, Group>={
   brown :{city:'Salé',ar:'سلا',color:'#8B4513',house:500},
   lblue :{city:'Chefchaouen',ar:'شفشاون',color:'#7cc8ee',house:500},
@@ -58,9 +60,14 @@ export const SP: Space[]=[
  {t:'tax',name:"L'3ers",ar:'العرس',amount:1000,why:'wedding'},
  {t:'prop',g:'dblue',name:'Ain Diab',ar:'عين الذياب',price:4000,rent:R(50,200,600,1400,1700,2000),note:'The corniche at sunset.'}
 ];
-SP.forEach((s,i)=>{if(s.t==='prop'){s.art=ART(i); s.tile=`assets/art-${pad2(i)}.webp`; s.tileSet=`assets/art-${pad2(i)}-112.webp 112w, ${s.tile} 224w`;}}); SP[30].art=ART(30); SP[10].art=ART(30);
+/* every square that is a card has its picture: the properties, stations, utilities and taxes their own card, the
+   Mektoub and Baraka squares the card of their deck (scripts/cards/cards.html) */
+const CARD_ID=(i: number)=>SP[i].t==='mektoub'||SP[i].t==='baraka'?SP[i].t:pad2(i);
+SP.forEach((s,i)=>{if(['prop','rail','util','tax','mektoub','baraka'].includes(s.t)){const id=CARD_ID(i); s.art=`assets/card-${id}.webp`; s.tile=`assets/art-${id}.webp`; s.tileSet=`assets/art-${id}-112.webp 112w, ${s.tile} 224w`;}}); SP[30].art=ART(30); SP[10].art=ART(30);
 export const RAILS=[5,15,25,35], UTILS=[12,28], RAIL_RENT=[250,500,1000,2000];
 export const SALARY=2000, JAIL_FINE=500, START_CASH=15000;
+/** the choices the house rules offer for the starting money, the Al Inṭilāq salary and the 3okacha fine */
+export const CASH_CHOICES=[10000,15000,20000,30000], SALARY_CHOICES=[1000,2000,3000,4000], FINE_CHOICES=[250,500,1000];
 export const RIAD_PREMIUM=0.5; // the extra share paid for building a riad in one go ("Riad now"), on top of the missing dars
 export const TOKENS: Token[]=['Red petit taxi','Blue petit taxi','Al Boraq','Camel','Koutoubia','Berrad teapot','Ferry','Post scooter','Courier scooter','Fishing boat','Hassan Tower'].map((n,k)=>({name:n,img:`assets/tok-${k}.webp`,set:`assets/tok-${k}-96.webp 96w, assets/tok-${k}-192.webp 192w, assets/tok-${k}.webp 288w`,piece:`assets/piece-${k}.webp`,pieceSet:[80,112,160,224].map(w=>`assets/piece-${k}-${w}.webp ${w}w`).join(', ')+`, assets/piece-${k}.webp 320w`,g:['🚕','🚙','🚄','🐪','🕌','🫖','⛴️','🛵','📦','🚤','🗼'][k]}));
 export const COLORS=['#e5484d','#3e9be0','#c9cfd8','#e3b34a','#17a862','#9b7bf0','#f07fb0','#2fc2c2'];
