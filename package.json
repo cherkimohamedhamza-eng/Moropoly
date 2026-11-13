@@ -1,0 +1,39 @@
+{
+  "name": "moropoly",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:server": "vite build && wrangler dev --port 8787 --ip 127.0.0.1",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc && tsc -p server",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "deploy": "npm run build && wrangler deploy",
+    "cards": "node scripts/cards/make-cards.mjs",
+    "tiles": "node scripts/cards/make-tile-art.mjs",
+    "dice": "blender -b -P scripts/dice/make-die.py",
+    "buildings": "blender -b -P scripts/buildings/make-buildings.py && node scripts/finish-renders.mjs",
+    "pieces": "blender -b -P scripts/pieces/make-pieces.py && node scripts/finish-renders.mjs",
+    "models": "blender -b -P scripts/buildings/make-buildings.py -- --glb && blender -b -P scripts/pieces/make-pieces.py -- --glb",
+    "wood": "blender -b -P scripts/table/make-wood.py && node scripts/finish-renders.mjs"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261110.1",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "sharp": "^0.35.5",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.7",
+    "vitest": "^5.1.0",
+    "wrangler": "^4.160.0"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "three": "^0.187.0"
+  }
+}

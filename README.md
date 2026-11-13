@@ -1,28 +1,73 @@
 # Moropoly · مُوروبولي · ⵎⵓⵔⵓⴱⵓⵍⵉ
 
-The Moroccan property game for 2 to 8 players. It runs entirely in the browser, as a phone app (PWA) or on a computer.
+The Moroccan property game for 2 to 8 players. It runs in the browser, as a phone app (PWA) or on a computer, with a small game server for online play.
 
-## How online play works
-- The host opens the site and taps **Host an online game**. That browser runs the game.
-- Players open the invite link (`…/#code`), pick a name and a token, and play from their own phones.
-- Game messages go through two free public relay servers (EMQX and HiveMQ, MQTT over secure WebSocket), so it works on any network. No accounts and no database.
-- Everything sent through the relays is encrypted with a key that comes from the game code. The host signs every board, each player signs their own moves, and the table code is encrypted so only the host can read it.
-- Keep the host's screen on. If the host closes the tab, the game pauses and continues when they reopen it from **Resume game** on the home page.
+## Working on it
+Needs Node 24 or newer.
 
-## Files
+```
+npm install
+npm run dev:server   # the game server at http://127.0.0.1:8787 (keep it running in its own terminal)
+npm run dev          # the site at http://localhost:5173; it reaches the game server through /api
+npm test             # rules, the online table, and a replay of games against the original version
+npm run build        # type-check and build the site into dist/
+node scripts/check-server.mjs [address]   # two pretend players against a running game server
+npm run cards        # re-make the property card images (see below)
+npm run tiles        # re-cut the small paintings the board's tiles show (from scripts/cards/paintings/)
+npm run dice         # re-make the 3D die model (needs Blender on the PATH)
+npm run buildings    # re-make the dar and riad pictures (needs Blender on the PATH)
+npm run pieces       # re-make the eleven player pieces (needs Blender on the PATH; about fifteen minutes)
+npm run models       # re-make the 3D models the table view draws live (needs Blender on the PATH; about a minute)
+npm run wood         # re-make the wooden table top behind the board (needs Blender on the PATH)
+```
+
+The cards in `public/assets/card-*.webp` (the 22 properties, the 4 stations, the 2 utilities, the 2 taxes, Mektoub and Baraka) are rendered from one design, `scripts/cards/cards.html`, with the paintings in `scripts/cards/paintings/`. The property paintings came with the original game; the others were made with ElevenLabs' image generator in the same style. The board's tiles show only the painting, cut by `npm run tiles`. `npm run cards` screenshots each card with Chrome or Edge and saves it as WebP; it needs an internet connection for the fonts. Change the design or a painting there, never the image files by hand.
+
+The dice are a 3D model, `public/assets/die.glb`, made by `scripts/dice/make-die.py` in Blender (a rounded cube with drilled pips) and drawn in the browser with three.js (`src/ui/dice3d.js`). three.js is fetched the first time dice are shown; until then, and where WebGL is missing, plain CSS dice show instead.
+
+The dars and riads on the board are 3D models too, built and rendered by `scripts/buildings/make-buildings.py` in Blender. They never turn, so they are pictures rather than live models.
+
+The eleven player pieces are 3D models as well: cast-metal figures with no pedestal; on the board each stands on a spot in its player's colour. `scripts/pieces/make-pieces.py` holds the base, the camera, the light and the modelling helpers; each piece is one file in `scripts/pieces/models/`. Every piece is rendered twice: `tok-N`, a portrait for the round token coins in the menus, and `piece-N`, the piece standing in a fixed frame for the pawns on the board (the `.pawn` styles rely on that frame).
+
+For buildings and pieces Blender renders large masters into `scripts/.renders/` (not kept in git), on the graphics card when it can. `scripts/finish-renders.mjs` then shrinks and sharpens them into `public/assets/` at the sizes they are really shown at, because a browser that shrinks a picture several times blurs it; the game picks the nearest size (`srcset` for the pieces, `image-set` for the buildings).
+
+**Table view.** The board is flat by default, on a wooden table top (`public/assets/wood.webp`, rendered by `scripts/table/make-wood.py`). A "Table view" button in the game bar switches to an optional 3D scene: a wooden table, the board lying on it, and live models of the pieces, buildings and dice with real light and shadows (`src/ui/table3d.js`; a button in the game bar switches to the flat board, `src/ui/tableview.js`). The board's face is not redrawn: it is the same HTML board, laid into the scene with three.js's CSS3DRenderer, so tiles, text and clicks work as before; the scene copies each frame where the flat board has its pawns, buildings and dice. The models are `public/assets/models/*.glb`, exported by the same Blender scripts (`npm run models`). They are plain, uncompressed .glb on purpose: the page's Content-Security-Policy allows neither WebAssembly nor blob workers, which the Draco and Meshopt decoders need.
+
+Games on one device don't need the game server; only online play does. To try online play with two players on one computer, open the invite link in a second browser profile, or at `http://[::1]:5173/…` (a different address keeps a separate player identity).
+
+## How the code is organised
 | Path | What it is |
 |---|---|
-| `index.html` | The whole game: engine, board, animations, music |
-| `manifest.webmanifest`, `icons/` | Lets phones install it as an app |
-| `sw.js` | Offline cache. Bump `VERSION` after changing files so phones pick up the update |
-| `assets/card-*.webp` | Property card paintings (card number = board square) |
-| `assets/tok-*.webp` | The ten silver tokens |
-| `assets/midnight-oud-plucks.mp3`, `andalusian-sunset.mp3`, `chaabi-wedding.mp3` | The three soundtracks (Oud Nights, Andalusian Sunset, Chaabi Wedding), looped. Default volume 30% |
-| `assets/fonts/` | Unbounded, IBM Plex Sans, IBM Plex Sans Arabic and Noto Sans Tifinagh (SIL Open Font Licence), served from this site |
-| `CNAME` | The custom domain (moropoly.win). Do not delete |
+| `src/engine/` | The game rules, in TypeScript. Pure functions on one game-state object; the browser runs them for games on one device, the server for online games |
+| `src/engine/engine.ts` | Moves, rent, auctions, debts, bankruptcy, trades, turns: `apply(G, seat, action)` is the one way in |
+| `src/engine/bots.ts`, `data.ts`, `cards.ts`, `types.ts` | Computer players, the board, the Mektoub and Baraka cards, the game-state types |
+| `src/online/` | Online play, shared by the browser and the server: `room.ts` is a table as the server runs it (requests, computer players, turn timer); `table.ts` has seats, late joins, the table code and the host's controls; `protocol.ts` lists the messages; `pace.ts` tells the server how long screens take to animate a move |
+| `server/` | The game server on Cloudflare: `worker.ts` routes requests, `game-room.ts` is one table as a Durable Object (storage, WebSockets, alarms). `wrangler.jsonc` configures it |
+| `src/app/` | App state shared by the screens (`state.js`), the authority for games this device runs (`authority.js`), hosting and joining (`online.js`) |
+| `src/net/` | Connecting: the game server (`server.js`), or the in-browser host used when the game runs inside Claude (`claude.js`) |
+| `src/react/` | Every screen is React: the home page (`HomeScreen.tsx`), the lobby (`LobbyScreen.tsx`), the local game setup (`SetupScreen.tsx`), the board (`Board.tsx`), the game bar, turn card, side tabs and banner (`GamePanel.tsx`), every window (`Windows.tsx`) and the music controls (`MusicDock.tsx`), plus shared pieces (`common.tsx`). `store.ts` bridges the app state to React: the older code calls `refresh()` after changing state, and React screens draw again |
+| `src/ui/` | What runs around the screens: playing each new game state with its animations (`view.js`, `anim.js`: pawns hopping, dice, reveals, floating money, confetti), placing pawns on the board (`board.js`), the music and sound player (`music.js`), switching screens and language |
+| `src/i18n/` | English, French and Arabic text |
+| `src/sw.js` | Offline cache template. The build fills in the file list and a version, so phones pick up every update |
+| `public/` | Files served as they are: card paintings and tokens, music, fonts, app icons, `manifest.webmanifest`, `CNAME` |
+| `tests/` | `engine.test.ts` (the rules), `room.test.ts` (the online table, with a pretend clock), `parity.test.ts` (18 recorded games replayed against the original single-file version, see `tests/parity/`) |
+
+The engine, online code and React screens are TypeScript; the code in `src/app`, `src/net` and `src/ui` is still plain JavaScript. Each React screen takes over one element of `index.html` (see `src/react/mount.tsx`). The animations move things React draws but leaves alone (pawn positions, the dice's rotation, the board's caption and reveal stage); anything an animation shows ahead of the game state (the square being passed, a house going up) goes through `app.boardFx`, which `Board.tsx` draws.
+
+## How online play works
+- The host taps **Host an online game**. The game server opens a table with an 8-character code; players join with the invite link (`…/#code`), pick a name and a token, and play from their own phones.
+- The server holds the game: it checks every move, plays for the computer players (waiting while screens animate the previous move), runs the turn timer, and saves the table after every move. Nobody's browser has to stay open, and a player who closes the page or loses signal picks up where they were from the link or from **Resume game** on the home page.
+- Each device keeps a random secret that it sends only to the server, over an encrypted connection; the server turns it into the player's id, so nobody can play someone else's seat. A table code (set by the host) is checked by the server and never sent to players.
+- Finished tables are deleted after a day, abandoned ones after 30 days.
 
 ## Hosting
-Any static host works because there is no server code.
-- **GitHub Pages** (current, at https://moropoly.win): Settings → Pages → Deploy from branch → `main` / root.
-- **Cloudflare Pages** (free, works with a private repo): Workers & Pages → Create → Pages → Connect to Git → pick this repo → no build command, output directory `/`.
-- **Netlify Drop** (free, no Git): drag this folder onto app.netlify.com/drop.
+moropoly.win runs on Cloudflare (Workers with Durable Objects, free plan): one Worker, `moropoly`, serves both the site and the game server. It lives in the Cloudflare account that holds the domain, which `wrangler.jsonc` names.
+
+To publish a new version:
+1. `npx wrangler login` once, as a login with access to that account.
+2. `npm run deploy` (type-checks, builds and uploads; it takes under a minute and open games carry on).
+3. Check it: `node scripts/check-server.mjs https://moropoly.win`.
+
+GitHub Pages is no longer used for the site.
+
+**Hosting it elsewhere.** Remove `account_id` and `routes` from `wrangler.jsonc` (and set `workers_dev` to true) to deploy to your own Cloudflare account at `https://moropoly.<your-subdomain>.workers.dev`. To keep the site on a static host while the server runs on Cloudflare, build it with the server's address, `VITE_GAME_SERVER=https://… npm run build`, and publish `dist/`.
