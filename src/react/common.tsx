@@ -2,7 +2,7 @@
 import {useEffect, useState, type CSSProperties, type ReactNode} from 'react';
 import {createPortal} from 'react-dom';
 import {app} from '../app/state';
-import {CASH_CHOICES, FINE_CHOICES, JAIL_FINE, RIAD_PREMIUM, SALARY, SALARY_CHOICES, START_CASH, TOKENS} from '../engine/data';
+import {CASH_CHOICES, FINE_CHOICES, JAIL_FINE, LOAN_MAX, LOAN_RATE, RIAD_PREMIUM, SALARY, SALARY_CHOICES, START_CASH, TOKENS} from '../engine/data';
 import type {Settings} from '../engine/types';
 import {LANGS, fmt, t} from '../i18n/core';
 import {esc} from '../ui/dom';
@@ -61,11 +61,16 @@ export function RulesOptions({settings, onChange}: {settings: Settings; onChange
       {choice('salary', pick('salary', settings.salary ?? SALARY, SALARY_CHOICES))}
       {choice('fine', pick('fine', settings.fine ?? JAIL_FINE, FINE_CHOICES))}
       {sw(!!settings.goDouble, v => set({goDouble: v}), 'goDouble')}
+      {sw(!!settings.fairStart, v => set({fairStart: v}), 'fairStart')}
+      {sw(!!settings.credit, v => set({credit: v}), 'credit', {a: fmt(LOAN_MAX), n: Math.round(LOAN_RATE * 100)})}
+      {sw(!!settings.solidarity, v => set({solidarity: v}), 'solidarity')}
+      {sw(!!settings.deeds, v => set({deeds: v}), 'deeds')}
       <div className="opt-group">{t('opt.gRules')}</div>
       {sw(!!settings.daret, v => set({daret: v}), 'daret')}
       {sw(!!settings.dlala, v => set({dlala: v}), 'dlala')}
       {sw(settings.riadNow !== false, v => set({riadNow: v}), 'riadNow', {n: Math.round(RIAD_PREMIUM * 100)})}
       {sw(settings.jailRent !== false, v => set({jailRent: v}), 'jailRent')}
+      {sw(!!settings.shufa, v => set({shufa: v}), 'shufa')}
       <div className="opt-group">{t('opt.gGame')}</div>
       {choice('len', (
         <select className="field" value={+settings.rounds} onChange={e => set({rounds: +e.target.value})}>

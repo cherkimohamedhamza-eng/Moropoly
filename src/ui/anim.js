@@ -1,6 +1,6 @@
 // Animations: dice, pawn moves, money effects, cards and confetti.
 import {app} from '../app/state';
-import {SP} from '../engine/data';
+import {RAILS, SP} from '../engine/data';
 import {startCash} from '../engine/engine';
 import {colorOf, range} from '../engine/util';
 import {cardText, fmt, spN, t, tl} from '../i18n/core';
@@ -29,11 +29,13 @@ export async function runAnim(a){
       layoutPawns();   // everyone on the square takes their place (and size) first, then the arriving piece settles with a squash
       if(!rm) el.animate([{transform:el.style.transform+' scale(1.25,0.8)'},{transform:el.style.transform+' scale(1)'}],{duration:260,easing:'cubic-bezier(.3,1.6,.5,1)'});
       highlight(app.dpos[a.pid]);
+      if(RAILS.includes(app.dpos[a.pid])) sfx('station');
       break;}
-    case 'jump':{sfx(a.f==='jail'?'jail':'whoosh');
+    case 'jump':{sfx('whoosh');
       const el=$('pw'+a.pid); const from=el?slotXY(a.pid,app.dpos[a.pid]):null; app.dpos[a.pid]=a.to; const to=slotXY(a.pid,a.to);
       if(el&&!rm){el.style.zIndex=9; await el.animate([{transform:`translate(${from.x}px,${from.y}px) scale(1)`,translate:'0px 0px'},{transform:`translate(${(from.x+to.x)/2}px,${(from.y+to.y)/2}px) scale(1.5)`,translate:`0px ${-pawnSize()*3}px`,offset:.5},{transform:`translate(${to.x}px,${to.y}px) scale(1)`,translate:'0px 0px'}],{duration:700*sp+200,easing:'ease-in-out'}).finished;}
       layoutPawns(); highlight(a.to);
+      if(a.f==='jail') sfx('jail'); else if(RAILS.includes(a.to)) sfx('station');
       if(a.f==='jail'){jailBars(); await revealArt(SP[30].art,t('fl.jail'),1300*sp,null,10,sp);}
       break;}
     case 'card':{sfx('card'); setEvent(t('ev.draws',{p:pname(a.pid),deckN:t('deck.'+a.deck)})); {const tx=cardText(a.deck,a.id,a.text); await showFate(a.deck,tx,(rm?2500:Math.min(9000,4000+tx.length*40))*(sp<1?.75:1),app.dpos[a.pid],sp);} break;}

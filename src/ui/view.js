@@ -69,7 +69,8 @@ function showPinGate(ns,checking){
 export let TDL=null;
 export function onState(ns){
   if(!ns) return;
-  TDL=(ns.tEnd&&ns.tNow&&ns.settings&&ns.settings.timer)?{end:Date.now()+(ns.tEnd-ns.tNow),total:ns.settings.timer*1000,actor:actorOf(ns)}:null;
+  TDL=(ns.tEnd&&ns.tNow&&ns.settings&&ns.settings.timer)?{end:Date.now()+(ns.tEnd-ns.tNow),total:ns.settings.timer*1000,actor:actorOf(ns),
+    pause:ns.tPause?{left:ns.tPause.left,until:Date.now()+(ns.tPause.until-ns.tNow)}:null}:null;
   if(guestGate(ns)) return;
   const wasSeated=seatedIn(app.V);
   if(!app.V||ns.gid!==app.V.gid||ns.status!==app.V.status){

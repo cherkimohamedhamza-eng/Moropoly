@@ -99,13 +99,25 @@ export function setTrack(i){
   AU.els=[]; AU.cur=0; unlockAudio(); applyVolumes(); startMusic(); renderDock();
 }
 export function toggleMusic(on){AU.set.music=on==null?!AU.set.music:on; saveAudio(); applyVolumes(); if(AU.set.music) startMusic(); else setTimeout(()=>{if(!AU.set.music) stopMusic();},300); renderDock();}
-export function unlockAudio(){if(AU.unlocked) return; AU.unlocked=true; const c=actx(); if(c&&c.state==='suspended') c.resume(); if(AU.set.music) startMusic();}
+export function unlockAudio(){if(AU.unlocked) return; AU.unlocked=true; const c=actx(); if(c&&c.state==='suspended') c.resume(); if(AU.set.music) startMusic(); loadSamples();}
 ['pointerdown','keydown'].forEach(ev=>addEventListener(ev,unlockAudio,{passive:true}));
 document.addEventListener('visibilitychange',()=>{
   if(!AU.ctx) return;
   if(document.hidden){if(AU.playing){AU.els.forEach(e=>{try{e.a.pause();}catch(x){}}); AU.resumeOnShow=true; AU.playing=false;} if(app.MODE!=='host') AU.ctx.suspend();}
   else{AU.ctx.resume(); if(AU.resumeOnShow&&AU.set.music){AU.resumeOnShow=false; startMusic();}}
 });
+/* --- recorded sound effects (made with ElevenLabs), loaded once sound is allowed; until they arrive, or if they
+   cannot be loaded, the synthesized sounds stand in --- */
+const SAMPLES={station:['assets/sfx-station.mp3',.9],jail:['assets/sfx-jail.mp3',1]}, BUF={};
+function loadSamples(){
+  const c=actx(); if(!c) return;
+  for(const [k,[src]] of Object.entries(SAMPLES)) if(!BUF[k]) BUF[k]=fetch(src).then(r=>r.ok?r.arrayBuffer():Promise.reject(r.status)).then(d=>c.decodeAudioData(d)).then(b=>{BUF[k]=b; return b;}).catch(()=>{BUF[k]=null;});
+}
+/** plays a recorded sound; false when it is not loaded (yet) */
+function sample(k,t){
+  const buf=BUF[k]; if(!(buf instanceof AudioBuffer)) return false;
+  const c=AU.ctx, s=c.createBufferSource(), g=c.createGain(); s.buffer=buf; g.gain.value=SAMPLES[k][1]; s.connect(g); out(g,AU.sfx,.08); s.start(t); return true;
+}
 /* --- sound effects --- */
 export function sfx(name){
   if(!AU.set.sfx||!AU.unlocked) return; const c=actx(); if(!c) return; if(c.state==='suspended') c.resume();
@@ -123,7 +135,8 @@ export function sfx(name){
     case 'coins': for(let k=0;k<8;k++) tone(t+k*.06,1800+Math.random()*900,0,.15,.12,'sine',b,.3); break;
     case 'build': tek(t,1,b); tek(t+.09,.8,b); tone(t,330,0,.1,.2,'square',b); break;
     case 'gavel': tone(t,220,110,.15,.5,'sine',b,.2); noiseHit(t,.04,'lowpass',1500,1,.5,b); break;
-    case 'jail': [196,233,277].forEach(f=>tone(t,f,f*.98,1.1,.16,'sawtooth',b,.5)); noiseHit(t,.3,'lowpass',500,1,.5,b,.4); break;
+    case 'jail': if(!sample('jail',t)){[196,233,277].forEach(f=>tone(t,f,f*.98,1.1,.16,'sawtooth',b,.5)); noiseHit(t,.3,'lowpass',500,1,.5,b,.4);} break;
+    case 'station': if(!sample('station',t)){tone(t,hz(76),0,.35,.16,'sawtooth',b,.3); tone(t+.38,hz(72),0,.5,.16,'sawtooth',b,.4);} break;
     case 'myturn': tone(t,hz(81),0,.2,.15,'sine',b,.3); tone(t+.12,hz(86),0,.35,.15,'sine',b,.4); break;
     case 'deal': clap(t,1,b); clap(t+.15,1,b); break;
     case 'sad': [62,61,60,57].forEach((n,k)=>tone(t+k*.18,hz(n),0,.3,.14,'triangle',b,.3)); break;

@@ -1,11 +1,11 @@
 // Windows over the game: deed cards, the auction, trades, bankruptcy, your seat, the results, and how to
 // install the app. One window shows at a time. The auction and trade windows can be shrunk to a pill to see
 // the board; a shrunk window waits while another opens (a deed card, say) and comes back after it.
-import {useEffect, useState, type ReactNode} from 'react';
-import {commit, dispatch, lobbyJoin, playJoin, sendIntent} from '../app/authority';
+import {useEffect, useRef, useState, type ReactNode} from 'react';
+import {commit, dispatch, drafting, lobbyJoin, playJoin, sendIntent} from '../app/authority';
 import {app, saveName} from '../app/state';
 import {BAND, GROUPS, RAIL_RENT, SP} from '../engine/data';
-import {netWorth, tradeable} from '../engine/engine';
+import {canShufa, netWorth, shufaPrice, tradeable} from '../engine/engine';
 import type {Action, Game} from '../engine/types';
 import {alive, colorOf, isOwnable, ownedBy, priceOf} from '../engine/util';
 import {cityN, fmt, noteN, num, spN, t, tokN} from '../i18n/core';
@@ -177,9 +177,26 @@ function DeedWindow({i}: {i: number}) {
           {rows && <table><tbody>{rows}</tbody></table>}
           {note && <p className="muted" style={{fontSize: 13}}>{note}</p>}
           {owner && <p style={{fontSize: 13}}>{owner}</p>}
+          <ShufaButton i={i} />
         </div>
       </div>
     </Frame>
+  );
+}
+
+/** house rule "shufa": on the player's turn, buy this property from its owner at 150% */
+function ShufaButton({i}: {i: number}) {
+  const V = app.V as Game | null;
+  if (!V || V.status !== 'play' || V.over || !V.settings.shufa) return null;
+  const pid = V.cur;
+  if (!iControl(pid) || !canShufa(V, pid, i) || V.auction || V.trade || V.pending || app.playing || !(V.phase === 'roll' || V.phase === 'end')) return null;
+  const price = shufaPrice(i), short = V.players[pid].cash < price;
+  return (
+    <div className="shufa-box">
+      <p>{t('sh.explain', {o: V.players[V.props[i].owner].name})}</p>
+      <button className="btn red" disabled={short} onClick={() => { dispatch({t: 'shufa', i}, pid); closeModal(); }}>{t('sh.buy', {a: fmt(price)})}</button>
+      {short && <p className="muted" style={{fontSize: 12.5}}>{t('sh.short')}</p>}
+    </div>
   );
 }
 
@@ -240,6 +257,9 @@ function TradeWindow() {
   const [cashGive, setCashGive] = useState('0');
   const [cashGet, setCashGet] = useState('0');
   const [msg, setMsg] = useState('');
+  const sent = useRef(false);
+  // the turn timer stops while the offer is being written
+  useEffect(() => { drafting(me.id, true); return () => { if (!sent.current) drafting(me.id, false); }; }, []);
   const them = V.players[partner];
   if (!them) return null;
   /** picking someone else starts the offer again */
@@ -262,6 +282,7 @@ function TradeWindow() {
     };
     if (!o.give!.length && !o.get!.length && !o.cashGive && !o.cashGet) { setMsg(t('tr.pick')); return; }
     if ((o.cashGive as number) > Math.max(0, me.cash) || (o.cashGet as number) > Math.max(0, them.cash)) { setMsg(t('tr.noCash')); return; }
+    sent.current = true;
     closeModal();
     dispatch(o, me.id);
     toast(them.human ? t('tr.sent', {p: them.name}) : t('tr.thinking', {p: them.name}));

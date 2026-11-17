@@ -70,6 +70,16 @@ export function dispatch(a,seat){
     sendIntent({seat,a});
   }
 }
+/** the trade window opened or closed: the turn timer stops meanwhile. Quiet: no message when it does not apply. */
+let draftSentAt=0;
+export function drafting(seat,on){
+  const V=app.V; if(!V||V.status!=='play'||!(V.settings&&V.settings.timer)) return;
+  if(runsGame()){if(app.G&&apply(app.G,seat,{t:'drafting',on})) commit(); return;}
+  // only ask for what the game will accept, so a refusal never shows (the server may not have answered "on" yet)
+  if(on){if(V.cur!==seat||V.auction||V.trade||V.pending||V.drafting===seat) return; draftSentAt=Date.now();}
+  else if(V.drafting!==seat&&Date.now()-draftSentAt>3000) return;
+  sendIntent({seat,a:{t:'drafting',on}});
+}
 export function lobbyAct(a){
   if(app.MODE==='host'){
     if(a.t==='join'){if(lobbyJoin(app.myCid,a)) commit(); else toast(t('toast.taken'));}

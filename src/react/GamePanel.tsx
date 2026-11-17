@@ -4,8 +4,8 @@ import {useEffect, useState, type CSSProperties, type ReactNode} from 'react';
 import {amHost, dispatch, hostAct} from '../app/authority';
 import {hostOnline, onlineCids} from '../app/online';
 import {app} from '../app/state';
-import {RIAD_PREMIUM, SP} from '../engine/data';
-import {canBuild, canMort, canRiad, canSell, canUnmort, jailFine, netWorth, rentFor, riadCost} from '../engine/engine';
+import {LOAN_MAX, LOAN_RATE, LOAN_STEP, RIAD_PREMIUM, SHUFA_MARKUP, SP} from '../engine/data';
+import {canBuild, canMort, canRiad, canSell, canShufa, canUnmort, interestOn, jailFine, netWorth, rentFor, riadCost} from '../engine/engine';
 import type {Game} from '../engine/types';
 import {colorOf, groupIdx, houseCost, ownedBy, ownsGroup, priceOf, unmortCost} from '../engine/util';
 import {cityN, fmt, spN, t, tl, tokN} from '../i18n/core';
@@ -147,13 +147,14 @@ function TurnTimer() {
   const [, tick] = useState(0);
   useEffect(() => { const iv = setInterval(() => tick(x => x + 1), 250); return () => clearInterval(iv); }, []);
   const G = playingGame();
-  const T = TDL as {end: number; total: number; actor: number} | null;
+  const T = TDL as {end: number; total: number; actor: number; pause: {left: number; until: number} | null} | null;
   const on = !!(T && G && !G.over);
-  const left = on ? Math.max(0, Math.min(T!.total, T!.end - Date.now())) : 0;
+  const paused = on && !!T!.pause && Date.now() < T!.pause.until;   // stopped while a trade offer is written
+  const left = on ? Math.max(0, Math.min(T!.total, paused ? T!.pause!.left : T!.end - Date.now())) : 0;
   const sec = Math.ceil(left / 1000);
   const mine = on && iControl(T!.actor);
   useEffect(() => {
-    if (on && mine && sec <= 10 && sec > 0 && warnedFor !== T!.end) {
+    if (on && mine && !paused && sec <= 10 && sec > 0 && warnedFor !== T!.end) {
       warnedFor = T!.end;
       try { navigator.vibrate && navigator.vibrate(120); } catch (e) { /* not allowed yet */ }
       sfx('pay');
@@ -162,9 +163,9 @@ function TurnTimer() {
   if (!on) return <div className="ttimer" hidden><i /><span /></div>;
   const who = G!.players[T!.actor];
   return (
-    <div className={`ttimer${sec <= 10 ? ' low' : ''}${mine ? ' mine' : ''}`}>
+    <div className={`ttimer${sec <= 10 && !paused ? ' low' : ''}${mine ? ' mine' : ''}${paused ? ' paused' : ''}`}>
       <i style={{transform: `scaleX(${left / T!.total})`}} />
-      <span>⏱ {Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}{who && !mine ? ' · ' + who.name : ''}</span>
+      <span>{paused ? '⏸' : '⏱'} {Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}{paused ? ' · ' + t('tm.paused', {p: who ? who.name : ''}) : who && !mine ? ' · ' + who.name : ''}</span>
     </div>
   );
 }
@@ -203,7 +204,7 @@ function PlayersTab({G}: {G: Game}) {
                 {on && p.human && <span className={`dotst ${p.cid && on.has(p.cid) ? 'on' : ''}`} />}
                 {p.name} {!p.human && <Small>{t('lbl.computer')}</Small>}{iControl(p.id) && app.MODE !== 'local' && <> <Small>{t('lbl.you')}</Small></>}
               </div>
-              <div className="sub">{p.bankrupt ? t('st.bankrupt') : p.inJail ? t('st.inJail') : spN(p.pos)}{p.goojf.length ? ' · ' + t('st.goojf') : ''}</div>
+              <div className="sub">{p.bankrupt ? t('st.bankrupt') : p.inJail ? t('st.inJail') : spN(p.pos)}{p.goojf.length ? ' · ' + t('st.goojf') : ''}{p.loan ? ' · ' + t('st.loan', {a: fmt(p.loan)}) : ''}</div>
               <div className="chips">{owned.map(i => <span key={i} className={`chip ${G.props[i].mort ? 'm' : ''}`} title={spN(i)} style={{background: colorOf(i)}} />)}</div>
               {hostControl && <button className="btn ghost sm" style={{marginTop: 4}} onClick={() => hostAct({op: 'bot', seat: p.id})}>{p.human ? t('btn.letBot') : t('btn.handBack')}</button>}
             </div>
@@ -219,6 +220,35 @@ function PlayersTab({G}: {G: Game}) {
 const DeedAct = ({label, amt, off, on, cls = ''}: {label: string; amt: string; off: boolean; on: () => void; cls?: string}) =>
   <button className={'dact ' + cls} disabled={off} onClick={on}><b>{label}</b><span>{amt}</span></button>;
 
+/** house rule "credit": what this player owes the bank, and borrowing or repaying */
+function CreditPanel({G, pid, can}: {G: Game; pid: number; can: boolean}) {
+  const p = G.players[pid];
+  const [amt, setAmt] = useState(LOAN_MAX);
+  if (!G.settings.credit) return null;
+  const loan = p.loan || 0;
+  return (
+    <div className="credit">
+      <div className="credit-text">
+        <b>{t('cr.title')}</b>
+        <span>{loan ? t('cr.owes', {a: fmt(loan), b: fmt(interestOn(loan))}) : t('cr.none', {a: fmt(LOAN_MAX), n: Math.round(LOAN_RATE * 100)})}</span>
+      </div>
+      <div className="credit-acts">
+        {loan
+          ? <>
+              <button className="btn sm" disabled={!can || p.cash < Math.min(loan, LOAN_STEP)} onClick={() => dispatch({t: 'repay', a: Math.min(loan, LOAN_STEP)}, pid)}>{t('cr.repay', {a: fmt(Math.min(loan, LOAN_STEP))})}</button>
+              <button className="btn sm green" disabled={!can || p.cash < loan} onClick={() => dispatch({t: 'repay', a: loan}, pid)}>{t('cr.repayAll')}</button>
+            </>
+          : <>
+              <select className="field" value={amt} onChange={e => setAmt(+e.target.value)} aria-label={t('cr.amount')}>
+                {Array.from({length: LOAN_MAX / LOAN_STEP}, (_, k) => (k + 1) * LOAN_STEP).map(v => <option key={v} value={v}>{fmt(v)}</option>)}
+              </select>
+              <button className="btn sm gold" disabled={!can} onClick={() => dispatch({t: 'borrow', a: amt}, pid)}>{t('cr.borrow')}</button>
+            </>}
+      </div>
+    </div>
+  );
+}
+
 /** the properties of whoever plays on this device, with building, selling and mortgaging */
 function DeedsTab({G}: {G: Game}) {
   const seats = mySeats();
@@ -226,11 +256,13 @@ function DeedsTab({G}: {G: Game}) {
   if (pid == null) return <div className="muted">{t('dd.watching')}</div>;
   const p = G.players[pid];
   const owned = ownedBy(G, pid).sort((a, b) => a - b);
-  if (!owned.length) return <div className="muted">{t('dd.none', {p: p.name})}</div>;
   const can = pid === G.cur && !G.auction && !G.trade && !app.playing && !G.over;
+  const extras = <><CreditPanel G={G} pid={pid} can={can} />{Object.keys(G.props).some(i => canShufa(G, pid, +i)) && <div className="shufa-hint">{t('dd.shufa', {n: Math.round(SHUFA_MARKUP * 100)})}</div>}</>;
+  if (!owned.length) return <>{extras}<div className="muted">{t('dd.none', {p: p.name})}</div></>;
   const act = (ty: 'build' | 'riad' | 'sell' | 'mort' | 'unmort', i: number) => dispatch({t: ty, i}, pid);
   return (
     <>
+      {extras}
       <div className="muted" style={{fontSize: 12.5, marginBottom: 8}}>{can ? t('dd.help', {n: Math.round(RIAD_PREMIUM * 100)}) : t('dd.notTurn', {p: p.name})}</div>
       <div className="deeds">
         {owned.map(i => {

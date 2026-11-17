@@ -66,6 +66,16 @@ const CARD_ID=(i: number)=>SP[i].t==='mektoub'||SP[i].t==='baraka'?SP[i].t:pad2(
 SP.forEach((s,i)=>{if(['prop','rail','util','tax','mektoub','baraka'].includes(s.t)){const id=CARD_ID(i); s.art=`assets/card-${id}.webp`; s.tile=`assets/art-${id}.webp`; s.tileSet=`assets/art-${id}-112.webp 112w, ${s.tile} 224w`;}}); SP[30].art=ART(30); SP[10].art=ART(30);
 export const RAILS=[5,15,25,35], UTILS=[12,28], RAIL_RENT=[250,500,1000,2000];
 export const SALARY=2000, JAIL_FINE=500, START_CASH=15000;
+/** house rule "credit": borrow in steps of LOAN_STEP up to LOAN_MAX; LOAN_RATE of what is owed is charged at each pass of Al Inṭilāq */
+export const LOAN_MAX=5000, LOAN_STEP=500, LOAN_RATE=0.1;
+/** house rule "shufa": the price of a forced purchase, as a multiple of the property's price */
+export const SHUFA_MARKUP=1.5;
+/** house rule "shufa": the first round it can be used in. Before then everyone's worth is within a rent or two of
+    everyone else's, so "furthest behind" would only mean "paid the last rent". */
+export const SHUFA_FROM=6;
+/** house rule "fairStart": the extra starting money for each seat after the first, by number of players
+    (found by simulating thousands of games, so that every seat wins about equally often) */
+export const FAIR_STEP: Record<number, number>={2:300,3:300,4:300,5:350,6:400,7:400,8:450};
 /** the choices the house rules offer for the starting money, the Al Inṭilāq salary and the 3okacha fine */
 export const CASH_CHOICES=[10000,15000,20000,30000], SALARY_CHOICES=[1000,2000,3000,4000], FINE_CHOICES=[250,500,1000];
 export const RIAD_PREMIUM=0.5; // the extra share paid for building a riad in one go ("Riad now"), on top of the missing dars

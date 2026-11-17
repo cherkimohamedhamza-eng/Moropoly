@@ -47,6 +47,10 @@ export interface Player {
   debts?: Debt[];
   /** set when someone joins a game that has already started */
   lateRound?: number;
+  /** what the player owes the bank (house rule: credit) */
+  loan?: number;
+  /** the player has used their Shufa (house rule: shufa) */
+  shufaUsed?: boolean;
 }
 
 export interface PropState { owner: number; houses: number; mort: boolean }
@@ -66,6 +70,16 @@ export interface Settings {
   riadNow?: boolean;
   /** players in 3okacha still collect rent (on unless set to false) */
   jailRent?: boolean;
+  /** players can borrow from the bank, and pay interest on it each time they pass Al Inṭilāq */
+  credit?: boolean;
+  /** once per game, a player with the fewest properties can force-buy one from another player (the Shufa) */
+  shufa?: boolean;
+  /** players further down the turn order start with a little more money, to make up for playing later */
+  fairStart?: boolean;
+  /** the poorest player collects double at Al Inṭilāq */
+  solidarity?: boolean;
+  /** each player is dealt two properties at the start, of about the same total value */
+  deeds?: boolean;
   /** taxes and fines go into a pot that whoever lands on Qahwa collects */
   daret: boolean;
   /** unbought properties go to auction */
@@ -110,6 +124,8 @@ export interface Game {
   pending: { type: 'buy'; idx: number } | null;
   auction: Auction | null;
   trade: Trade | null;
+  /** the current player has the trade window open, writing an offer (stops the turn timer) */
+  drafting?: number;
   card: CardRef | null;
   event: LogEntry | '';
   winner: number | null;
@@ -124,6 +140,8 @@ export interface Game {
   updated?: number;
   /** turn timer: when the current move times out, and the server's clock when the state was sent */
   tEnd?: number | null;
+  /** the clock is stopped while the current player writes a trade offer: the time they had left, and when the pause runs out */
+  tPause?: { left: number; until: number } | null;
   tk?: string | null;
   tNow?: number;
   /** the table needs a code to join, and how many wrong codes each device has tried */
@@ -147,4 +165,8 @@ export type Action =
       cashGive?: number | string;
       cashGet?: number | string;
     }
-  | { t: 'tradeReply'; accept?: boolean };
+  | { t: 'tradeReply'; accept?: boolean }
+  | { t: 'borrow' | 'repay'; a: number | string }
+  | { t: 'shufa'; i: number | string }
+  /** the current player opens (on) or closes the trade window, so the turn timer can stop meanwhile */
+  | { t: 'drafting'; on?: boolean };

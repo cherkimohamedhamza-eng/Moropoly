@@ -2,9 +2,9 @@
 // 0 Al Inṭilāq · 1 Sidi Moussa (400) · 3 Tabriket (450) · 4 Impôts (2,000 tax) · 5 Tanger TGV (station)
 // 6, 8, 9 Chefchaouen · 10 3okacha · 12 ONEE (utility) · 20 Qahwa · 28 Maroc Telecom (utility)
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { actorOf, apply, canBuild, canSell, freshGame, netWorth, pay, rentFor } from '../src/engine/engine';
+import { actorOf, apply, canBuild, canSell, canShufa, freshGame, interestOn, netWorth, pay, rentFor, shufaPrice } from '../src/engine/engine';
 import { botDecide } from '../src/engine/bots';
-import { RAILS, RIAD_PREMIUM, SP, START_CASH } from '../src/engine/data';
+import { FAIR_STEP, GROUPS, LOAN_MAX, RAILS, RIAD_PREMIUM, SHUFA_FROM, SP, START_CASH } from '../src/engine/data';
 import { isOwnable, range, unmortCost } from '../src/engine/util';
 import type { Game, Settings } from '../src/engine/types';
 
@@ -32,6 +32,117 @@ describe('a new game', () => {
     expect([G.cur, G.round, G.phase]).toEqual([0, 1, 'roll']);
     expect(G.decks.mektoub.slice().sort((a, b) => a - b)).toEqual(range(20));
     expect(G.decks.baraka.slice().sort((a, b) => a - b)).toEqual(range(16));
+  });
+});
+
+describe('optional house rules: fair start, starting deeds, solidarity', () => {
+  it('gives each later seat a little more starting money', () => {
+    const G = game(4, { fairStart: true });
+    expect(G.players.map(p => p.cash)).toEqual([0, 1, 2, 3].map(i => START_CASH + i * FAIR_STEP[4]));
+  });
+  it('deals everyone two properties of about the same value, never a whole city', () => {
+    for (let n = 0; n < 50; n++) {
+      const G = game(6, { deeds: true });
+      const owned = G.players.map(p => Object.keys(G.props).map(Number).filter(i => G.props[i].owner === p.id));
+      expect(owned.every(o => o.length === 2)).toBe(true);
+      const values = owned.map(o => o.reduce((s, i) => s + (SP[i] as { price: number }).price, 0));
+      expect(Math.max(...values) - Math.min(...values)).toBeLessThanOrEqual(2000);
+      for (const g of Object.keys(GROUPS)) expect(G.players.some(p => SP.every((s, i) => s.t !== 'prop' || s.g !== g || G.props[i].owner === p.id))).toBe(false);
+    }
+  });
+  it('pays the poorest player double at Al Inṭilāq, and only them', () => {
+    const G = game(2, { solidarity: true });
+    G.players[1].cash = 30000;
+    G.players[0].pos = 38;
+    dice([2, 3]);
+    apply(G, 0, { t: 'roll' });
+    expect(G.players[0].cash).toBe(START_CASH + 4000);
+    expect(lastLog(G) === 'passGoSolidarity' || G.log.some(e => e[0] === 'passGoSolidarity')).toBe(true);
+  });
+});
+
+describe('optional house rule: credit', () => {
+  it('lends up to the limit, one loan at a time, in steps of 500', () => {
+    const G = game(2, { credit: true });
+    expect(apply(G, 0, { t: 'borrow', a: 300 })).toBe(false);
+    expect(apply(G, 0, { t: 'borrow', a: LOAN_MAX + 500 })).toBe(false);
+    expect(apply(G, 0, { t: 'borrow', a: 3000 })).toBe(true);
+    expect([G.players[0].cash, G.players[0].loan]).toEqual([START_CASH + 3000, 3000]);
+    expect(apply(G, 0, { t: 'borrow', a: 500 })).toBe(false);
+    expect(apply(G, 1, { t: 'borrow', a: 500 })).toBe(false);          // not their turn
+  });
+  it('is not offered when the rule is off', () => {
+    expect(apply(game(2), 0, { t: 'borrow', a: 1000 })).toBe(false);
+  });
+  it('charges interest each time the borrower passes Al Inṭilāq, and counts the loan against net worth', () => {
+    const G = game(2, { credit: true });
+    apply(G, 0, { t: 'borrow', a: 5000 });
+    expect(netWorth(G, G.players[0])).toBe(START_CASH);
+    G.players[0].pos = 38;
+    dice([2, 3]);
+    apply(G, 0, { t: 'roll' });
+    expect(G.players[0].cash).toBe(START_CASH + 5000 + 2000 - interestOn(5000));
+    expect(interestOn(5000)).toBe(500);
+  });
+  it('can be repaid in part or in full', () => {
+    const G = game(2, { credit: true });
+    apply(G, 0, { t: 'borrow', a: 2000 });
+    expect(apply(G, 0, { t: 'repay', a: 500 })).toBe(true);
+    expect(G.players[0].loan).toBe(1500);
+    expect(apply(G, 0, { t: 'repay', a: 9999 })).toBe(true);           // more than owed repays what is owed
+    expect([G.players[0].loan, G.players[0].cash]).toEqual([0, START_CASH]);
+  });
+  it('gets a player out of debt: the borrowed money pays what they owe', () => {
+    const G = game(2, { credit: true });
+    G.players[0].cash = 100;
+    pay(G, G.players[0], 1, 1100, 'rent');
+    expect(G.players[0].cash).toBe(-1000);
+    expect(apply(G, 0, { t: 'borrow', a: 1000 })).toBe(true);
+    expect(G.players[0].cash).toBe(0);
+    expect(G.players[1].cash).toBe(START_CASH + 1100);
+  });
+});
+
+describe('optional house rule: the Shufa', () => {
+  const setup = () => {
+    const G = game(3, { shufa: true });
+    own(G, 1, 6, 11, 16);                       // the others own plenty, player 0 nothing
+    own(G, 2, 21, 26, 31);
+    G.round = SHUFA_FROM;
+    return G;
+  };
+  it('lets the player worth the least buy another player’s property at 150%, paid to the owner, once', () => {
+    const G = setup();
+    expect(canShufa(G, 0, 11)).toBe(true);
+    expect(canShufa(G, 1, 21)).toBe(false);     // not the poorest
+    const price = shufaPrice(11);
+    expect(price).toBe(1500);
+    expect(apply(G, 0, { t: 'shufa', i: 11 })).toBe(true);
+    expect(G.props[11].owner).toBe(0);
+    expect(G.players[0].cash).toBe(START_CASH - price);
+    expect(G.players[1].cash).toBe(START_CASH + price);
+    expect(apply(G, 0, { t: 'shufa', i: 21 })).toBe(false);     // once per game
+  });
+  it('cannot break up a whole city, take a property in a city with buildings, or a mortgaged one', () => {
+    const G = setup();
+    own(G, 1, 1, 3);                             // player 1 owns all of Salé
+    expect(canShufa(G, 0, 1)).toBe(false);
+    G.props[6].mort = true;
+    expect(canShufa(G, 0, 6)).toBe(false);
+    own(G, 2, 23, 24); G.props[21].houses = 1;   // player 2 owns Tangier, built
+    expect(canShufa(G, 0, 21)).toBe(false);
+    expect(canShufa(G, 0, 26)).toBe(true);
+  });
+  it('only opens from round ' + SHUFA_FROM + ', when being behind means something', () => {
+    const G = setup();
+    G.round = SHUFA_FROM - 1;
+    expect(canShufa(G, 0, 11)).toBe(false);
+    expect(apply(G, 0, { t: 'shufa', i: 11 })).toBe(false);
+  });
+  it('is not offered when the rule is off', () => {
+    const G = game(3);
+    own(G, 1, 6);
+    expect(apply(G, 0, { t: 'shufa', i: 6 })).toBe(false);
   });
 });
 

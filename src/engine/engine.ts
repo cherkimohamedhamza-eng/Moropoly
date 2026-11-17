@@ -2,7 +2,7 @@
    ENGINE (pure on G; runs on the authority only)
    ============================================================ */
 import {BARAKA, MEKTOUB} from './cards';
-import {COLORS, JAIL_FINE, RAILS, RAIL_RENT, RIAD_PREMIUM, SALARY, SP, START_CASH, UTILS} from './data';
+import {COLORS, FAIR_STEP, JAIL_FINE, LOAN_MAX, LOAN_RATE, LOAN_STEP, RAILS, RAIL_RENT, RIAD_PREMIUM, SALARY, SHUFA_FROM, SHUFA_MARKUP, SP, START_CASH, UTILS} from './data';
 import {alive, groupIdx, houseCost, isOwnable, ownedBy, ownsGroup, priceOf, range, rid, rnd6, shuffle, unmortCost} from './util';
 import type {Action, Anim, Deck, Game, Payee, Player, Seat, Settings} from './types';
 
@@ -25,7 +25,19 @@ export function freshGame(seats: Seat[],settings?: Partial<Settings>,extra?: Gam
     pending:null,auction:null,trade:null,card:null,event:'',winner:null,over:false,landed:-1,seq:0,anims:[],ack:extra.ack||{}};
   SP.forEach((s,i)=>{if(isOwnable(i)) G.props[i]={owner:-1,houses:0,mort:false};});
   log(G,'start',{n:G.players.length,a:startCash(settings)});
+  if(G.settings.fairStart){const step=FAIR_STEP[G.players.length]||400; G.players.forEach((p,i)=>{p.cash+=i*step;}); if(G.players.length>1) log(G,'fairStart',{a:step});}
+  if(G.settings.deeds) dealDeeds(G);
   return G;
+}
+/** house rule "deeds": everyone is dealt one of the cheaper properties and one of the dearer ones, the player with
+    the cheapest first deed getting the dearest second one, so that every pair is worth about the same. No pair can
+    make a whole city: the cheaper and dearer halves of the board share no city. */
+function dealDeeds(G: Game){
+  const props=SP.map((s,i)=>i).filter(i=>SP[i].t==='prop').sort((a,b)=>priceOf(a)-priceOf(b));
+  const n=G.players.length, half=Math.floor(props.length/2); if(n>half) return;
+  const cheap=shuffle(props.slice(0,half)).slice(0,n), dear=shuffle(props.slice(half)).slice(0,n).sort((a,b)=>priceOf(b)-priceOf(a));
+  range(n).sort((a,b)=>priceOf(cheap[a])-priceOf(cheap[b])).forEach((k,j)=>{G.props[cheap[k]].owner=k; G.props[dear[j]].owner=k;});
+  log(G,'dealt',{n:2});
 }
 export function gain(G: Game,p: Player,amt: number){p.cash+=amt; log(G,'collect',{p:p.name,a:amt}); A(G,{k:'fx',f:'gain',pid:p.id,amt});}
 export function payTax(G: Game,p: Player,amt: number,why: string,extra?: Record<string, unknown>){pay(G,p,G.settings.daret?'daret':-1,amt,why,extra);}
@@ -61,8 +73,26 @@ export function rentFor(G: Game,i: number,opts?: RentOpts){
 function moveBy(G: Game,p: Player,n: number){
   if(n<=0) return; const from=p.pos; p.pos=(from+n)%40;
   A(G,{k:'move',pid:p.id,from,steps:n});
-  if(from+n>=40){const a=salary(G); p.cash+=a; log(G,'passGo',{p:p.name,a}); A(G,{k:'fx',f:'go',pid:p.id,amt:a});}
+  if(from+n>=40){
+    let a=salary(G); const poorest=G.settings.solidarity&&isPoorest(G,p);
+    if(poorest) a*=2;
+    p.cash+=a; log(G,poorest?'passGoSolidarity':'passGo',{p:p.name,a}); A(G,{k:'fx',f:'go',pid:p.id,amt:a});
+    if(p.loan) pay(G,p,-1,interestOn(p.loan),'interest');
+  }
   G.landed=p.pos;
+}
+/** the player is worth the least of everyone still playing (ties count) */
+export function isPoorest(G: Game,p: Player){const w=netWorth(G,p); return alive(G).filter(q=>q!==p).every(q=>netWorth(G,q)>=w)&&alive(G).length>1;}
+/** what a loan costs each time its borrower passes Al Inṭilāq, rounded up to 10 DH */
+export const interestOn=(loan: number)=>Math.ceil(loan*LOAN_RATE/10)*10;
+/** the price of taking a property with the Shufa, rounded up to 10 DH */
+export const shufaPrice=(i: number)=>Math.ceil(priceOf(i)*SHUFA_MARKUP/10)*10;
+/** house rule "shufa": the player worth the least may take property i now (everything except having the money) */
+export function canShufa(G: Game,pid: number,i: number){
+  const p=G.players[pid]; if(!G.settings.shufa||G.round<SHUFA_FROM||!p||p.bankrupt||p.shufaUsed||!isOwnable(i)) return false;
+  const pr=G.props[i], o=pr.owner; if(o<0||o===pid||G.players[o].bankrupt||pr.mort) return false;
+  const s=SP[i]; if(s.t==='prop'&&(ownsGroup(G,o,s.g)||groupIdx(s.g).some(j=>G.props[j].houses>0))) return false;
+  return isPoorest(G,p);      // only the player furthest behind may use it
 }
 export function moveTo(G: Game,p: Player,t: number){moveBy(G,p,(t-p.pos+40)%40);}
 export function jumpTo(G: Game,p: Player,t: number,f?: string){p.pos=t; G.landed=t; A(G,{k:'jump',pid:p.id,to:t,f:f||''});}
@@ -105,7 +135,7 @@ export function repairs(G: Game,p: Player,perDar: number,perRiad: number){
   const amt=d*perDar+r*perRiad;
   if(amt>0) payTax(G,p,amt,'repairs',{d,r}); else log(G,'noBuild',{p:p.name});
 }
-export function netWorth(G: Game,p: Player){let w=p.cash; ownedBy(G,p.id).forEach(i=>{const pr=G.props[i]; w+=pr.mort?priceOf(i)/2:priceOf(i); if(pr.houses) w+=pr.houses*houseCost(i);}); return w;}
+export function netWorth(G: Game,p: Player){let w=p.cash-(p.loan||0); ownedBy(G,p.id).forEach(i=>{const pr=G.props[i]; w+=pr.mort?priceOf(i)/2:priceOf(i); if(pr.houses) w+=pr.houses*houseCost(i);}); return w;}
 export function canBuild(G: Game,i: number,pid: number){const s=SP[i],pr=G.props[i]; if(s.t!=='prop'||pr.owner!==pid||pr.houses>=5||!ownsGroup(G,pid,s.g)) return false; const gi=groupIdx(s.g); if(gi.some(j=>G.props[j].mort)) return false; if(pr.houses>Math.min(...gi.map(j=>G.props[j].houses))) return false; return G.players[pid].cash>=houseCost(i);}
 export function riadCost(G: Game,i: number){return Math.round((5-G.props[i].houses)*houseCost(i)*(1+RIAD_PREMIUM));}
 export function canRiad(G: Game,i: number,pid: number){const s=SP[i],pr=G.props[i]; if(G.settings.riadNow===false||s.t!=='prop'||pr.owner!==pid||pr.houses>=5||!ownsGroup(G,pid,s.g)) return false; if(groupIdx(s.g).some(j=>G.props[j].mort)) return false; return G.players[pid].cash>=riadCost(G,i);}
@@ -140,7 +170,7 @@ export function goBankrupt(G: Game,p: Player){
     log(G,'bankBank',{p:p.name});
   }
   A(G,{k:'fx',f:'bankrupt',pid:p.id});
-  p.cash=0; p.debts=[]; p.owes=-1; p.goojf=[]; p.bankrupt=true; p.inJail=false;
+  p.cash=0; p.debts=[]; p.owes=-1; p.goojf=[]; p.bankrupt=true; p.inJail=false; if(p.loan) p.loan=0;
   if(G.trade&&(G.trade.from===p.id||G.trade.to===p.id)) G.trade=null;
   if(G.auction){G.auction.bidders=G.auction.bidders.filter(id=>id!==p.id); if(G.auction.highBidder===p.id){G.auction.highBidder=-1;G.auction.high=0;} if(G.auction.turn>=G.auction.bidders.length) G.auction.turn=0;}
   if(alive(G).length<=1) finishGame(G);
@@ -169,7 +199,7 @@ export function settle(G: Game){
 }
 function nextTurn(G: Game){
   if(G.over) return;
-  G.card=null; G.doubles=0; G.rollAgain=false; G.pending=null; G.trade=null;
+  G.card=null; G.doubles=0; G.rollAgain=false; G.pending=null; G.trade=null; delete G.drafting;
   const n=G.players.length; let k=G.cur;
   for(let s=0;s<n;s++){k=(k+1)%n; if(!G.players[k].bankrupt) break;}
   if(k<=G.cur){G.round++; if(G.settings.rounds&&G.round>G.settings.rounds){G.round=G.settings.rounds; finishGame(G); return;}}
@@ -184,6 +214,8 @@ export function actorOf(G: Game | null){
   if(G.auction) return G.auction.bidders[G.auction.turn];
   return G.cur;
 }
+/** the amount in a borrow or repay move */
+const a_=(a: Action)=>(a as {a: number|string}).a;
 /* apply one action for seat; returns true when state changed */
 export function apply(G: Game,seat: number,a: Action){
   const ok=applyCore(G,seat,a);
@@ -274,7 +306,7 @@ function applyCore(G: Game,seat: number,a: Action){
       const cg=Math.max(0,Math.round(+a.cashGive!||0)), ct=Math.max(0,Math.round(+a.cashGet!||0));
       if(cg>Math.max(0,p.cash)||ct>Math.max(0,b.cash)) return false;
       if(!give.length&&!get.length&&!cg&&!ct) return false;
-      G.trade={from:seat,to,give,get,cashGive:cg,cashGet:ct};
+      G.trade={from:seat,to,give,get,cashGive:cg,cashGet:ct}; delete G.drafting;
       log(G,'offer',{p:p.name,o:b.name}); return true;}
     case 'tradeReply':{
       const t=G.trade; if(!t||t.to!==seat) return false;
@@ -285,8 +317,25 @@ function applyCore(G: Game,seat: number,a: Action){
         else log(G,'tradeVoid');
       } else log(G,'refuse',{p:p.name});
       G.trade=null; settle(G); return true;}
+    case 'drafting':{ // only matters to the turn timer, so only with one
+      if(a.on){if(!G.settings.timer||!isCur||!free||G.pending||G.drafting===seat) return false; G.drafting=seat; return true;}
+      if(G.drafting!==seat) return false; delete G.drafting; return true;}
     case 'tradeCancel':{
       if(!G.trade||G.trade.from!==seat) return false; G.trade=null; log(G,'withdraw',{p:p.name}); return true;}
+    case 'borrow':{ // house rule "credit": one loan at a time, also to get out of debt
+      const amt=Math.round(+a_(a)); if(!G.settings.credit||!isCur||!free||p.loan||!(amt>=LOAN_STEP&&amt<=LOAN_MAX&&amt%LOAN_STEP===0)) return false;
+      p.cash+=amt; p.loan=amt; log(G,'borrow',{p:p.name,a:amt,b:interestOn(amt)}); A(G,{k:'fx',f:'gain',pid:p.id,amt});
+      return true;}   // the turn carries on where it was; apply() then pays any debts from the loan
+    case 'repay':{
+      const amt=Math.min(Math.round(+a_(a)),p.loan||0); if(!isCur||!free||!(amt>0)||p.cash<amt) return false;
+      p.cash-=amt; p.loan=(p.loan||0)-amt; log(G,p.loan?'repay':'repayAll',{p:p.name,a:amt,b:p.loan}); A(G,{k:'fx',f:'pay',pid:p.id,to:-1,amt});
+      return true;}
+    case 'shufa':{ // house rule "shufa": a forced sale, paid in full to the owner
+      const i=+(a as {i: number|string}).i; if(!isCur||!free||G.pending||!(G.phase==='roll'||G.phase==='end')||!canShufa(G,seat,i)) return false;
+      const price=shufaPrice(i), o=G.players[G.props[i].owner]; if(p.cash<price) return false;
+      p.cash-=price; o.cash+=price; G.props[i].owner=p.id; p.shufaUsed=true;
+      log(G,'shufa',{p:p.name,o:o.name,s:i,a:price}); A(G,{k:'fx',f:'pay',pid:p.id,to:o.id,amt:price}); A(G,{k:'fx',f:'buy',pid:p.id,idx:i});
+      return true;}
   }
   return false;
 }

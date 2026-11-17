@@ -32,7 +32,7 @@ export type Table = Lobby | Game;
 /** what a player sends to sit down, or to change their name or token */
 export interface JoinRequest { name?: unknown; token?: unknown; pin?: unknown; auto?: boolean }
 
-export const DEFAULT_SETTINGS: Settings = {daret: true, dlala: true, rounds: 25, fast: false, timer: 0};
+export const DEFAULT_SETTINGS: Settings = {daret: true, dlala: true, rounds: 25, fast: false, timer: 0, fairStart: true, credit: true, shufa: true};
 
 export function newLobby(code: string, hostCid: string | null, now: number, extra?: Record<string, unknown>): Lobby {
   const G: Lobby = {...extra, gid: rid(10), status: 'lobby', mode: 'online', code, hostCid, players: [], settings: {...DEFAULT_SETTINGS}, seq: 0, anims: [], ack: {}, log: [], event: '', updated: now};
@@ -43,7 +43,7 @@ export function newLobby(code: string, hostCid: string | null, now: number, extr
 /** house rules from the lobby screen; anything unexpected is dropped */
 export function cleanSettings(s: Partial<Record<keyof Settings, unknown>>): Partial<Settings> {
   const out: Partial<Settings> = {};
-  for (const k of ['daret', 'dlala', 'fast', 'goDouble', 'riadNow', 'jailRent'] as const) if (typeof s[k] === 'boolean') out[k] = s[k];
+  for (const k of ['daret', 'dlala', 'fast', 'goDouble', 'riadNow', 'jailRent', 'credit', 'shufa', 'fairStart', 'solidarity', 'deeds'] as const) if (typeof s[k] === 'boolean') out[k] = s[k];
   if (CASH_CHOICES.includes(s.cash as number)) out.cash = s.cash as number;
   if (SALARY_CHOICES.includes(s.salary as number)) out.salary = s.salary as number;
   if (FINE_CHOICES.includes(s.fine as number)) out.fine = s.fine as number;
@@ -161,13 +161,22 @@ export function toggleBot(G: Game, seat: number): boolean {
 
 /* ---------- turn timer ---------- */
 const TIMER_GRACE = 3000; // time for the dice and pawn animations before the clock really starts
+/** how long writing a trade offer can stop the clock, and the least time left to act once it starts again */
+export const DRAFT_MAX = 120000, DRAFT_AFTER = 10000;
 export function timerStamp(G: Table, now: number) {
   const g = G as Game;
   const sec = +((G.settings || {}).timer || 0);
-  if (G.status !== 'play' || g.over || !sec) { g.tEnd = null; g.tk = null; return; }
+  if (G.status !== 'play' || g.over || !sec) { g.tEnd = null; g.tk = null; g.tPause = null; return; }
   const a = actorOf(g), q = g.players[a], hum = !!(q && q.human && !q.bankrupt);
   const k = hum ? [g.turn, g.phase, a, g.auction ? g.auction.turn + ':' + g.auction.high + ':' + g.auction.bidders.length : '', g.trade ? 1 : 0, (g.players[g.cur] || {cash: 0}).cash < 0 ? 1 : 0].join('|') : '';
-  if (k !== g.tk) { g.tk = k; g.tEnd = hum ? now + sec * 1000 + TIMER_GRACE : null; }
+  if (k !== g.tk) { g.tk = k; g.tEnd = hum ? now + sec * 1000 + TIMER_GRACE : null; g.tPause = null; }
+  // writing a trade offer stops the clock, for up to DRAFT_MAX; meanwhile tEnd is when it would run out after all
+  const drafting = hum && g.drafting === a;
+  if (drafting && g.tEnd && !g.tPause) { const left = Math.max(0, g.tEnd - now); g.tPause = {left, until: now + DRAFT_MAX}; g.tEnd = now + DRAFT_MAX + left; }
+  else if (!drafting && g.tPause) {
+    const left = now < g.tPause.until ? g.tPause.left : Math.max(0, (g.tEnd || now) - now);
+    g.tEnd = now + Math.min(sec * 1000, Math.max(left, DRAFT_AFTER)); g.tPause = null;
+  }
   g.tNow = now;
 }
 function timeoutAction(G: Game, a: number): Action | null {
@@ -185,7 +194,7 @@ export function timeUp(G: Table, now: number): boolean {
   if (G.status !== 'play') return false;
   const g = G as Game;
   if (g.over || !g.tEnd || now < g.tEnd) return false;
-  const a = actorOf(g), q = g.players[a]; g.tEnd = null; g.tk = null;
+  const a = actorOf(g), q = g.players[a]; g.tEnd = null; g.tk = null; g.tPause = null; delete g.drafting;
   if (!q || !q.human) return true;
   const act = timeoutAction(g, a); log(g, 'timeUp', {p: q.name});
   if (!(act && apply(g, a, act)) && g.cur === a && g.phase === 'end' && q.cash >= 0) apply(g, a, {t: 'end'});

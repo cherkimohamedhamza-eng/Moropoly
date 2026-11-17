@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { Room, KEEP_OVER } from '../src/online/room';
 import type { Game } from '../src/engine/types';
-import { cleanSettings, type Lobby } from '../src/online/table';
+import { cleanSettings, DRAFT_AFTER, DRAFT_MAX, type Lobby } from '../src/online/table';
 
 const HOST = 'khost', ANA = 'kana', BOB = 'kbob';
 const T0 = 1_000_000;
@@ -79,7 +79,7 @@ describe('host controls', () => {
     }
     expect(r.handle(HOST, { t: 'host', op: 'start' }, T0)).toBe('rejected'); // needs 2 players
     r.handle(HOST, { t: 'host', op: 'settings', settings: { rounds: 15, timer: 999 as never, daret: 'yes' as never, fast: true } }, T0);
-    expect(L(r).settings).toEqual({ daret: true, dlala: true, rounds: 15, fast: true, timer: 0 });
+    expect(L(r).settings).toEqual({ daret: true, dlala: true, rounds: 15, fast: true, timer: 0, fairStart: true, credit: true, shufa: true });
     r.handle(HOST, { t: 'host', op: 'addBot' }, T0);
     expect(L(r).players[1]).toMatchObject({ cid: null, human: false, name: 'Salma' });
     r.handle(HOST, { t: 'host', op: 'start' }, T0);
@@ -160,6 +160,49 @@ describe('the turn timer', () => {
     expect(r.tick(T0 + 33000)).toBe(true);
     expect(G(r).log.some(e => e[0] === 'timeUp')).toBe(true);
     expect(G(r).log.some(e => e[0] === 'rolls')).toBe(true);
+  });
+  const timed = () => {
+    const r = lobby();
+    r.handle(ANA, { t: 'join', name: 'Salma', token: 1 }, T0);
+    r.handle(HOST, { t: 'host', op: 'settings', settings: { timer: 30 } }, T0);
+    r.handle(HOST, { t: 'host', op: 'start' }, T0);
+    return r;
+  };
+  it('stops while the player writes a trade offer, and gives the time left back afterwards', () => {
+    const r = timed();
+    expect(r.handle(HOST, { t: 'move', seat: 0, a: { t: 'drafting', on: true } }, T0 + 13000)).toBe('changed');
+    expect(G(r).tPause).toEqual({ left: 20000, until: T0 + 13000 + DRAFT_MAX });
+    expect(r.tick(T0 + 33000)).toBe(false);                 // the clock would have run out by now
+    expect(r.handle(HOST, { t: 'move', seat: 0, a: { t: 'drafting', on: false } }, T0 + 60000)).toBe('changed');
+    expect(G(r).tPause).toBe(null);
+    expect(G(r).tEnd).toBe(T0 + 80000);                      // the 20 seconds that were left
+    expect(r.tick(T0 + 80000)).toBe(true);
+    expect(G(r).log.some(e => e[0] === 'timeUp')).toBe(true);
+  });
+  it('gives at least ' + DRAFT_AFTER / 1000 + ' seconds after an offer, and a sent offer ends the pause', () => {
+    const r = timed();
+    r.handle(HOST, { t: 'move', seat: 0, a: { t: 'drafting', on: true } }, T0 + 30000);   // 3 seconds left
+    r.handle(HOST, { t: 'move', seat: 0, a: { t: 'drafting', on: false } }, T0 + 40000);
+    expect(G(r).tEnd).toBe(T0 + 40000 + DRAFT_AFTER);
+    r.handle(HOST, { t: 'move', seat: 0, a: { t: 'drafting', on: true } }, T0 + 41000);
+    expect(r.handle(HOST, { t: 'move', seat: 0, a: { t: 'trade', to: 1, cashGive: 100 } }, T0 + 42000)).toBe('changed');
+    expect(G(r).drafting).toBeUndefined();
+    expect(G(r).tPause).toBe(null);
+    expect(G(r).tEnd).toBe(T0 + 42000 + 33000);              // Salma's clock to answer
+  });
+  it('stops for ' + DRAFT_MAX / 60000 + ' minutes at most', () => {
+    const r = timed();
+    r.handle(HOST, { t: 'move', seat: 0, a: { t: 'drafting', on: true } }, T0 + 13000);
+    expect(r.nextWake()).toBe(T0 + 13000 + DRAFT_MAX + 20000);
+    expect(r.tick(T0 + 13000 + DRAFT_MAX + 20000)).toBe(true);
+    expect(G(r).log.some(e => e[0] === 'timeUp')).toBe(true);
+    expect(G(r).drafting).toBeUndefined();
+  });
+  it('is refused without a timer, or for a player whose turn it is not', () => {
+    const r = timed();
+    expect(r.handle(ANA, { t: 'move', seat: 1, a: { t: 'drafting', on: true } }, T0)).toBe('rejected');
+    const r2 = started(ANA);
+    expect(r2.handle(HOST, { t: 'move', seat: 0, a: { t: 'drafting', on: true } }, T0)).toBe('rejected');
   });
 });
 
