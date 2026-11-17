@@ -110,7 +110,7 @@ S('log.riadNow','{p} builds a riad straight away on {s}.','{p} construit directe
 S('fate.tap','Tap to continue','Touchez pour continuer','المس للمتابعة');
 S('btn.end','End turn','Fin du tour','أنهِ الدور'); S('btn.build','Build','Construire','ابنِ');
 S('pv.rentProp','Rent {a}, or {b} with all of {c}','Loyer {a}, ou {b} avec tout {c}','الكراء {a}، أو {b} مع كل {c}');
-S('pv.rentRail','Station rent 250 to 2,000 DH','Loyer de gare : 250 à 2 000 DH','كراء المحطة من 250 إلى 2,000 درهم');
+S('pv.rentRail','Station rent {a} to {b}','Loyer de gare : {a} à {b}','كراء المحطة من {a} إلى {b}');
 S('pv.rentUtil','Rent 40 or 100 × the dice','Loyer : 40 ou 100 × les dés','الكراء 40 أو 100 × النرد');
 S('btn.viewDeed','View deed','Voir le titre','اعرض العقد');
 S('tc.waiting','Waiting for {p}…','En attente de {p}…','في انتظار {p}…'); S('tc.thinking','Computer player is thinking…','L’ordinateur réfléchit…','الحاسوب يفكر…');
@@ -211,6 +211,14 @@ S('log.borrow','{p} borrows {a} from the bank ({b} interest each lap).','{p} emp
 S('log.repay','{p} repays {a}; still owes {b}.','{p} rembourse {a} ; il doit encore {b}.','{p} يسدّد {a}؛ ما زال عليه {b}.');
 S('log.repayAll','{p} repays the last {a} and is free of debt.','{p} rembourse les derniers {a} et n’a plus de dette.','{p} يسدّد آخر {a} ويتحرر من الدين.');
 S('log.shufa','Shufa! {p} buys {s} from {o} for {a}.','Chefaa ! {p} rachète {s} à {o} pour {a}.','الشفعة! {p} يشتري {s} من {o} بـ{a}.');
+S('opt.bills','Utility bills','Factures','الفواتير'); S('opt.billsD','Passing Al Inṭilāq, players pay each utility’s owner {a} per dar and {b} per riad they have built.','En passant Al Inṭilāq, chaque joueur paie au propriétaire de chaque service {a} par dar et {b} par riad qu’il a construit.','عند المرور بالانطلاق، يدفع كل لاعب لمالك كل مرفق {a} عن كل دار و{b} عن كل رياض بناه.');
+S('opt.train','Train travel','Voyages en train','السفر بالقطار'); S('opt.trainD','A station’s rent goes up by {n}% of the rents of the dars and riads on its side of the board. Stop on a station you already own and you may take the train, free, to another of yours.','Le loyer d’une gare augmente de {n} % des loyers des dars et riads de son côté du plateau. Arrêté sur une gare qu’on possède déjà, on peut prendre le train, gratuitement, vers une autre de ses gares.','يرتفع كراء المحطة بـ{n}% من كراء الدور والرياضات في جهتها من اللوحة. وإذا توقفت في محطة تملكها من قبل، يمكنك ركوب القطار مجانًا إلى محطة أخرى من محطاتك.');
+S('btn.ride','🚆 Train to {s}','🚆 Train pour {s}','🚆 القطار إلى {s}');
+S('dm.side','Plus, on its side of the board','En plus, de son côté du plateau','زائد، في جهتها من اللوحة'); S('dm.sideV','{n}% of their dars’ and riads’ rents','{n} % des loyers de leurs dars et riads','{n}% من كراء دورها ورياضاتها'); S('dm.sideNow','Adds right now','S’ajoute en ce moment','يُضاف الآن'); S('pv.railSide',', more with dars and riads on its side',', plus avec les dars et riads de son côté','، وأكثر مع الدور والرياضات في جهتها');
+S('dm.train','Train','Train','القطار'); S('dm.trainV','between the owner’s stations','entre les gares du propriétaire','بين محطات المالك');
+S('dm.bill','Bill at Al Inṭilāq','Facture à Al Inṭilāq','الفاتورة عند الانطلاق'); S('dm.billV','{a} per dar, {b} per riad','{a} par dar, {b} par riad','{a} لكل دار، {b} لكل رياض');
+S('log.ride','{p} takes the train to {s}.','{p} prend le train jusqu’à {s}.','{p} يركب القطار إلى {s}.');
+S('why.bill','the {s} bill','la facture {s}','فاتورة {s}');
 S('why.interest','interest on the loan','les intérêts du prêt','فائدة القرض');
 S('opt.fast','Fast animations','Animations rapides','حركات سريعة'); S('opt.fastD','Quicker dice and token moves.','Dés et pions plus rapides.','نرد وقطع أسرع.');
 /* setup */

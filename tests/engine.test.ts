@@ -2,9 +2,9 @@
 // 0 Al Inṭilāq · 1 Sidi Moussa (400) · 3 Tabriket (450) · 4 Impôts (2,000 tax) · 5 Tanger TGV (station)
 // 6, 8, 9 Chefchaouen · 10 3okacha · 12 ONEE (utility) · 20 Qahwa · 28 Maroc Telecom (utility)
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { actorOf, apply, canBuild, canSell, canShufa, freshGame, interestOn, netWorth, pay, rentFor, shufaPrice } from '../src/engine/engine';
+import { actorOf, apply, billFor, canBuild, canRide, rideTargets, canSell, canShufa, freshGame, interestOn, netWorth, pay, rentFor, shufaPrice } from '../src/engine/engine';
 import { botDecide } from '../src/engine/bots';
-import { FAIR_STEP, GROUPS, LOAN_MAX, RAILS, RIAD_PREMIUM, SHUFA_FROM, SP, START_CASH } from '../src/engine/data';
+import { BILL_DAR, BILL_RIAD, FAIR_STEP, GROUPS, LOAN_MAX, RAIL_RENT, RAIL_SIDE, RAILS, RIAD_PREMIUM, SHUFA_FROM, SP, START_CASH } from '../src/engine/data';
 import { isOwnable, range, unmortCost } from '../src/engine/util';
 import type { Game, Settings } from '../src/engine/types';
 
@@ -143,6 +143,89 @@ describe('optional house rule: the Shufa', () => {
     const G = game(3);
     own(G, 1, 6);
     expect(apply(G, 0, { t: 'shufa', i: 6 })).toBe(false);
+  });
+});
+
+describe('optional house rule: utility bills', () => {
+  const setup = (settings: Partial<Settings> = { bills: true }) => {
+    const G = game(3, settings);
+    own(G, 0, 1, 3); G.props[1].houses = 2; G.props[3].houses = 5;   // two dars and a riad
+    own(G, 1, 12); own(G, 2, 28); G.props[28].mort = true;           // a mortgaged utility sends no bill
+    G.players[0].pos = 38;
+    return G;
+  };
+  it('charges a player passing Al Inṭilāq for their dars and riads, paid to each utility’s owner', () => {
+    const G = setup();
+    expect(billFor(G, G.players[0])).toBe(2 * BILL_DAR + BILL_RIAD);
+    dice([2, 3]);
+    apply(G, 0, { t: 'roll' });
+    expect(G.players[0].cash).toBe(START_CASH + 2000 - (2 * BILL_DAR + BILL_RIAD));
+    expect(G.players[1].cash).toBe(START_CASH + 2 * BILL_DAR + BILL_RIAD);
+    expect(G.players[2].cash).toBe(START_CASH);
+  });
+  it('sends no bill to a player for their own utility, or when the rule is off', () => {
+    const G = setup(); own(G, 0, 12);
+    dice([2, 3]);
+    apply(G, 0, { t: 'roll' });
+    expect(G.players[0].cash).toBe(START_CASH + 2000);
+    const H = setup({});
+    dice([2, 3]);
+    apply(H, 0, { t: 'roll' });
+    expect(H.players[0].cash).toBe(START_CASH + 2000);
+  });
+});
+
+describe('optional house rule: the train', () => {
+  /** player 0 stops on Tanger TGV, which they own along with Casa Oasis; player 1 has Rabat Ville */
+  const setup = (settings: Partial<Settings> = { train: true }, mine = [5, 25]) => {
+    const G = game(2, settings);
+    own(G, 0, ...mine); own(G, 1, 15);
+    G.players[0].pos = 2;
+    dice([1, 2]);
+    apply(G, 0, { t: 'roll' });
+    return G;
+  };
+  it('takes a player who stopped on a station of theirs to another of their own, free', () => {
+    const G = setup();
+    expect(rideTargets(G, 0)).toEqual([25]);                          // not Rabat Ville (player 1's) or Marrakech (nobody's)
+    expect(apply(G, 0, { t: 'ride', to: 15 })).toBe(false);
+    expect(apply(G, 0, { t: 'ride', to: 25 })).toBe(true);
+    expect(G.players[0].pos).toBe(25);
+    expect(G.players[0].cash).toBe(START_CASH);
+    expect(G.phase).toBe('end');
+    expect(canRide(G, 0)).toBe(false);                                // once a turn
+  });
+  it('does not count a station bought on this stop', () => {
+    const G = setup({ train: true }, [25]);
+    expect(G.phase).toBe('buy');
+    apply(G, 0, { t: 'buy' });
+    expect(G.props[5].owner).toBe(0);
+    expect(canRide(G, 0)).toBe(false);
+  });
+  it('needs a second station in service, and only runs on the turn the player stopped there', () => {
+    const G = setup(); G.props[25].mort = true;
+    expect(canRide(G, 0)).toBe(false);
+    const H = setup();
+    apply(H, 0, { t: 'end' });
+    H.players[0].pos = 5;
+    expect(canRide(H, 0)).toBe(false);
+  });
+  it('raises a station’s rent by a share of the rents of the dars and riads on its side of the board, whoever owns them', () => {
+    const G = setup();
+    expect(rentFor(G, 15)).toBe(RAIL_RENT[0]);                       // nothing built on the left side yet
+    own(G, 1, 11, 13, 14); G.props[11].houses = 2; G.props[13].houses = 5;
+    own(G, 0, 16); G.props[16].houses = 1;
+    own(G, 1, 21); G.props[21].houses = 3;                             // the top side: not Rabat Ville's
+    const extra = (SP[11] as { rent: number[] }).rent[2] + (SP[13] as { rent: number[] }).rent[5] + (SP[16] as { rent: number[] }).rent[1];
+    expect(rentFor(G, 15)).toBe(RAIL_RENT[0] + Math.round(extra * RAIL_SIDE / 10) * 10);
+    const H = setup({});
+    own(H, 1, 11); H.props[11].houses = 2;
+    expect(rentFor(H, 15)).toBe(RAIL_RENT[0]);
+  });
+  it('is not offered without the rule', () => {
+    const H = setup({});
+    expect(canRide(H, 0)).toBe(false);
+    expect(apply(H, 0, { t: 'ride', to: 25 })).toBe(false);
   });
 });
 

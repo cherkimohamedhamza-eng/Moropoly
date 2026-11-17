@@ -4,8 +4,8 @@ import {useEffect, useState, type CSSProperties, type ReactNode} from 'react';
 import {amHost, dispatch, hostAct} from '../app/authority';
 import {hostOnline, onlineCids} from '../app/online';
 import {app} from '../app/state';
-import {LOAN_MAX, LOAN_RATE, LOAN_STEP, RIAD_PREMIUM, SHUFA_MARKUP, SP} from '../engine/data';
-import {canBuild, canMort, canRiad, canSell, canShufa, canUnmort, interestOn, jailFine, netWorth, rentFor, riadCost} from '../engine/engine';
+import {LOAN_MAX, LOAN_RATE, LOAN_STEP, RAIL_RENT, RIAD_PREMIUM, SHUFA_MARKUP, SP} from '../engine/data';
+import {canBuild, canMort, canRiad, canSell, canShufa, canUnmort, interestOn, jailFine, netWorth, rentFor, riadCost, rideTargets} from '../engine/engine';
 import type {Game} from '../engine/types';
 import {colorOf, groupIdx, houseCost, ownedBy, ownsGroup, priceOf, unmortCost} from '../engine/util';
 import {cityN, fmt, spN, t, tl, tokN} from '../i18n/core';
@@ -104,6 +104,7 @@ export function TurnCard() {
     if (mine) btns.push(btn('end', 'green', t('btn.end'), () => dispatch({t: 'end'})), btn('deeds', '', t('btn.build'), () => setTab('deeds')), btn('trade', 'ghost', t('btn.tbadel'), openTrade));
   }
 
+  if (mine) for (const to of rideTargets(G, G.cur)) btns.push(btn('ride' + to, 'ghost', t('btn.ride', {s: spN(to)}), () => dispatch({t: 'ride', to})));
   let preview: ReactNode = null;
   if (G.phase === 'buy' && G.pending && !app.playing) {
     const i = G.pending.idx, s = SP[i];
@@ -113,7 +114,7 @@ export function TurnCard() {
         <div style={{minWidth: 0}}>
           <div style={{fontWeight: 700}}>{spN(i)} {app.LANG !== 'ar' && <span style={{fontFamily: 'var(--f-ar)', color: 'var(--dim)'}}>{s.ar}</span>}</div>
           <div className="muted" style={{fontSize: 12.5}}>
-            {s.t === 'prop' ? t('pv.rentProp', {a: fmt(s.rent[0]), b: fmt(s.rent[0] * 2), c: cityN(s.g)}) : s.t === 'rail' ? t('pv.rentRail') : t('pv.rentUtil')}
+            {s.t === 'prop' ? t('pv.rentProp', {a: fmt(s.rent[0]), b: fmt(s.rent[0] * 2), c: cityN(s.g)}) : s.t === 'rail' ? t('pv.rentRail', {a: fmt(RAIL_RENT[0]), b: fmt(RAIL_RENT[3])}) + (G.settings.train ? t('pv.railSide') : '') : t('pv.rentUtil')}
           </div>
           <button className="btn ghost sm" style={{marginTop: 6}} onClick={() => openDeed(i)}>{t('btn.viewDeed')}</button>
         </div>

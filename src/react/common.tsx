@@ -2,7 +2,7 @@
 import {useEffect, useState, type CSSProperties, type ReactNode} from 'react';
 import {createPortal} from 'react-dom';
 import {app} from '../app/state';
-import {CASH_CHOICES, FINE_CHOICES, JAIL_FINE, LOAN_MAX, LOAN_RATE, RIAD_PREMIUM, SALARY, SALARY_CHOICES, START_CASH, TOKENS} from '../engine/data';
+import {BILL_DAR, BILL_RIAD, CASH_CHOICES, FINE_CHOICES, JAIL_FINE, LOAN_MAX, LOAN_RATE, RAIL_SIDE, RIAD_PREMIUM, SALARY, SALARY_CHOICES, START_CASH, TOKENS} from '../engine/data';
 import type {Settings} from '../engine/types';
 import {LANGS, fmt, t} from '../i18n/core';
 import {esc} from '../ui/dom';
@@ -71,6 +71,8 @@ export function RulesOptions({settings, onChange}: {settings: Settings; onChange
       {sw(settings.riadNow !== false, v => set({riadNow: v}), 'riadNow', {n: Math.round(RIAD_PREMIUM * 100)})}
       {sw(settings.jailRent !== false, v => set({jailRent: v}), 'jailRent')}
       {sw(!!settings.shufa, v => set({shufa: v}), 'shufa')}
+      {sw(!!settings.bills, v => set({bills: v}), 'bills', {a: fmt(BILL_DAR), b: fmt(BILL_RIAD)})}
+      {sw(!!settings.train, v => set({train: v}), 'train', {n: Math.round(RAIL_SIDE * 100)})}
       <div className="opt-group">{t('opt.gGame')}</div>
       {choice('len', (
         <select className="field" value={+settings.rounds} onChange={e => set({rounds: +e.target.value})}>

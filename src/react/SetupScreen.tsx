@@ -18,7 +18,7 @@ const START_TOKENS = [0, 10, 3, 1, 4, 5, 2, 9];
 export function SetupScreen() {
   useRefresh();
   const [seats, setSeats] = useState<SeatDraft[]>(() => NAMES.map((n, i) => ({name: n, token: START_TOKENS[i], human: i === 0, on: i < 4})));
-  const [opts, setOpts] = useState<Settings>({daret: true, dlala: true, rounds: 25, fast: false, timer: 0, fairStart: true, credit: true, shufa: true});
+  const [opts, setOpts] = useState<Settings>({daret: true, dlala: true, rounds: 25, fast: false, timer: 0, fairStart: true, credit: true, shufa: true, bills: true, train: true});
   const [picking, setPicking] = useState<number | null>(null);
 
   const edit = (i: number, patch: Partial<SeatDraft>) => setSeats(s => s.map((x, j) => (j === i ? {...x, ...patch} : x)));

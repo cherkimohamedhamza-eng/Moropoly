@@ -80,6 +80,10 @@ export interface Settings {
   solidarity?: boolean;
   /** each player is dealt two properties at the start, of about the same total value */
   deeds?: boolean;
+  /** passing Al Inṭilāq, a player pays each utility's owner a bill for the dars and riads they have built */
+  bills?: boolean;
+  /** a player who stops on a station they own may take the train to another station of theirs */
+  train?: boolean;
   /** taxes and fines go into a pot that whoever lands on Qahwa collects */
   daret: boolean;
   /** unbought properties go to auction */
@@ -126,6 +130,10 @@ export interface Game {
   trade: Trade | null;
   /** the current player has the trade window open, writing an offer (stops the turn timer) */
   drafting?: number;
+  /** the turn in which the current player took the train (once a turn) */
+  rode?: number;
+  /** the turn in which the current player stopped on a station they already owned (house rule "train") */
+  atOwnStation?: number;
   card: CardRef | null;
   event: LogEntry | '';
   winner: number | null;
@@ -169,4 +177,6 @@ export type Action =
   | { t: 'borrow' | 'repay'; a: number | string }
   | { t: 'shufa'; i: number | string }
   /** the current player opens (on) or closes the trade window, so the turn timer can stop meanwhile */
-  | { t: 'drafting'; on?: boolean };
+  | { t: 'drafting'; on?: boolean }
+  /** house rule "train": ride from the station the player stopped on to another one of theirs */
+  | { t: 'ride'; to: number | string };

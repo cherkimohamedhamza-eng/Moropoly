@@ -1,6 +1,6 @@
 /* ---------- computer players ---------- */
 import {GROUPS, LOAN_MAX, LOAN_STEP, RAILS, SP} from './data';
-import {actorOf, canShufa, jailFine, shufaPrice} from './engine';
+import {actorOf, canShufa, jailFine, rentFor, rideTargets, shufaPrice} from './engine';
 import {groupIdx, ownedBy, ownsGroup, priceOf} from './util';
 import type {Action, Game, GroupId, Trade} from './types';
 
@@ -38,6 +38,25 @@ function shufaPick(G: Game,pid: number,res: number){
   }
   return best;
 }
+/** what player pid can expect to pay on the next roll of the dice from square pos: rents and taxes */
+const DICE=[0,0,1,2,3,4,5,6,5,4,3,2,1];
+function danger(G: Game,pid: number,pos: number){
+  let x=0;
+  for(let d=2;d<=12;d++){
+    const i=(pos+d)%40, s=SP[i]; let c=0;
+    if(s.t==='tax') c=s.amount; else if(s.t==='gojail') c=jailFine(G);
+    else if(G.props[i]&&G.props[i].owner>=0&&G.props[i].owner!==pid&&!G.props[i].mort){const keep=G.dice; G.dice=[3,4]; c=rentFor(G,i); G.dice=keep;}
+    x+=c*DICE[d]/36;
+  }
+  return x;
+}
+/** the station a computer player would take the train to, or -1 */
+function ridePick(G: Game,pid: number){
+  const p=G.players[pid], to=rideTargets(G,pid); if(!to.length) return -1;
+  const here=danger(G,pid,p.pos); let best=-1,gain=150;
+  for(const t of to){const g=here-danger(G,pid,t); if(g>gain){gain=g; best=t;}}
+  return best;
+}
 /** the computer's next move when it is a computer player's turn, otherwise null */
 export function botDecide(G: Game): {seat: number; a: Action} | null{
   const seat=actorOf(G); if(seat<0) return null; const p=G.players[seat]; if(!p||p.human) return null;
@@ -49,6 +68,8 @@ export function botDecide(G: Game): {seat: number; a: Action} | null{
   if(p.loan&&(G.phase==='roll'||G.phase==='end')&&p.cash>=p.loan&&(p.cash-p.loan>=res||lastRounds(G))) return {seat,a:{t:'repay',a:p.loan}};
   // the Shufa: take a property that completes a city, or, with almost nothing, the most useful one on offer
   if(G.settings.shufa&&!p.shufaUsed&&G.phase==='roll'&&!lastRounds(G)){const i=shufaPick(G,seat,res); if(i>=0) return {seat,a:{t:'shufa',i}};}
+  // the train: ride when the squares ahead of another station cost clearly less to land on, or to buy a station
+  {const to=ridePick(G,seat); if(to>=0) return {seat,a:{t:'ride',to}};}
   if(G.phase==='roll'){
     if(p.inJail){if(p.goojf.length) return {seat,a:{t:'card'}}; if(p.cash>jailFine(G)+res&&G.round<12) return {seat,a:{t:'fine'}};}
     return {seat,a:{t:'roll'}};

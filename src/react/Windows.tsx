@@ -4,8 +4,8 @@
 import {useEffect, useRef, useState, type ReactNode} from 'react';
 import {commit, dispatch, drafting, lobbyJoin, playJoin, sendIntent} from '../app/authority';
 import {app, saveName} from '../app/state';
-import {BAND, GROUPS, RAIL_RENT, SP} from '../engine/data';
-import {canShufa, netWorth, shufaPrice, tradeable} from '../engine/engine';
+import {BAND, BILL_DAR, BILL_RIAD, GROUPS, RAIL_RENT, RAIL_SIDE, SP} from '../engine/data';
+import {canShufa, netWorth, shufaPrice, sideBonus, tradeable} from '../engine/engine';
 import type {Action, Game} from '../engine/types';
 import {alive, colorOf, isOwnable, ownedBy, priceOf} from '../engine/util';
 import {cityN, fmt, noteN, num, spN, t, tokN} from '../i18n/core';
@@ -156,11 +156,14 @@ function DeedWindow({i}: {i: number}) {
     note = noteN(i);
   } else if (s.t === 'rail') {
     head = <div className="head" style={{background: BAND.rail}}><div className="ar">{s.ar}</div>{!ar && <div className="lt">🚄 {nm}</div>}</div>;
-    rows = [row('p', t('dm.price'), fmt(s.price)), ...RAIL_RENT.map((r, k) => row(k, t('dm.stations', {n: k + 1}), fmt(r)))];
+    const train = !!V?.settings?.train;
+    rows = [row('p', t('dm.price'), fmt(s.price)), ...RAIL_RENT.map((r, k) => row(k, t('dm.stations', {n: k + 1}), fmt(r))),
+      ...(train ? [row('s', t('dm.side'), t('dm.sideV', {n: Math.round(RAIL_SIDE * 100)})), row('n', t('dm.sideNow'), '+' + fmt(V && props ? sideBonus(V, i) : 0)), row('t', t('dm.train'), t('dm.trainV'))] : [])];
     note = t('dm.railNote');
   } else if (s.t === 'util') {
     head = <div className="head" style={{background: s.band || BAND.util}}><div className="ar">{s.ar}</div>{!ar && <div className="lt">{s.glyph} {nm}</div>}</div>;
-    rows = [row('p', t('dm.price'), fmt(s.price)), row('1', t('dm.util1'), t('dm.x40')), row('2', t('dm.util2'), t('dm.x100'))];
+    rows = [row('p', t('dm.price'), fmt(s.price)), row('1', t('dm.util1'), t('dm.x40')), row('2', t('dm.util2'), t('dm.x100')),
+      ...(V?.settings?.bills ? [row('b', t('dm.bill'), t('dm.billV', {a: fmt(BILL_DAR), b: fmt(BILL_RIAD)}))] : [])];
     note = noteN(i);
   } else {
     note = s.t === 'tax' ? t('info.tax', {a: fmt(s.amount || 0), d: V && V.settings && V.settings.daret ? t('info.taxDaret') : ''}) : t('info.' + s.t);

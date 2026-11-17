@@ -2,7 +2,7 @@
    ENGINE (pure on G; runs on the authority only)
    ============================================================ */
 import {BARAKA, MEKTOUB} from './cards';
-import {COLORS, FAIR_STEP, JAIL_FINE, LOAN_MAX, LOAN_RATE, LOAN_STEP, RAILS, RAIL_RENT, RIAD_PREMIUM, SALARY, SHUFA_FROM, SHUFA_MARKUP, SP, START_CASH, UTILS} from './data';
+import {COLORS, FAIR_STEP, JAIL_FINE, LOAN_MAX, LOAN_RATE, LOAN_STEP, RAILS, RAIL_RENT, BILL_DAR, BILL_RIAD, RAIL_SIDE, RIAD_PREMIUM, SALARY, SHUFA_FROM, SHUFA_MARKUP, SP, START_CASH, UTILS} from './data';
 import {alive, groupIdx, houseCost, isOwnable, ownedBy, ownsGroup, priceOf, range, rid, rnd6, shuffle, unmortCost} from './util';
 import type {Action, Anim, Deck, Game, Payee, Player, Seat, Settings} from './types';
 
@@ -66,9 +66,16 @@ export function payDebts(G: Game,p: Player){
 export function rentFor(G: Game,i: number,opts?: RentOpts){
   opts=opts||{}; const s=SP[i],pr=G.props[i],o=pr.owner;
   if(s.t==='prop') return pr.houses>0?s.rent[pr.houses]:(ownsGroup(G,o,s.g)?s.rent[0]*2:s.rent[0]);
-  if(s.t==='rail'){const n=RAILS.filter(r=>G.props[r].owner===o).length; return RAIL_RENT[n-1]*(opts.railDouble?2:1);}
+  if(s.t==='rail'){const n=RAILS.filter(r=>G.props[r].owner===o).length; return (RAIL_RENT[n-1]+(G.settings.train?sideBonus(G,i):0))*(opts.railDouble?2:1);}
   if(s.t==='util'){const n=UTILS.filter(u=>G.props[u].owner===o).length; return (G.dice[0]+G.dice[1])*(opts.util100||n===2?100:40);}
   return 0;
+}
+/** house rule "train": what the dars and riads on station i's side of the board add to its rent: RAIL_SIDE of what
+    they charge, rounded to 10 DH */
+export function sideBonus(G: Game,i: number){
+  const side=Math.floor(i/10); let a=0;
+  for(let j=side*10+1;j<side*10+10;j++){const s=SP[j], pr=G.props[j]; if(s.t==='prop'&&pr&&pr.houses>0) a+=s.rent[pr.houses];}
+  return Math.round(a*RAIL_SIDE/10)*10;
 }
 function moveBy(G: Game,p: Player,n: number){
   if(n<=0) return; const from=p.pos; p.pos=(from+n)%40;
@@ -78,9 +85,35 @@ function moveBy(G: Game,p: Player,n: number){
     if(poorest) a*=2;
     p.cash+=a; log(G,poorest?'passGoSolidarity':'passGo',{p:p.name,a}); A(G,{k:'fx',f:'go',pid:p.id,amt:a});
     if(p.loan) pay(G,p,-1,interestOn(p.loan),'interest');
+    if(G.settings.bills) payBills(G,p);
   }
   G.landed=p.pos;
 }
+/** what player p's bill comes to, for each utility someone else owns (house rule "bills") */
+export function billFor(G: Game,p: Player){
+  let a=0; for(const k of Object.keys(G.props)){const pr=G.props[+k]; if(pr.owner===p.id&&pr.houses>0) a+=pr.houses>=5?BILL_RIAD:pr.houses*BILL_DAR;}
+  return a;
+}
+function payBills(G: Game,p: Player){
+  const a=billFor(G,p); if(!a) return;
+  for(const u of UTILS){
+    const pr=G.props[u], o=pr.owner; if(o<0||o===p.id||pr.mort||G.players[o].bankrupt) continue;
+    if(G.settings.jailRent===false&&G.players[o].inJail) continue;
+    pay(G,p,o,a,'bill',{s:u});
+  }
+}
+/** house rule "train": the stations player pid may take the train to now. They stopped this turn on a station they
+    already owned (one bought on this stop does not count), and ride, once a turn, to another station of their own.
+    Mortgaged stations are out of service. */
+export function rideTargets(G: Game,pid: number): number[]{
+  const p=G.players[pid];
+  if(!G.settings.train||pid!==G.cur||!p||p.bankrupt||p.inJail||p.cash<0||G.auction||G.trade||G.pending) return [];
+  if(!(G.phase==='roll'||G.phase==='end')||G.landed!==p.pos||G.atOwnStation!==G.turn||G.rode===G.turn) return [];
+  const mine=(i: number)=>G.props[i].owner===pid&&!G.props[i].mort;
+  if(!RAILS.includes(p.pos)||!mine(p.pos)) return [];
+  return RAILS.filter(r=>r!==p.pos&&mine(r));
+}
+export const canRide=(G: Game,pid: number)=>rideTargets(G,pid).length>0;
 /** the player is worth the least of everyone still playing (ties count) */
 export function isPoorest(G: Game,p: Player){const w=netWorth(G,p); return alive(G).filter(q=>q!==p).every(q=>netWorth(G,q)>=w)&&alive(G).length>1;}
 /** what a loan costs each time its borrower passes Al Inṭilāq, rounded up to 10 DH */
@@ -103,7 +136,7 @@ export function land(G: Game,p: Player,opts?: RentOpts){
     case 'prop':case 'rail':case 'util':{
       const pr=G.props[i];
       if(pr.owner===-1){G.pending={type:'buy',idx:i}; log(G,'forSale',{p:p.name,s:i,a:s.price}); A(G,{k:'fx',f:'deed',pid:p.id,idx:i});}
-      else if(pr.owner===p.id) log(G,'home',{p:p.name,s:i});
+      else if(pr.owner===p.id){log(G,'home',{p:p.name,s:i}); if(s.t==='rail'&&G.settings.train) G.atOwnStation=G.turn;}
       else if(pr.mort) log(G,'mortNoRent',{s:i,o:G.players[pr.owner].name});
       else if(G.settings.jailRent===false&&G.players[pr.owner].inJail) log(G,'jailNoRent',{s:i,o:G.players[pr.owner].name});
       else pay(G,p,pr.owner,rentFor(G,i,opts),'rent',{s:i});
@@ -330,6 +363,10 @@ function applyCore(G: Game,seat: number,a: Action){
       const amt=Math.min(Math.round(+a_(a)),p.loan||0); if(!isCur||!free||!(amt>0)||p.cash<amt) return false;
       p.cash-=amt; p.loan=(p.loan||0)-amt; log(G,p.loan?'repay':'repayAll',{p:p.name,a:amt,b:p.loan}); A(G,{k:'fx',f:'pay',pid:p.id,to:-1,amt});
       return true;}
+    case 'ride':{ // house rule "train": between the player's own stations, free
+      const to=+(a as {to: number|string}).to; if(!rideTargets(G,seat).includes(to)) return false;
+      G.rode=G.turn; log(G,'ride',{p:p.name,s:to});
+      jumpTo(G,p,to,'train'); settle(G); return true;}
     case 'shufa':{ // house rule "shufa": a forced sale, paid in full to the owner
       const i=+(a as {i: number|string}).i; if(!isCur||!free||G.pending||!(G.phase==='roll'||G.phase==='end')||!canShufa(G,seat,i)) return false;
       const price=shufaPrice(i), o=G.players[G.props[i].owner]; if(p.cash<price) return false;

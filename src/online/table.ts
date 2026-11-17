@@ -32,7 +32,7 @@ export type Table = Lobby | Game;
 /** what a player sends to sit down, or to change their name or token */
 export interface JoinRequest { name?: unknown; token?: unknown; pin?: unknown; auto?: boolean }
 
-export const DEFAULT_SETTINGS: Settings = {daret: true, dlala: true, rounds: 25, fast: false, timer: 0, fairStart: true, credit: true, shufa: true};
+export const DEFAULT_SETTINGS: Settings = {daret: true, dlala: true, rounds: 25, fast: false, timer: 0, fairStart: true, credit: true, shufa: true, bills: true, train: true};
 
 export function newLobby(code: string, hostCid: string | null, now: number, extra?: Record<string, unknown>): Lobby {
   const G: Lobby = {...extra, gid: rid(10), status: 'lobby', mode: 'online', code, hostCid, players: [], settings: {...DEFAULT_SETTINGS}, seq: 0, anims: [], ack: {}, log: [], event: '', updated: now};
@@ -43,7 +43,7 @@ export function newLobby(code: string, hostCid: string | null, now: number, extr
 /** house rules from the lobby screen; anything unexpected is dropped */
 export function cleanSettings(s: Partial<Record<keyof Settings, unknown>>): Partial<Settings> {
   const out: Partial<Settings> = {};
-  for (const k of ['daret', 'dlala', 'fast', 'goDouble', 'riadNow', 'jailRent', 'credit', 'shufa', 'fairStart', 'solidarity', 'deeds'] as const) if (typeof s[k] === 'boolean') out[k] = s[k];
+  for (const k of ['daret', 'dlala', 'fast', 'goDouble', 'riadNow', 'jailRent', 'credit', 'shufa', 'fairStart', 'solidarity', 'deeds', 'bills', 'train'] as const) if (typeof s[k] === 'boolean') out[k] = s[k];
   if (CASH_CHOICES.includes(s.cash as number)) out.cash = s.cash as number;
   if (SALARY_CHOICES.includes(s.salary as number)) out.salary = s.salary as number;
   if (FINE_CHOICES.includes(s.fine as number)) out.fine = s.fine as number;

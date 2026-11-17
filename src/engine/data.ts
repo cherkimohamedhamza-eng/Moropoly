@@ -68,6 +68,11 @@ export const RAILS=[5,15,25,35], UTILS=[12,28], RAIL_RENT=[250,500,1000,2000];
 export const SALARY=2000, JAIL_FINE=500, START_CASH=15000;
 /** house rule "credit": borrow in steps of LOAN_STEP up to LOAN_MAX; LOAN_RATE of what is owed is charged at each pass of Al Inṭilāq */
 export const LOAN_MAX=5000, LOAN_STEP=500, LOAN_RATE=0.1;
+/** house rule "bills": what a player pays each utility's owner at Al Inṭilāq, per dar and per riad they have built */
+export const BILL_DAR=250, BILL_RIAD=1000;
+/** house rule "train": a station's rent goes up by this share of the rents of the dars and riads on its side of the
+    board, whoever owns them: busy streets bring travellers, and dearer streets more of them */
+export const RAIL_SIDE=0.1;
 /** house rule "shufa": the price of a forced purchase, as a multiple of the property's price */
 export const SHUFA_MARKUP=1.5;
 /** house rule "shufa": the first round it can be used in. Before then everyone's worth is within a rent or two of

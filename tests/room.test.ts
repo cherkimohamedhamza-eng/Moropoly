@@ -79,7 +79,7 @@ describe('host controls', () => {
     }
     expect(r.handle(HOST, { t: 'host', op: 'start' }, T0)).toBe('rejected'); // needs 2 players
     r.handle(HOST, { t: 'host', op: 'settings', settings: { rounds: 15, timer: 999 as never, daret: 'yes' as never, fast: true } }, T0);
-    expect(L(r).settings).toEqual({ daret: true, dlala: true, rounds: 15, fast: true, timer: 0, fairStart: true, credit: true, shufa: true });
+    expect(L(r).settings).toEqual({ daret: true, dlala: true, rounds: 15, fast: true, timer: 0, fairStart: true, credit: true, shufa: true, bills: true, train: true });
     r.handle(HOST, { t: 'host', op: 'addBot' }, T0);
     expect(L(r).players[1]).toMatchObject({ cid: null, human: false, name: 'Salma' });
     r.handle(HOST, { t: 'host', op: 'start' }, T0);
