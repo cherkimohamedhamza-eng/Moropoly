@@ -6,7 +6,14 @@ import type {Group, GroupId, Space, Token} from './types';
 const pad2=(n: number)=>String(n).padStart(2,'0');
 const ART=(i: number)=>`assets/card-${pad2(i)}.webp`;
 /** the colour band of the squares that are not properties, as on their cards */
-export const BAND: Record<string, string>={rail:'#3d434c',util:'#3f5b68',tax:'#7a2e22',mektoub:'#b3262c',baraka:'#0a7a43'};
+/** the band on squares that are not streets. Utilities, Mektoub, Baraka and the taxes get patterns, not solid colours,
+    so they cannot be taken for a city: a fine grid on slate for the utilities, small gold dots on charcoal for the card
+    squares, a cream and stone hatch for taxes */
+export const BAND: Record<string, string>={rail:'#3d434c',
+  util:'repeating-linear-gradient(0deg,rgba(255,255,255,.4) 0 1px,transparent 1px 5px),repeating-linear-gradient(90deg,rgba(255,255,255,.4) 0 1px,transparent 1px 5px),#3f5b68',
+  tax:'repeating-linear-gradient(135deg,#efe4cb 0 4px,#b9a77f 4px 7px)',
+  mektoub:'radial-gradient(circle,#e3b34a 0 22%,transparent 26%) 0 0/7px 7px,#23252b',
+  baraka:'radial-gradient(circle,#e3b34a 0 22%,transparent 26%) 0 0/7px 7px,#23252b'};
 export const GROUPS: Record<GroupId, Group>={
   brown :{city:'Salé',ar:'سلا',color:'#8B4513',house:500},
   lblue :{city:'Chefchaouen',ar:'شفشاون',color:'#7cc8ee',house:500},
@@ -31,7 +38,7 @@ export const SP: Space[]=[
  {t:'prop',g:'lblue',name:'Ras El Maa',ar:'رأس الماء',price:650,rent:R(8,40,100,300,450,600),note:'The spring and waterfall above the town.'},
  {t:'jail',name:'3okacha',ar:'عكاشة'},
  {t:'prop',g:'pink',name:'Fès El Bali',ar:'فاس البالي',price:1000,rent:R(10,50,150,450,625,750),note:'The ancient medina, a maze of souks.'},
- {t:'util',name:'Daw w Lma',ar:'الضو والما',price:1500,kind:'Electricity and water',glyph:'⚡',band:'#1d4f9b'},
+ {t:'util',name:'Daw w Lma',ar:'الضو والما',price:1500,kind:'Electricity and water',glyph:'⚡'},
  {t:'prop',g:'pink',name:'Al Qarawiyyin',ar:'القرويين',price:1100,rent:R(10,50,150,450,625,750),note:'The oldest continuously operating university in the world.'},
  {t:'prop',g:'pink',name:'Chouara Tannery',ar:'مدابغ شوارة',price:1200,rent:R(12,60,180,500,700,900),note:'Leather dyeing pits seen from the terraces.'},
  {t:'rail',name:'Rabat Ville',ar:'محطة الرباط المدينة',price:2000},
@@ -47,7 +54,7 @@ export const SP: Space[]=[
  {t:'rail',name:'Casa Oasis',ar:'محطة الواحة',price:2000},
  {t:'prop',g:'yellow',name:'Hassan Tower',ar:'برج الحسن',price:2200,rent:R(22,110,330,800,975,1150),note:'The unfinished minaret and its esplanade.'},
  {t:'prop',g:'yellow',name:'Agdal',ar:'أكدال',price:2300,rent:R(22,110,330,800,975,1150),note:'Cafés, tramline and greenery.'},
- {t:'util',name:'Maroc Tilikom',ar:'ماروك تيليكوم',price:1500,kind:'Telecoms',glyph:'📡',band:'#0b5aa8'},
+ {t:'util',name:'Maroc Tilikom',ar:'ماروك تيليكوم',price:1500,kind:'Telecoms',glyph:'📡'},
  {t:'prop',g:'yellow',name:'Hay Riad',ar:'حي الرياض',price:2400,rent:R(24,120,360,850,1025,1200),note:'Ministries, embassies and palm avenues.'},
  {t:'gojail',name:'Go to 3okacha',ar:'سير لعكاشة'},
  {t:'prop',g:'green',name:'Koutoubia',ar:'الكتبية',price:2600,rent:R(26,130,390,900,1100,1275),note:'The minaret and gardens at sunset.'},
