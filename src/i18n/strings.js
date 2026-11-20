@@ -9,7 +9,7 @@ S('log.debtPaid','{p} pays {a} more to {to} toward the debt.','{p} verse encore 
 S('log.liquidated','{p}’s buildings are sold and properties mortgaged to pay the debt.','Les bâtiments de {p} sont vendus et ses propriétés hypothéquées pour payer la dette.','تُباع مباني {p} وتُرهن ممتلكاته لتسديد الدين.');
 S('log.saved','{p} manages to pay everything and stays in the game.','{p} parvient à tout payer et reste dans la partie.','{p} يتمكن من دفع كل شيء ويبقى في اللعبة.');
 S('log.timeUp','Time’s up for {p}. The game plays for them.','Temps écoulé pour {p}. Le jeu joue à sa place.','انتهى الوقت لـ{p}. اللعبة تلعب مكانه.');
-S('tm.paused','{p} is writing a trade offer','{p} rédige une offre d’échange','{p} يكتب عرض تبادل'); S('opt.timer','Turn timer','Minuteur de tour','مؤقت الدور'); S('opt.timerD','When time runs out, the game moves for the player: roll, skip buying, end the turn, or leave the auction.','Quand le temps est écoulé, le jeu joue à la place du joueur : lancer, ne pas acheter, finir le tour ou quitter l’enchère.','عند انتهاء الوقت تلعب اللعبة مكان اللاعب: رمي النرد، عدم الشراء، إنهاء الدور أو مغادرة المزاد.');
+S('tm.paused','paused for {p}','en pause pour {p}','متوقف لـ{p}'); S('opt.timer','Turn timer','Minuteur de tour','مؤقت الدور'); S('opt.timerD','When time runs out, the game moves for the player: roll, skip buying, end the turn, or leave the auction.','Quand le temps est écoulé, le jeu joue à la place du joueur : lancer, ne pas acheter, finir le tour ou quitter l’enchère.','عند انتهاء الوقت تلعب اللعبة مكان اللاعب: رمي النرد، عدم الشراء، إنهاء الدور أو مغادرة المزاد.');
 S('opt.off','Off','Désactivé','متوقف'); S('opt.sec','{n} seconds','{n} secondes','{n} ثانية'); S('opt.min','{n} minutes','{n} minutes','{n} دقائق');
 S('log.pay','{p} pays {a} to {to} for {why}.','{p} paie {a} à {to} pour {why}.','{p} يدفع {a} إلى {to} مقابل {why}.');
 S('w.bank','the bank','la banque','البنك'); S('w.daret','the Daret','la Daret','الدارت');
@@ -281,6 +281,48 @@ S('trk.chaabi','Chaabi Wedding','Mariage chaâbi','عرس شعبي'); S('trk.cha
 S('dk.m','Press M to turn the music on or off.','Appuyez sur M pour activer ou couper la musique.','اضغط M لتشغيل الموسيقى أو إيقافها.'); S('toast.musicOn','Music on','Musique activée','الموسيقى تعمل'); S('toast.musicOff','Music off','Musique coupée','الموسيقى متوقفة');
 S('dk.aria','Open music controls','Ouvrir les réglages de la musique','افتح إعدادات الموسيقى'); S('dk.ariaOn','Music playing. Open music controls','Musique en cours. Ouvrir les réglages','الموسيقى تعمل. افتح الإعدادات');
 S('lang.aria','Language','Langue','اللغة');
+/* house rules guide */
+S("gd.title","House rules at this table","Les règles maison de cette table","قواعد هذه الطاولة");
+S("gd.intro","This table plays with {n} house rules on top of the usual game. Each takes a few seconds to learn: tap one, or go through them in order.","Cette table joue avec {n} règles maison en plus du jeu habituel. Chacune s’apprend en quelques secondes : touchez-en une, ou parcourez-les dans l’ordre.","تلعب هذه الطاولة بـ{n} قواعد إضافية فوق اللعبة المعتادة. كل واحدة تُفهم في ثوانٍ: اضغط على واحدة، أو تصفّحها بالترتيب.");
+S("gd.houseRule","House rule","Règle maison","قاعدة الطاولة");
+S("gd.example","For example","Par exemple","مثال");
+S("gd.where","Where to find it","Où la trouver","أين تجدها");
+S("gd.start","Show me","Montrez-moi","أرني");
+S("gd.next","Next","Suivant","التالي");
+S("gd.back","Back","Retour","رجوع");
+S("gd.done","Let’s play","On joue","يلاه نلعبو");
+S("gd.open","Open the guide","Ouvrir le guide","افتح الدليل");
+S("gd.fairStart","Fair start","Départ équitable","بداية عادلة");
+S("gd.fairStart.d","Playing first is an advantage, so each player after the first starts with {a} more than the one before.","Jouer en premier est un avantage : chaque joueur après le premier commence avec {a} de plus que le précédent.","اللعب أولًا ميزة، لذلك يبدأ كل لاعب بعد الأول بـ{a} أكثر من الذي قبله.");
+S("gd.fairStart.w","Already in everyone’s cash. Nothing to do.","Déjà dans l’argent de chacun. Rien à faire.","موجودة من قبل في مال كل لاعب. لا شيء لتفعله.");
+S("gd.deeds","Starting deeds","Titres de départ","عقود البداية");
+S("gd.deeds.d","Everyone was dealt two properties before the first roll, of about the same total value.","Chacun a reçu deux propriétés avant le premier lancer, d’une valeur totale à peu près égale.","حصل كل لاعب على عقارين قبل أول رمية، بقيمة إجمالية متقاربة.");
+S("gd.deeds.ex","One player might get a Fès street and a station, another two Rabat streets. They add up to roughly the same.","Un joueur peut recevoir une rue de Fès et une gare, un autre deux rues de Rabat. Au total, cela revient à peu près au même.","قد يحصل لاعب على شارع في فاس ومحطة، وآخر على شارعين في الرباط. المجموع متقارب.");
+S("gd.deeds.w","Yours are in the My deeds tab.","Les vôtres sont dans l’onglet Mes titres.","تجد عقاراتك في تبويب ممتلكاتي.");
+S("gd.credit","Credit","Crédit","الكريدي");
+S("gd.credit.d","Borrow from the bank, up to {a} in steps of {s}. Each time you pass Al Inṭilāq, the bank takes 10% of what you still owe. Repay whenever you like.","Empruntez à la banque, jusqu’à {a} par tranches de {s}. À chaque passage par Al Inṭilāq, la banque prend 10 % de ce que vous devez encore. Remboursez quand vous voulez.","اقترض من البنك حتى {a} بدفعات من {s}. كلما مررت بالانطلاق يأخذ البنك 10% مما بقي عليك. سدّد متى شئت.");
+S("gd.credit.ex","Borrow {a}: you pay {b} interest every lap until you repay it.","Empruntez {a} : vous payez {b} d’intérêts à chaque tour jusqu’au remboursement.","اقترض {a}: تدفع {b} فائدة في كل دورة حتى تسدّده.");
+S("gd.credit.w","My deeds tab, at the top: Borrow, and Repay.","Onglet Mes titres, en haut : Emprunter et Rembourser.","تبويب ممتلكاتي، في الأعلى: اقترض وسدّد.");
+S("gd.solidarity","Solidarity salary","Salaire solidaire","راتب التضامن");
+S("gd.solidarity.d","Whoever is poorest when they pass Al Inṭilāq collects double.","Celui qui est le plus pauvre quand il passe Al Inṭilāq touche le double.","من كان أفقر اللاعبين عند مروره بالانطلاق يتقاضى الضعف.");
+S("gd.solidarity.ex","The player with the least money collects {a} instead of {b}.","Le joueur qui a le moins d’argent touche {a} au lieu de {b}.","اللاعب الأقل مالًا يتقاضى {a} بدل {b}.");
+S("gd.solidarity.w","Automatic. The journal says when it happens.","Automatique. Le journal l’indique quand cela arrive.","تلقائي. السجل يخبرك حين يحدث.");
+S("gd.shufa","Shufa","Chefaa","الشفعة");
+S("gd.shufa.d","From round {r}, the player furthest behind may, once in the game, buy any property from its owner at {n}% of its price. The owner must sell.","Dès le tour {r}, le joueur le plus en retard peut, une fois dans la partie, racheter n’importe quelle propriété à son propriétaire pour {n} % de son prix. Le propriétaire doit vendre.","ابتداءً من الجولة {r}، يمكن لأكثر اللاعبين تأخرًا، مرة واحدة في اللعبة، شراء أي عقار من مالكه بـ{n}% من ثمنه. والمالك ملزم بالبيع.");
+S("gd.shufa.ex","{s} costs {a}. With Shufa you pay its owner {b} and it is yours, even if they would rather keep it.","{s} coûte {a}. Avec la Chefaa, vous payez {b} à son propriétaire et elle est à vous, même s’il préférait la garder.","{s} ثمنه {a}. بالشفعة تدفع لمالكه {b} ويصبح لك، حتى لو أراد الاحتفاظ به.");
+S("gd.shufa.w","When you can, My deeds says so. Open the property’s card on the board and press Shufa.","Quand c’est possible, Mes titres vous le dit. Ouvrez la carte de la propriété sur le plateau et appuyez sur Chefaa.","حين يصبح ذلك ممكنًا يخبرك تبويب ممتلكاتي. افتح بطاقة العقار على اللوحة واضغط على الشفعة.");
+S("gd.bills","Utility bills","Factures","الفواتير");
+S("gd.bills.d","Each time you pass Al Inṭilāq, pay the owner of each utility {a} for every dar and {b} for every riad you have built.","À chaque passage par Al Inṭilāq, payez au propriétaire de chaque service {a} par dar et {b} par riad que vous avez construit.","كلما مررت بالانطلاق، ادفع لمالك كل مرفق {a} عن كل دار و{b} عن كل رياض بنيته.");
+S("gd.bills.ex","With 3 dars and a riad you pay {a} to each utility’s owner, every lap. With nothing built, you pay nothing.","Avec 3 dars et un riad, vous payez {a} au propriétaire de chaque service, à chaque tour. Sans construction, vous ne payez rien.","مع 3 دور ورياض واحد تدفع {a} لمالك كل مرفق في كل دورة. وإن لم تبنِ شيئًا لا تدفع شيئًا.");
+S("gd.bills.w","Automatic. Daw w Lma and Maroc Tilikom’s cards show the rates.","Automatique. Les cartes de Daw w Lma et Maroc Tilikom indiquent les tarifs.","تلقائي. بطاقتا الضو والما وماروك تيليكوم تبيّنان الأسعار.");
+S("gd.train","Train travel","Voyages en train","السفر بالقطار");
+S("gd.train.d","A station charges more when the streets on its side of the board are built up: {n}% of their dars’ and riads’ rents. And stop on a station you already own to take the train, free, to another of yours.","Une gare rapporte plus quand les rues de son côté du plateau sont construites : {n} % des loyers de leurs dars et riads. Et arrêté sur une gare qu’on possède déjà, on peut prendre le train, gratuitement, vers une autre de ses gares.","يرتفع كراء المحطة كلما بُنيت شوارع جهتها من اللوحة: {n}% من كراء دورها ورياضاتها. وإذا توقفت في محطة تملكها من قبل، يمكنك ركوب القطار مجانًا إلى محطة أخرى من محطاتك.");
+S("gd.train.ex","{s} alone charges {a}. With riads on every street of its side, it charges {b}.","{s} seule rapporte {a}. Avec des riads sur toutes les rues de son côté, elle rapporte {b}.","{s} وحدها كراؤها {a}. ومع رياض في كل شوارع جهتها يصبح {b}.");
+S("gd.train.w","A 🚆 Train to … button appears in your turn when you stop on your own station.","Un bouton 🚆 Train pour … apparaît pendant votre tour quand vous vous arrêtez sur une de vos gares.","يظهر زر 🚆 القطار إلى … في دورك حين تتوقف في محطة تملكها.");
+S("gd.pause","Timer pause","Minuteur en pause","توقيف المؤقت");
+S("gd.pause.d","When you open Tbadel to write a trade offer, the turn timer stops, for up to two minutes, so nobody is rushed. It also stops while you read this guide on your turn.","Quand vous ouvrez Tbadel pour rédiger une offre d’échange, le minuteur s’arrête, jusqu’à deux minutes, pour que personne ne soit pressé. Il s’arrête aussi pendant que vous lisez ce guide à votre tour.","حين تفتح التبادل لكتابة عرض، يتوقف مؤقت الدور حتى دقيقتين، حتى لا يستعجل أحد. ويتوقف أيضًا وأنت تقرأ هذا الدليل في دورك.");
+S("gd.pause.ex","The timer bar turns grey with ⏸ while you write; it starts again when you send or close the offer.","La barre du minuteur devient grise avec ⏸ pendant que vous écrivez ; elle repart quand vous envoyez ou fermez l’offre.","يصبح شريط المؤقت رماديًا مع ⏸ وأنت تكتب، ويعود حين ترسل العرض أو تغلقه.");
+S("gd.pause.w","The Tbadel button in your turn.","Le bouton Tbadel pendant votre tour.","زر التبادل في دورك.");
 /* rules page */
 S('book',
 `<div class="book"><h3>How a turn works</h3><p>Roll, move, then buy what you land on or send it to the Dlala. Pay rent on other players’ property. Own a whole city to build dars, then a riad. Doubles roll again; three doubles send you to 3okacha.</p>

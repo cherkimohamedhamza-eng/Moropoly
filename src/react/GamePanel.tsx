@@ -11,7 +11,8 @@ import {colorOf, groupIdx, houseCost, ownedBy, ownsGroup, priceOf, unmortCost} f
 import {cityN, fmt, spN, t, tl, tokN} from '../i18n/core';
 import {goHome} from '../ui/home';
 import {tableView, toggleView} from '../ui/tableview';
-import {openAuction, openConfirmBankrupt, openDeed, openGameOver, openSeat, openTrade, openTradeReply} from '../ui/modals';
+import {openAuction, openConfirmBankrupt, openDeed, openGameOver, openGuide, openSeat, openTrade, openTradeReply} from '../ui/modals';
+import {HouseRulesList} from './Guide';
 import {sfx} from '../ui/music';
 import {iControl, mySeats, setTab} from '../ui/render';
 import {TDL, seatedIn} from '../ui/view';
@@ -183,7 +184,7 @@ export function SideTabs() {
       </div>
       <div className="tabpanel" id="tabpanel">
         {G && (app.tab === 'players' ? <PlayersTab G={G} /> : app.tab === 'deeds' ? <DeedsTab G={G} /> : app.tab === 'log' ? <LogTab G={G} />
-          : <div style={{display: 'contents'}} dangerouslySetInnerHTML={{__html: t('book')}} />)}
+          : <><HouseRulesList G={G} open={openGuide} /><div style={{display: 'contents'}} dangerouslySetInnerHTML={{__html: t('book')}} /></>)}
       </div>
     </>
   );

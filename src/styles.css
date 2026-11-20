@@ -579,3 +579,77 @@ html[lang="ar"] body{font-size:14.5px}
 html[lang="ar"] .corner .lat:empty,html[lang="ar"] .cell .nm:empty{display:none}
 html[lang="ar"] .cell .nm{font-family:var(--f-ar);font-size:1.25cqi}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ---------- house rules guide ---------- */
+.guide{display:flex;flex-direction:column;gap:14px}
+.g-page{min-height:300px}
+.g-lead{margin:0;font-size:14px;color:var(--silver-hi)}
+.g-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;margin-top:12px}
+.g-rule{display:grid;grid-template-columns:168px 1fr;gap:18px;align-items:start}
+.g-text h3{margin:2px 0 6px;font-family:var(--f-display);font-size:17px;letter-spacing:.02em}
+.g-text p{margin:0 0 10px;font-size:14px}
+.g-ex{background:rgba(227,179,74,.08);border:1px solid rgba(227,179,74,.35);border-radius:12px;padding:10px 12px;font-size:13.5px;margin-bottom:10px}
+.g-lab{display:block;font-family:var(--f-display);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.g-where{color:var(--silver-hi)}
+.g-chips{display:flex;flex-wrap:wrap;gap:6px}
+.g-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 6px;font-size:12.5px}
+.g-chip i{width:10px;height:10px;border-radius:50%}
+.g-chip b{color:var(--gold);font-weight:700}
+.g-nav{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.g-dots{display:flex;gap:6px;margin-inline-end:auto}
+.g-dots i{width:7px;height:7px;border-radius:50%;background:var(--line-2)}
+.g-dots i.on{background:var(--gold);width:18px;border-radius:4px}
+/* a rule drawn as a small card in the look of the property cards */
+.rulecard{display:block;box-sizing:border-box;width:100%;padding:7px;border:2px solid #4a3220;border-radius:6px;font:inherit;color:#2b1d12;text-align:center;
+  background:repeating-linear-gradient(45deg,#b5532a 0 1.5px,transparent 1.5px 6px),repeating-linear-gradient(-45deg,#8a5a2b 0 1.5px,transparent 1.5px 6px),#f5ead0}
+button.rulecard{cursor:pointer;transition:transform .15s}
+button.rulecard:hover{transform:translateY(-2px)}
+.rc-in{background:#f5ead0;border:1.5px solid #2b1d12;display:flex;flex-direction:column;aspect-ratio:2/3}
+.rc-band{color:#fff;padding:12px 6px 10px;border-bottom:1.5px solid #2b1d12}
+.rc-ar{font-family:var(--f-ar);font-weight:700;font-size:20px;line-height:1.2}
+.rc-lt{font-family:var(--f-display);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
+.rc-ico{flex:1;display:grid;place-items:center;color:#2b1d12;padding:10px}
+.rc-ico svg{width:84px;height:84px}
+.rc-foot{border-top:1.5px solid #2b1d12;padding:7px 4px;font-family:var(--f-display);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#2b1d12}
+.g-rule .rulecard{width:168px}
+.rulecard.sm{padding:5px}
+.rulecard.sm .rc-band{padding:8px 4px 7px}
+.rulecard.sm .rc-ar{font-size:15px}
+.rulecard.sm .rc-lt{font-size:8.5px;letter-spacing:.08em}
+.rulecard.sm .rc-ico svg{width:48px;height:48px}
+@media (max-width:520px){.g-rule{grid-template-columns:1fr}.g-rule .rulecard{width:140px;margin:0 auto}}
+/* phones held sideways: everything on one screen */
+@media (max-height:520px){
+  .guide{gap:8px}
+  .g-page{min-height:0}
+  .g-nav{padding-top:8px}
+  .guide .g-nav .btn{padding-top:8px;padding-bottom:8px}
+  .g-rule{grid-template-columns:112px 1fr;gap:14px}
+  .g-rule .rulecard{width:112px}
+  .g-rule .rc-ar{font-size:16px}
+  .g-rule .rc-lt{font-size:9px}
+  .g-rule .rc-ico svg{width:48px;height:48px}
+  .g-rule .rc-foot{font-size:7.5px;letter-spacing:.12em}
+  .g-text h3{font-size:15px;margin-bottom:4px}
+  .g-text p,.g-ex{font-size:12.5px}
+  .g-ex{padding:7px 10px;margin-bottom:6px}
+  .g-text p{margin-bottom:6px}
+  .g-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px}
+  .g-grid .rc-in{aspect-ratio:auto}
+  .g-grid .rulecard.sm{padding:4px}
+  .g-grid .rulecard.sm .rc-band{padding:5px 3px 4px}
+  .g-grid .rc-ico{padding:4px 0 5px}
+  .g-grid .rulecard.sm .rc-ico svg{width:22px;height:22px}
+  .g-grid .rc-ar{font-size:13px}
+  .g-grid .rc-lt{font-size:7.5px}
+}
+/* the list on the Rules tab */
+.g-list{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.g-list-hd{display:flex;align-items:center;gap:10px}
+.g-list-hd h3{margin:0;flex:1;font-family:var(--f-display);font-size:14px;letter-spacing:.04em}
+.g-item{display:flex;gap:10px;align-items:flex-start;font-size:13px}
+.g-item b{display:block;font-size:13.5px}
+.g-item-ar{font-family:var(--f-ar);font-weight:600;color:var(--silver-hi);margin-inline-start:6px}
+.g-item-ico{flex:none;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:#fff;border:1px solid rgba(255,255,255,.15)}
+.g-item-ico svg{width:22px;height:22px}
+html[lang="ar"] .g-text h3,html[lang="ar"] .g-list-hd h3{font-family:var(--f-ar)}

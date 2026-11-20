@@ -15,11 +15,12 @@ import {goHome} from '../ui/home';
 import {sfx} from '../ui/music';
 import {iControl} from '../ui/render';
 import {Coin, Rich, TokenGrid} from './common';
+import {firstLookAt, Guide, guideRules} from './Guide';
 import {refresh, useRefresh} from './store';
 
 export type Win =
   | {kind: 'deed'; i: number}
-  | {kind: 'auction' | 'bk' | 'trade' | 'treply' | 'seat' | 'over' | 'inst'};
+  | {kind: 'auction' | 'bk' | 'trade' | 'treply' | 'seat' | 'over' | 'inst' | 'guide'};
 type Kind = Win['kind'];
 interface Slot { win: Win; min: boolean; key: number }
 
@@ -65,6 +66,8 @@ export function autoModals() {
   if (V.trade && iControl(V.trade.to)) { if (!isOpen('treply')) openTradeReply(); }
   else if (isOpen('treply')) drop('treply');
   if (V.over && app.shownOver !== V.gid) { app.shownOver = V.gid; setTimeout(openGameOver, 600); }
+  // the house rules guide, once per game on this device, when nothing else is open
+  if (!V.over && !current && guideRules(V).length && firstLookAt(V.gid)) openGuide();
 }
 
 export function openDeed(i: number) { if (app.V) openWindow({kind: 'deed', i}); }
@@ -84,6 +87,7 @@ export function openSeat() {
 }
 export function openGameOver() { if (game()) openWindow({kind: 'over'}); }
 export function openInstallHelp() { openWindow({kind: 'inst'}); }
+export function openGuide() { if (game()) openWindow({kind: 'guide'}); }
 
 /* ---------- the host ---------- */
 export function Windows() {
@@ -111,6 +115,7 @@ function WindowFor({win}: {win: Win}) {
     case 'seat': return <SeatWindow />;
     case 'over': return <GameOverWindow />;
     case 'inst': return <InstallWindow />;
+    case 'guide': return <GuideWindow />;
   }
 }
 
@@ -388,6 +393,15 @@ function GameOverWindow() {
 }
 
 /* ---------- installing the app (iPhone, or when the browser offers no install button) ---------- */
+function GuideWindow() {
+  const V = game();
+  // reading the guide on your own turn stops your turn timer, like writing a trade offer
+  const cur = V ? V.cur : -1, mine = !!V && iControl(cur);
+  useEffect(() => { if (!mine) return; drafting(cur, true); return () => drafting(cur, false); }, [cur, mine]);
+  if (!V) return null;
+  return <Frame kind="guide" title={t('gd.title')}><Guide G={V} onDone={closeModal} /></Frame>;
+}
+
 function InstallWindow() {
   return (
     <Frame kind="inst" title={t('pwa.title')}>
