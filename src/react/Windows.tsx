@@ -17,10 +17,12 @@ import {iControl} from '../ui/render';
 import {Coin, Rich, TokenGrid} from './common';
 import {firstLookAt, Guide, guideRules} from './Guide';
 import {refresh, useRefresh} from './store';
+import {checkTips, TipCard} from './Tips';
 
 export type Win =
   | {kind: 'deed'; i: number}
-  | {kind: 'auction' | 'bk' | 'trade' | 'treply' | 'seat' | 'over' | 'inst' | 'guide'};
+  | {kind: 'guide'; rule?: string}
+  | {kind: 'auction' | 'bk' | 'trade' | 'treply' | 'seat' | 'over' | 'inst'};
 type Kind = Win['kind'];
 interface Slot { win: Win; min: boolean; key: number }
 
@@ -68,6 +70,8 @@ export function autoModals() {
   if (V.over && app.shownOver !== V.gid) { app.shownOver = V.gid; setTimeout(openGameOver, 600); }
   // the house rules guide, once per game on this device, when nothing else is open
   if (!V.over && !current && guideRules(V).length && firstLookAt(V.gid)) openGuide();
+  // and the first time a house rule comes into play, a one-time tip about it
+  checkTips(V, current ? current.win.kind : null);
 }
 
 export function openDeed(i: number) { if (app.V) openWindow({kind: 'deed', i}); }
@@ -87,7 +91,8 @@ export function openSeat() {
 }
 export function openGameOver() { if (game()) openWindow({kind: 'over'}); }
 export function openInstallHelp() { openWindow({kind: 'inst'}); }
-export function openGuide() { if (game()) openWindow({kind: 'guide'}); }
+/** the house rules guide, at the page about `rule` if given */
+export function openGuide(rule?: string) { if (game()) openWindow({kind: 'guide', rule}); }
 
 /* ---------- the host ---------- */
 export function Windows() {
@@ -101,6 +106,7 @@ export function Windows() {
   return (
     <div id="modalRoot" className={c?.min ? 'min' : undefined}>
       {c && <WindowFor key={c.key} win={c.win} />}
+      <TipCard G={game()} more={openGuide} />
     </div>
   );
 }
@@ -115,7 +121,7 @@ function WindowFor({win}: {win: Win}) {
     case 'seat': return <SeatWindow />;
     case 'over': return <GameOverWindow />;
     case 'inst': return <InstallWindow />;
-    case 'guide': return <GuideWindow />;
+    case 'guide': return <GuideWindow rule={win.rule} />;
   }
 }
 
@@ -393,13 +399,13 @@ function GameOverWindow() {
 }
 
 /* ---------- installing the app (iPhone, or when the browser offers no install button) ---------- */
-function GuideWindow() {
+function GuideWindow({rule}: {rule?: string}) {
   const V = game();
   // reading the guide on your own turn stops your turn timer, like writing a trade offer
   const cur = V ? V.cur : -1, mine = !!V && iControl(cur);
   useEffect(() => { if (!mine) return; drafting(cur, true); return () => drafting(cur, false); }, [cur, mine]);
   if (!V) return null;
-  return <Frame kind="guide" title={t('gd.title')}><Guide G={V} onDone={closeModal} /></Frame>;
+  return <Frame kind="guide" title={t('gd.title')}><Guide G={V} onDone={closeModal} start={rule} /></Frame>;
 }
 
 function InstallWindow() {

@@ -65,9 +65,9 @@ export function RuleCard({r, small, onClick}: {r: Rule; small?: boolean; onClick
 }
 
 /** the guide's pages: an overview of the rules in play, then one page per rule */
-export function Guide({G, onDone}: {G: Game; onDone: () => void}) {
+export function Guide({G, onDone, start}: {G: Game; onDone: () => void; start?: string}) {
   const rules = guideRules(G);
-  const [pg, setPg] = useState(0);
+  const [pg, setPg] = useState(() => rules.findIndex(x => x.k === start) + 1);
   const last = rules.length;
   const r = pg > 0 ? rules[pg - 1] : null;
   return (
@@ -105,7 +105,7 @@ export function HouseRulesList({G, open}: {G: Game; open: () => void}) {
   if (!rules.length) return null;
   return (
     <div className="g-list">
-      <div className="g-list-hd"><h3>{t('gd.title')}</h3><button className="btn sm gold" onClick={open}>{t('gd.open')}</button></div>
+      <div className="g-list-hd"><h3>{t('gd.title')}</h3><button className="btn sm gold" onClick={() => open()}>{t('gd.open')}</button></div>
       {rules.map(r => (
         <div key={r.k} className="g-item">
           <div className="g-item-ico" style={{background: r.band}}>{r.icon}</div>

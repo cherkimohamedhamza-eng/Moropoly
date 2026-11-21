@@ -653,3 +653,20 @@ button.rulecard:hover{transform:translateY(-2px)}
 .g-item-ico{flex:none;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:#fff;border:1px solid rgba(255,255,255,.15)}
 .g-item-ico svg{width:22px;height:22px}
 html[lang="ar"] .g-text h3,html[lang="ar"] .g-list-hd h3{font-family:var(--f-ar)}
+/* ---------- one-time house rule tips ---------- */
+.tip{position:fixed;z-index:60;top:calc(12px + env(safe-area-inset-top,0px));left:50%;translate:-50% 0;width:min(460px,calc(100vw - 24px));box-sizing:border-box;display:flex;gap:12px;align-items:flex-start;padding:12px 14px 14px;overflow:hidden;
+  background:var(--panel,#15191f);border:1px solid rgba(227,179,74,.45);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.6);animation:rise .3s ease}
+.tip-card{flex:none;width:64px}
+.tip-card .rulecard.sm{padding:3px}
+.tip-card .rulecard.sm .rc-band{padding:5px 2px 4px}
+.tip-card .rulecard.sm .rc-ar{font-size:11px}
+.tip-card .rulecard.sm .rc-lt{font-size:6.5px;letter-spacing:.04em}
+.tip-card .rulecard.sm .rc-ico{padding:4px}
+.tip-card .rulecard.sm .rc-ico svg{width:26px;height:26px}
+.tip-body{flex:1;min-width:0}
+.tip-body p{margin:0 0 10px;font-size:13.5px;line-height:1.4}
+.tip-btns{display:flex;gap:8px;justify-content:flex-end}
+.tip-time{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--gold);transform-origin:left;animation:tiptime linear forwards;opacity:.7}
+html[dir="rtl"] .tip-time{transform-origin:right}
+@keyframes tiptime{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media (max-height:520px){.tip{top:6px;padding:8px 10px 10px;gap:10px}.tip-card{width:48px}.tip-body p{font-size:12.5px;margin-bottom:6px}}
