@@ -1,7 +1,7 @@
 // Windows over the game: deed cards, the auction, trades, bankruptcy, your seat, the results, and how to
 // install the app. One window shows at a time. The auction and trade windows can be shrunk to a pill to see
 // the board; a shrunk window waits while another opens (a deed card, say) and comes back after it.
-import {useEffect, useRef, useState, type ReactNode} from 'react';
+import {useEffect, useRef, useState, type CSSProperties, type ReactNode} from 'react';
 import {commit, dispatch, drafting, lobbyJoin, playJoin, sendIntent} from '../app/authority';
 import {app, saveName} from '../app/state';
 import {BAND, BILL_DAR, BILL_RIAD, GROUPS, RAIL_RENT, RAIL_SIDE, boardOf} from '../engine/data';
@@ -138,12 +138,12 @@ function WindowFor({win}: {win: Win}) {
 }
 
 /** the window itself: a header with the title, shrink and close buttons, the body and the buttons below */
-function Frame({kind, title, children, footer, mine}: {kind: Kind; title: ReactNode; children: ReactNode; footer?: ReactNode; mine?: boolean}) {
+function Frame({kind, title, children, footer, mine, cls}: {kind: Kind; title: ReactNode; children: ReactNode; footer?: ReactNode; mine?: boolean; cls?: string}) {
   const minable = MINABLE.includes(kind), closable = !STAYS.includes(kind);
   return (
     <>
       <div className="veil" onClick={e => { if (e.target === e.currentTarget && closable) closeModal(); }}>
-        <div className="modal" role="dialog" aria-modal="true">
+        <div className={`modal${cls ? ' ' + cls : ''}`} role="dialog" aria-modal="true">
           <div className="hd">
             <h2>{title}</h2>
             {minable && <button className="btn ghost sm" style={{marginInlineStart: 'auto'}} onClick={shrink}>▾ {t('btn.seeBoard')}</button>}
@@ -279,68 +279,193 @@ function BankruptWindow() {
 /* ---------- making a trade offer ---------- */
 function TradeWindow() {
   const V = game()!;
+  const B = boardOf(V);
   const me = V.players[V.cur];
   const others = alive(V).filter(o => o.id !== me.id);
   const [partner, setPartner] = useState(others[0]?.id ?? -1);
   const [give, setGive] = useState<number[]>([]);
   const [get, setGet] = useState<number[]>([]);
-  const [cashGive, setCashGive] = useState('0');
-  const [cashGet, setCashGet] = useState('0');
+  const [cashGive, setCashGive] = useState(0);
+  const [cashGet, setCashGet] = useState(0);
   const [msg, setMsg] = useState('');
   const sent = useRef(false);
   // the turn timer stops while the offer is being written
   useEffect(() => { drafting(me.id, true); return () => { if (!sent.current) drafting(me.id, false); }; }, []);
   const them = V.players[partner];
   if (!them) return null;
+
   /** picking someone else starts the offer again */
-  const pickPartner = (id: number) => { setPartner(id); setGive([]); setGet([]); setCashGive('0'); setCashGet('0'); setMsg(''); };
-  const list = (pid: number, chosen: number[], setChosen: (f: (x: number[]) => number[]) => void) => {
-    const tt = tradeable(V, pid);
-    if (!tt.length) return <div className="muted" style={{fontSize: 12.5}}>{t('tr.nothing')}</div>;
-    return tt.map(i => (
-      <label key={i}>
-        <input type="checkbox" checked={chosen.includes(i)} onChange={e => { const on = e.target.checked; setChosen(x => (on ? [...x, i] : x.filter(y => y !== i))); }} />
-        <span className="chip" style={{background: colorOf(i, V)}} />{spN(i, V)}{V.props[i].mort && <> <span className="muted">(rahn)</span></>}
-      </label>
-    ));
+  const pickPartner = (id: number) => { setPartner(id); setGive([]); setGet([]); setCashGive(0); setCashGet(0); setMsg(''); };
+  const toggleIdx = (i: number, setChosen: (f: (x: number[]) => number[]) => void) =>
+    setChosen(x => (x.includes(i) ? x.filter(y => y !== i) : [...x, i]));
+
+  const myMax = Math.max(0, me.cash);
+  const theirMax = Math.max(0, them.cash);
+  const clamp = (v: number, max: number) => Math.max(0, Math.min(max, Math.round(v || 0)));
+
+  const giveVal = give.reduce((s, i) => s + priceOf(i, V), 0) + cashGive;
+  const getVal = get.reduce((s, i) => s + priceOf(i, V), 0) + cashGet;
+  const hasAnything = give.length > 0 || get.length > 0 || cashGive > 0 || cashGet > 0;
+
+  const renderSide = (
+    pl: typeof me,
+    chosen: number[],
+    setChosen: (f: (x: number[]) => number[]) => void,
+    cash: number,
+    setCash: (n: number) => void,
+    maxCash: number,
+    totalVal: number,
+    sideCls: string,
+  ) => {
+    const tt = tradeable(V, pl.id);
+    return (
+      <div className={`tr-side ${sideCls}`}>
+        <div className="tr-shd">
+          <Coin token={pl.token} style={{boxShadow: `0 0 0 2.5px ${pl.color}`}} />
+          <div className="tr-sm">
+            <b>{t('tr.gives', {p: pl.name})}</b>
+            <small>{fmt(pl.cash)} available</small>
+          </div>
+          <span className={`tr-val${totalVal > 0 ? ' on' : ''}`}>{fmt(totalVal)}</span>
+        </div>
+
+        <div className="tr-cards">
+          {tt.length ? tt.map(i => {
+            const s = B.spaces[i];
+            const on = chosen.includes(i);
+            const col = colorOf(i, V);
+            return (
+              <button
+                key={i}
+                type="button"
+                className={`tr-card${on ? ' on' : ''}${V.props[i].mort ? ' mort' : ''}`}
+                style={{'--cc': col} as CSSProperties}
+                onClick={() => { toggleIdx(i, setChosen); setMsg(''); }}
+              >
+                <div className="tr-thumb">
+                  {s.art ? <img src={s.art} alt="" /> : <span className="tr-dot" style={{background: col}} />}
+                </div>
+                <div className="tr-cinfo">
+                  <span className="tr-cname">{spN(i, V)}</span>
+                  <span className="tr-cmeta">
+                    <i style={{background: col}} />
+                    {fmt(priceOf(i, V))}{V.props[i].mort ? ' · rahn' : ''}
+                  </span>
+                </div>
+                <span className="tr-chk" aria-hidden="true">{on ? '✓' : '+'}</span>
+              </button>
+            );
+          }) : <div className="tr-empty">{t('tr.nothing')}</div>}
+        </div>
+
+        <div className="tr-cash">
+          <div className="tr-chd">
+            <span>{t('tr.cash')}</span>
+            <div className="tr-cinput">
+              <input
+                type="number"
+                min={0}
+                max={maxCash}
+                step={100}
+                value={cash}
+                onChange={e => { setCash(clamp(+e.target.value, maxCash)); setMsg(''); }}
+                aria-label={`${pl.name} ${t('tr.cash')}`}
+              />
+              <span>DH</span>
+            </div>
+          </div>
+          <input
+            className="tr-range"
+            type="range"
+            min={0}
+            max={maxCash}
+            step={100}
+            value={cash}
+            disabled={maxCash <= 0}
+            onChange={e => { setCash(clamp(+e.target.value, maxCash)); setMsg(''); }}
+          />
+          <div className="tr-chips">
+            {[100, 500, 1000, 2000].map(step => (
+              <button
+                key={step}
+                type="button"
+                disabled={cash + step > maxCash}
+                onClick={() => { setCash(clamp(cash + step, maxCash)); setMsg(''); }}
+              >
+                +{step >= 1000 ? `${step / 1000}k` : step}
+              </button>
+            ))}
+            <button type="button" className="clr" disabled={cash === 0} onClick={() => setCash(0)}>0</button>
+          </div>
+        </div>
+      </div>
+    );
   };
+
   const send = () => {
     const o: Action = {
       t: 'trade', to: partner,
-      give: tradeable(V, me.id).filter(i => give.includes(i)), get: tradeable(V, partner).filter(i => get.includes(i)),
-      cashGive: Math.max(0, Math.round(+cashGive || 0)), cashGet: Math.max(0, Math.round(+cashGet || 0)),
+      give: tradeable(V, me.id).filter(i => give.includes(i)),
+      get: tradeable(V, partner).filter(i => get.includes(i)),
+      cashGive: clamp(cashGive, myMax),
+      cashGet: clamp(cashGet, theirMax),
     };
     if (!o.give!.length && !o.get!.length && !o.cashGive && !o.cashGet) { setMsg(t('tr.pick')); return; }
-    if ((o.cashGive as number) > Math.max(0, me.cash) || (o.cashGet as number) > Math.max(0, them.cash)) { setMsg(t('tr.noCash')); return; }
+    if ((o.cashGive as number) > myMax || (o.cashGet as number) > theirMax) { setMsg(t('tr.noCash')); return; }
     sent.current = true;
     closeModal();
     dispatch(o, me.id);
     toast(them.human ? t('tr.sent', {p: them.name}) : t('tr.thinking', {p: them.name}));
   };
+
   return (
-    <Frame kind="trade" title={t('tr.title')} footer={<>
-      <button className="btn" onClick={closeModal}>{t('btn.cancel')}</button>
-      <button className="btn red" onClick={send}>{t('btn.send')}</button>
+    <Frame kind="trade" cls="wide trade-modal" title={<><span>{t('tr.title')}</span> <span className="tr-ar">تبادل</span></>} footer={<>
+      {msg && <span className="tr-err">{msg}</span>}
+      <button className="btn ghost" onClick={closeModal}>{t('btn.cancel')}</button>
+      <button className="btn red" disabled={!hasAnything} onClick={send}>{t('btn.send')}</button>
     </>}>
-      <label className="muted" style={{display: 'flex', gap: 8, alignItems: 'center'}}>
-        {t('tr.with')}{' '}
-        <select className="field" style={{padding: 6}} value={partner} onChange={e => pickPartner(+e.target.value)}>
-          {others.map(o => <option key={o.id} value={o.id}>{o.name}{o.human ? '' : ' (' + t('lbl.computer') + ')'}</option>)}
-        </select>
-      </label>
-      <div className="trade-cols">
-        <div>
-          <h4>{t('tr.gives', {p: me.name})}</h4>{list(me.id, give, setGive)}
-          <label className="muted" htmlFor="trCG" style={{marginTop: 6}}>{t('tr.cash')}</label>
-          <input className="field" type="number" id="trCG" min={0} step={100} value={cashGive} onChange={e => setCashGive(e.target.value)} />
-        </div>
-        <div>
-          <h4>{t('tr.gives', {p: them.name})}</h4>{list(partner, get, setGet)}
-          <label className="muted" htmlFor="trCT" style={{marginTop: 6}}>{t('tr.cash')}</label>
-          <input className="field" type="number" id="trCT" min={0} step={100} value={cashGet} onChange={e => setCashGet(e.target.value)} />
-        </div>
+      <div className="tr-partners" role="radiogroup" aria-label={t('tr.with')}>
+        {others.map(o => {
+          const cnt = tradeable(V, o.id).length;
+          const active = o.id === partner;
+          return (
+            <button
+              key={o.id}
+              type="button"
+              className={`tr-pbtn${active ? ' on' : ''}`}
+              onClick={() => pickPartner(o.id)}
+            >
+              <Coin token={o.token} style={{boxShadow: `0 0 0 2.5px ${o.color}`}} />
+              <div className="tr-pm">
+                <b>{o.name}{!o.human && <small> · bot</small>}</b>
+                <span>{fmt(o.cash)} · {cnt}</span>
+              </div>
+            </button>
+          );
+        })}
       </div>
-      <div className="muted">{msg}</div>
+
+      <div className="tr-desk">
+        {renderSide(me, give, setGive, cashGive, setCashGive, myMax, giveVal, 'mine')}
+        <div className="tr-swap" aria-hidden="true">⇄</div>
+        {renderSide(them, get, setGet, cashGet, setCashGet, theirMax, getVal, 'theirs')}
+      </div>
+
+      {hasAnything && (
+        <div className="tr-summary">
+          <div className="tr-sum-s">
+            <small>{me.name}</small>
+            <b>{give.length} {give.length === 1 ? 'deed' : 'deeds'}{cashGive ? ` + ${fmt(cashGive)}` : ''}</b>
+          </div>
+          <span className="tr-sum-mid">
+            {giveVal === getVal ? 'Even value' : giveVal > getVal ? `+${fmt(giveVal - getVal)} to ${them.name}` : `+${fmt(getVal - giveVal)} to ${me.name}`}
+          </span>
+          <div className="tr-sum-s end">
+            <small>{them.name}</small>
+            <b>{get.length} {get.length === 1 ? 'deed' : 'deeds'}{cashGet ? ` + ${fmt(cashGet)}` : ''}</b>
+          </div>
+        </div>
+      )}
     </Frame>
   );
 }
@@ -349,22 +474,45 @@ function TradeWindow() {
 function TradeReplyWindow() {
   const V = game(), tr = V?.trade;
   if (!V || !tr) return null;
+  const B = boardOf(V);
   const a = V.players[tr.from], b = V.players[tr.to];
-  const list = (arr: number[]) => arr.length
-    ? arr.map((i, k) => <span key={i}>{k ? (app.LANG === 'ar' ? '، ' : ', ') : ''}<span className="chip" style={{background: colorOf(i, V), display: 'inline-block', verticalAlign: 'middle'}} /> {spN(i, V)}</span>)
-    : t('tr.nothingW');
+  const renderOfferCol = (title: string, arr: number[], cash: number, tone: 'in' | 'out') => (
+    <div className={`trr-col ${tone}`}>
+      <div className="trr-hd">{title}</div>
+      <div className="trr-list">
+        {arr.map(i => {
+          const s = B.spaces[i];
+          return (
+            <div key={i} className="trr-card" style={{'--cc': colorOf(i, V)} as CSSProperties}>
+              {s.art && <img src={s.art} alt="" />}
+              <div>
+                <b>{spN(i, V)}</b>
+                <small>{fmt(priceOf(i, V))}{V.props[i].mort ? ' · rahn' : ''}</small>
+              </div>
+            </div>
+          );
+        })}
+        {cash > 0 && <div className="trr-cash">💰 {fmt(cash)}</div>}
+        {!arr.length && !cash && <div className="tr-empty">{t('tr.nothingW')}</div>}
+      </div>
+    </div>
+  );
   const answer = (accept: boolean) => { closeModal(); dispatch({t: 'tradeReply', accept}, tr.to); };
   return (
-    <Frame kind="treply" title={t('trr.title', {p: b.name})} footer={<>
-      <button className="btn" onClick={() => answer(false)}>{t('btn.refuse')}</button>
+    <Frame kind="treply" cls="wide trade-modal" title={t('trr.title', {p: b.name})} footer={<>
+      <button className="btn ghost" onClick={() => answer(false)}>{t('btn.refuse')}</button>
       <button className="btn green" onClick={() => answer(true)}>{t('btn.accept')}</button>
     </>}>
-      {app.MODE === 'local' && <p><Rich k="trr.pass" p={{p: b.name}} /></p>}
-      <div className="preview" style={{flexDirection: 'column', alignItems: 'flex-start', gap: 6}}>
-        <div><b>{t('trr.receive')}</b> {list(tr.give)}{tr.cashGive ? ` + ${fmt(tr.cashGive)}` : ''}</div>
-        <div><b>{t('trr.give')}</b> {list(tr.get)}{tr.cashGet ? ` + ${fmt(tr.cashGet)}` : ''}</div>
+      {app.MODE === 'local' && <p style={{margin: 0}}><Rich k="trr.pass" p={{p: b.name}} /></p>}
+      <div className="trr-from">
+        <Coin token={a.token} style={{boxShadow: `0 0 0 2.5px ${a.color}`}} />
+        <span>{t('trr.from', {p: a.name})}</span>
       </div>
-      <p className="muted">{t('trr.from', {p: a.name})}</p>
+      <div className="tr-desk">
+        {renderOfferCol(t('trr.receive'), tr.give, tr.cashGive, 'in')}
+        <div className="tr-swap" aria-hidden="true">⇄</div>
+        {renderOfferCol(t('trr.give'), tr.get, tr.cashGet, 'out')}
+      </div>
     </Frame>
   );
 }
