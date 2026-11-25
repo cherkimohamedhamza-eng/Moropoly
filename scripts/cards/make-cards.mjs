@@ -16,7 +16,8 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.resolve(HERE, '..', '..', 'public', 'assets');
 const CARDS = ['01', '03', '06', '08', '09', '11', '13', '14', '16', '18', '19', '21', '23', '24',
   '26', '27', '29', '30', '31', '32', '34', '37', '39',
-  '04', '05', '12', '15', '25', '28', '35', '38', 'mektoub', 'baraka', 'back'];
+  '04', '05', '12', '15', '25', '28', '35', '38', 'mektoub', 'baraka', 'back',
+  'marina', 'outa', 'boujeloud', 'taghazout', 'spartel', 'oudayas', 'majorelle', 'anfa', 'fuel', 'peage'];
 const W = 360, H = 540, SCALE = 2;
 const QUALITY = 72;
 const PARALLEL = 4;

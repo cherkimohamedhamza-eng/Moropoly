@@ -39,53 +39,104 @@ export function BackButton({onClick}: {onClick: () => void}) {
   return <button className="btn ghost sm" onClick={onClick}>{t('back')}</button>;
 }
 
-/** the house rules, in three groups: the money (starting money, salary, the 3okacha fine, double on Al Inṭilāq),
- *  the rules (Daret pot, dlala, "Riad now", rent from 3okacha) and the game (length, turn timer, fast animations) */
-export function RulesOptions({settings, onChange}: {settings: Settings; onChange: (s: Settings) => void}) {
+/** the house rules, organized into sleek category tabs with pill selectors and active-state highlights.
+ *  Pass `hideGame` when Board/Rounds/Timer/Fast are already shown in a dedicated stage header (SetupScreen). */
+export function RulesOptions({settings, onChange, hideGame}: {settings: Settings; onChange: (s: Settings) => void; hideGame?: boolean}) {
+  const [tab, setTab] = useState<'rules' | 'money' | 'game' | 'all'>('rules');
   const set = (patch: Partial<Settings>) => onChange({...settings, ...patch});
-  const pick = (key: 'cash' | 'salary' | 'fine', value: number, choices: number[]) => (
-    <select className="field" value={value} onChange={e => set({[key]: +e.target.value})}>
-      {choices.map(v => <option key={v} value={v}>{fmt(v)}</option>)}
-    </select>
+  const pills = (key: 'cash' | 'salary' | 'fine', value: number, choices: number[]) => (
+    <div className="pill-row">
+      {choices.map(v => <button key={v} type="button" className={value === v ? 'on' : ''} onClick={() => set({[key]: v})}>{fmt(v)}</button>)}
+    </div>
   );
   const sw = (on: boolean, change: (v: boolean) => void, key: string, p?: Record<string, unknown>) => (
-    <label className="opt"><input type="checkbox" className="switch" checked={on} onChange={e => change(e.target.checked)} /><div><b>{t('opt.' + key)}</b><span>{t('opt.' + key + 'D', p)}</span></div></label>
+    <label className={`opt${on ? ' on' : ''}`}>
+      <input type="checkbox" className="switch" checked={on} onChange={e => change(e.target.checked)} />
+      <div><b>{t('opt.' + key)}</b><span>{t('opt.' + key + 'D', p)}</span></div>
+    </label>
   );
   const choice = (key: string, control: ReactNode) => (
-    <label className="opt"><div style={{flex: 1}}><b>{t('opt.' + key)}</b><span>{t('opt.' + key + 'D')}</span><div>{control}</div></div></label>
+    <div className="opt choice">
+      <div style={{flex: 1}}><b>{t('opt.' + key)}</b><span>{t('opt.' + key + 'D')}</span><div style={{marginTop: 8}}>{control}</div></div>
+    </div>
   );
+
+  const rulesOn = [!!settings.chrika, !!settings.daret, !!settings.dlala, settings.riadNow !== false, settings.jailRent !== false, !!settings.shufa, !!settings.bills, !!settings.train].filter(Boolean).length;
+  const moneyOn = [!!settings.goDouble, !!settings.fairStart, !!settings.credit, !!settings.solidarity, !!settings.deeds].filter(Boolean).length;
+  const showRules = tab === 'rules' || tab === 'all';
+  const showMoney = tab === 'money' || tab === 'all';
+  const showGame = !hideGame && (tab === 'game' || tab === 'all');
+
   return (
-    <>
-      <div className="opt-group">{t('opt.gMoney')}</div>
-      {choice('cash', pick('cash', settings.cash ?? START_CASH, CASH_CHOICES))}
-      {choice('salary', pick('salary', settings.salary ?? SALARY, SALARY_CHOICES))}
-      {choice('fine', pick('fine', settings.fine ?? JAIL_FINE, FINE_CHOICES))}
-      {sw(!!settings.goDouble, v => set({goDouble: v}), 'goDouble')}
-      {sw(!!settings.fairStart, v => set({fairStart: v}), 'fairStart')}
-      {sw(!!settings.credit, v => set({credit: v}), 'credit', {a: fmt(LOAN_MAX), n: Math.round(LOAN_RATE * 100)})}
-      {sw(!!settings.solidarity, v => set({solidarity: v}), 'solidarity')}
-      {sw(!!settings.deeds, v => set({deeds: v}), 'deeds')}
-      <div className="opt-group">{t('opt.gRules')}</div>
-      {sw(!!settings.daret, v => set({daret: v}), 'daret')}
-      {sw(!!settings.dlala, v => set({dlala: v}), 'dlala')}
-      {sw(settings.riadNow !== false, v => set({riadNow: v}), 'riadNow', {n: Math.round(RIAD_PREMIUM * 100)})}
-      {sw(settings.jailRent !== false, v => set({jailRent: v}), 'jailRent')}
-      {sw(!!settings.shufa, v => set({shufa: v}), 'shufa')}
-      {sw(!!settings.bills, v => set({bills: v}), 'bills', {a: fmt(BILL_DAR), b: fmt(BILL_RIAD)})}
-      {sw(!!settings.train, v => set({train: v}), 'train', {n: Math.round(RAIL_SIDE * 100)})}
-      <div className="opt-group">{t('opt.gGame')}</div>
-      {choice('len', (
-        <select className="field" value={+settings.rounds} onChange={e => set({rounds: +e.target.value})}>
-          {[0, 15, 25, 40].map(v => <option key={v} value={v}>{v ? t('opt.rounds', {n: v}) : t('opt.until')}</option>)}
-        </select>
-      ))}
-      {choice('timer', (
-        <select className="field" value={+(settings.timer || 0)} onChange={e => set({timer: +e.target.value})}>
-          {[0, 30, 60, 90, 120].map(v => <option key={v} value={v}>{v === 0 ? t('opt.off') : v < 120 ? t('opt.sec', {n: v}) : t('opt.min', {n: v / 60})}</option>)}
-        </select>
-      ))}
-      {sw(!!settings.fast, v => set({fast: v}), 'fast')}
-    </>
+    <div className="rules-wrap">
+      <div className="rule-tabs" role="tablist">
+        <button type="button" role="tab" aria-selected={tab === 'rules'} className={tab === 'rules' ? 'on' : ''} onClick={() => setTab('rules')}>
+          {t('opt.gRules')} <small>{rulesOn}/8</small>
+        </button>
+        <button type="button" role="tab" aria-selected={tab === 'money'} className={tab === 'money' ? 'on' : ''} onClick={() => setTab('money')}>
+          {t('opt.gMoney')} <small>{moneyOn}/5</small>
+        </button>
+        {!hideGame && (
+          <button type="button" role="tab" aria-selected={tab === 'game'} className={tab === 'game' ? 'on' : ''} onClick={() => setTab('game')}>
+            {t('opt.gGame')}
+          </button>
+        )}
+        <button type="button" role="tab" aria-selected={tab === 'all'} className={tab === 'all' ? 'on' : ''} onClick={() => setTab('all')}>
+          {t('setup.allRules')}
+        </button>
+      </div>
+
+      <div className="opts">
+        {showRules && (
+          <>
+            {tab === 'all' && <div className="opt-group">{t('opt.gRules')}</div>}
+            {sw(!!settings.chrika, v => set({chrika: v}), 'chrika')}
+            {sw(!!settings.daret, v => set({daret: v}), 'daret')}
+            {sw(!!settings.dlala, v => set({dlala: v}), 'dlala')}
+            {sw(settings.riadNow !== false, v => set({riadNow: v}), 'riadNow', {n: Math.round(RIAD_PREMIUM * 100)})}
+            {sw(settings.jailRent !== false, v => set({jailRent: v}), 'jailRent')}
+            {sw(!!settings.shufa, v => set({shufa: v}), 'shufa')}
+            {sw(!!settings.bills, v => set({bills: v}), 'bills', {a: fmt(BILL_DAR), b: fmt(BILL_RIAD)})}
+            {sw(!!settings.train, v => set({train: v}), 'train', {n: Math.round(RAIL_SIDE * 100)})}
+          </>
+        )}
+        {showMoney && (
+          <>
+            {tab === 'all' && <div className="opt-group">{t('opt.gMoney')}</div>}
+            {choice('cash', pills('cash', settings.cash ?? START_CASH, CASH_CHOICES))}
+            {choice('salary', pills('salary', settings.salary ?? SALARY, SALARY_CHOICES))}
+            {choice('fine', pills('fine', settings.fine ?? JAIL_FINE, FINE_CHOICES))}
+            {sw(!!settings.goDouble, v => set({goDouble: v}), 'goDouble')}
+            {sw(!!settings.fairStart, v => set({fairStart: v}), 'fairStart')}
+            {sw(!!settings.credit, v => set({credit: v}), 'credit', {a: fmt(LOAN_MAX), n: Math.round(LOAN_RATE * 100)})}
+            {sw(!!settings.solidarity, v => set({solidarity: v}), 'solidarity')}
+            {sw(!!settings.deeds, v => set({deeds: v}), 'deeds')}
+          </>
+        )}
+        {showGame && (
+          <>
+            {tab === 'all' && <div className="opt-group">{t('opt.gGame')}</div>}
+            {choice('board', (
+              <div className="pill-row">
+                <button type="button" className={settings.board !== 'grand' ? 'on' : ''} onClick={() => set({board: 'classic'})}>{t('opt.boardClassic')}</button>
+                <button type="button" className={settings.board === 'grand' ? 'on' : ''} onClick={() => set({board: 'grand'})}>{t('opt.boardGrand')}</button>
+              </div>
+            ))}
+            {choice('len', (
+              <div className="pill-row">
+                {[15, 25, 40, 0].map(v => <button key={v} type="button" className={+settings.rounds === v ? 'on' : ''} onClick={() => set({rounds: v})}>{v ? t('opt.rounds', {n: v}) : t('opt.until')}</button>)}
+              </div>
+            ))}
+            {choice('timer', (
+              <div className="pill-row">
+                {[0, 30, 60, 90, 120].map(v => <button key={v} type="button" className={+(settings.timer || 0) === v ? 'on' : ''} onClick={() => set({timer: v})}>{v === 0 ? t('opt.off') : v < 120 ? `${v}s` : '2m'}</button>)}
+              </div>
+            ))}
+            {sw(!!settings.fast, v => set({fast: v}), 'fast')}
+          </>
+        )}
+      </div>
+    </div>
   );
 }
 

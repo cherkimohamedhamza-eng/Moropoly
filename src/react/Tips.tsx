@@ -1,9 +1,9 @@
 // One-time tips: the first time a house rule comes into play at a table this device is at, a small card says what
 // just happened and why, then stays out of the way. Each tip shows once per device, ever.
-import {LOAN_MAX, RAILS, SHUFA_MARKUP} from '../engine/data';
-import {canShufa, rideTargets, sideBonus} from '../engine/engine';
+import {LOAN_MAX, SHUFA_MARKUP, boardOf} from '../engine/data';
+import {canShufa, chrikaCandidates, rideTargets, sideBonus} from '../engine/engine';
 import type {Game} from '../engine/types';
-import {fmt, spN, t} from '../i18n/core';
+import {cityN, fmt, spN, t} from '../i18n/core';
 import {iControl} from '../ui/render';
 import {guideRules, RuleCard} from './Guide';
 import {refresh} from './store';
@@ -31,14 +31,20 @@ const paid = (e: Entry) => e[0] === 'pay' || e[0] === 'payShort';
 function candidates(G: Game, win: string | null): Tip[] {
   const s = G.settings, out: Tip[] = [], cur = G.cur;
   const myTurn = iControl(cur) && !G.players[cur]?.bankrupt;
-  const calm = !G.auction && !G.trade && !G.pending && (G.phase === 'roll' || G.phase === 'end');
+  const calm = !G.auction && !G.trade && !G.chrikaOffer && !G.pending && (G.phase === 'roll' || G.phase === 'end');
   // while you write a trade offer: the timer has stopped (the guide explains itself, so not while reading it)
-  if (s.timer && win === 'trade' && G.drafting != null && iControl(G.drafting))
+  if (s.timer && (win === 'trade' || win === 'chrika') && G.drafting != null && iControl(G.drafting))
     out.push({id: 'pause', k: 'pause', text: t('tip.pause'), more: false});
   if (win) return out;
+  if (s.chrika && G.ghedrOpen)
+    out.push({id: 'ghedrOpen', k: 'chrika', text: t('tip.ghedrOpen'), more: true});
+  if (s.chrika && myTurn && calm) {
+    const cands = chrikaCandidates(G, cur);
+    if (cands.length) out.push({id: 'chrika', k: 'chrika', text: t('tip.chrika', {p: name(G, cur), o: name(G, cands[0].other), g: cityN(cands[0].g)}), more: true});
+  }
   if (s.train && myTurn) {
     const to = rideTargets(G, cur);
-    if (to.length) out.push({id: 'ride', k: 'train', text: t('tip.ride', {p: name(G, cur), s: to.map(spN).join(', ')}), more: true});
+    if (to.length) out.push({id: 'ride', k: 'train', text: t('tip.ride', {p: name(G, cur), s: to.map(x => spN(x, G)).join(', ')}), more: true});
   }
   if (s.shufa && myTurn && calm && Object.keys(G.props).some(i => canShufa(G, cur, +i)))
     out.push({id: 'shufa', k: 'shufa', text: t('tip.shufa', {p: name(G, cur), n: Math.round(SHUFA_MARKUP * 100)}), more: true});
@@ -55,8 +61,9 @@ function candidates(G: Game, win: string | null): Tip[] {
     if (e) out.push({id: 'solidarity', k: 'solidarity', text: t('tip.solidarity', {p: e[1].p as string, a: fmt(e[1].a as number)}), more: true});
   }
   if (s.train) {
-    const e = latest(G, x => paid(x) && x[1].why === 'rent' && RAILS.includes(x[1].s as number) && sideBonus(G, x[1].s as number) > 0);
-    if (e) out.push({id: 'rail', k: 'train', text: t('tip.rail', {p: e[1].p as string, o: e[1].to as string, a: fmt(e[1].a as number), s: spN(e[1].s as number)}), more: true});
+    const rails = boardOf(G).rails;
+    const e = latest(G, x => paid(x) && x[1].why === 'rent' && rails.includes(x[1].s as number) && sideBonus(G, x[1].s as number) > 0);
+    if (e) out.push({id: 'rail', k: 'train', text: t('tip.rail', {p: e[1].p as string, o: e[1].to as string, a: fmt(e[1].a as number), s: spN(e[1].s as number, G)}), more: true});
   }
   return out;
 }

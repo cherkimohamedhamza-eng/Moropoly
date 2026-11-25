@@ -1,11 +1,12 @@
 // Types for the game state. The engine is pure: it only reads and changes a Game object, so the
 // same code can run in the browser (local games) and, later, on the game server.
 
+export type BoardId = 'classic' | 'grand';
 export type GroupId = 'brown' | 'lblue' | 'pink' | 'orange' | 'red' | 'yellow' | 'green' | 'dblue';
 export interface Group { city: string; ar: string; color: string; house: number }
 
 /** `art` is the square's full card picture; `tile` (with `tileSet`, the same picture at two widths) is just its painting, for the board's tile */
-interface BaseSpace { name: string; ar: string; art?: string; tile?: string; tileSet?: string }
+interface BaseSpace { id?: string; name: string; ar: string; art?: string; tile?: string; tileSet?: string }
 export interface PropSpace extends BaseSpace { t: 'prop'; g: GroupId; price: number; rent: number[]; note: string }
 export interface RailSpace extends BaseSpace { t: 'rail'; price: number }
 export interface UtilSpace extends BaseSpace { t: 'util'; price: number; kind: string; glyph: string }
@@ -51,6 +52,10 @@ export interface Player {
   loan?: number;
   /** the player has used their Shufa (house rule: shufa) */
   shufaUsed?: boolean;
+  /** permanent traitor mark after pulling L'Ghedr (house rule: chrika) */
+  gheddar?: boolean;
+  /** computer players: the turn they last proposed a Chrika */
+  chrikaTried?: number;
 }
 
 export interface PropState { owner: number; houses: number; mort: boolean }
@@ -58,6 +63,8 @@ export interface PropState { owner: number; houses: number; mort: boolean }
 export interface Settings {
   /* The rules added later are optional: a game saved before them, or started without them, plays as it always did.
      Read them through the helpers in engine.ts (startCash, salary, jailFine), which fall back to the classic values. */
+  /** which map to play on: 'classic' (40 squares) or 'grand' (52 squares) */
+  board?: BoardId;
   /** money each player starts with (classic: START_CASH) */
   cash?: number;
   /** paid for passing Al Inṭilāq (classic: SALARY) */
@@ -84,6 +91,8 @@ export interface Settings {
   bills?: boolean;
   /** a player who stops on a station they own may take the train to another station of theirs */
   train?: boolean;
+  /** players who together own a city may form a Chrika (shared partnership) and later pull L'Ghedr */
+  chrika?: boolean;
   /** taxes and fines go into a pot that whoever lands on Qahwa collects */
   daret: boolean;
   /** unbought properties go to auction */
@@ -97,6 +106,10 @@ export interface Settings {
 
 export interface Auction { idx: number; bidders: number[]; turn: number; high: number; highBidder: number }
 export interface Trade { from: number; to: number; give: number[]; get: number[]; cashGive: number; cashGet: number }
+/** an active city partnership between players `a` and `b`; `shareA` is a's % of outsider rent (20..80) */
+export interface Chrika { g: GroupId; a: number; b: number; shareA: number }
+/** a pending Chrika proposal (forming a partnership or proposing a clean 50/50 exit) */
+export interface ChrikaOffer { kind: 'form' | 'exit'; g: GroupId; from: number; to: number; shareFrom?: number }
 
 /** a log line as [key, params]; the view turns it into text in the viewer's language */
 export type LogEntry = [string, Record<string, unknown>];
@@ -128,6 +141,12 @@ export interface Game {
   pending: { type: 'buy'; idx: number } | null;
   auction: Auction | null;
   trade: Trade | null;
+  /** active city partnerships (house rule: chrika) */
+  chrikas?: Chrika[];
+  /** pending Chrika proposal awaiting the partner's reply */
+  chrikaOffer?: ChrikaOffer | null;
+  /** true once all ownable properties on the board have been bought (unlocks L'Ghedr for the rest of the game) */
+  ghedrOpen?: boolean;
   /** the current player has the trade window open, writing an offer (stops the turn timer) */
   drafting?: number;
   /** the turn in which the current player took the train (once a turn) */
@@ -179,4 +198,14 @@ export type Action =
   /** the current player opens (on) or closes the trade window, so the turn timer can stop meanwhile */
   | { t: 'drafting'; on?: boolean }
   /** house rule "train": ride from the station the player stopped on to another one of theirs */
-  | { t: 'ride'; to: number | string };
+  | { t: 'ride'; to: number | string }
+  /** house rule "chrika": propose a city partnership with `share`% of outsider rent going to the proposer */
+  | { t: 'chrikaPropose'; g: GroupId; share: number | string }
+  /** house rule "chrika": propose a clean 50/50 exit (sell all streets & buildings to bank at 80%) */
+  | { t: 'chrikaExit'; g: GroupId }
+  /** house rule "chrika": answer a pending partnership or clean-exit offer */
+  | { t: 'chrikaReply'; accept?: boolean }
+  /** house rule "chrika": withdraw a pending partnership or clean-exit offer */
+  | { t: 'chrikaCancel' }
+  /** house rule "chrika": L'Ghedr — liquidate the entire city to the bank for 80%, flee to 3okacha as a Gheddar */
+  | { t: 'ghedr'; g: GroupId };

@@ -2,10 +2,10 @@
 // 0 Al Inṭilāq · 1 Sidi Moussa (400) · 3 Tabriket (450) · 4 Impôts (2,000 tax) · 5 Tanger TGV (station)
 // 6, 8, 9 Chefchaouen · 10 3okacha · 12 ONEE (utility) · 20 Qahwa · 28 Maroc Telecom (utility)
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { actorOf, apply, billFor, canBuild, canRide, rideTargets, canSell, canShufa, freshGame, interestOn, netWorth, pay, rentFor, shufaPrice } from '../src/engine/engine';
+import { actorOf, apply, billFor, canBuild, canGhedr, canRide, rideTargets, canSell, canShufa, chrikaCandidate, freshGame, goBankrupt, interestOn, land, netWorth, pay, rentFor, shufaPrice } from '../src/engine/engine';
 import { botDecide } from '../src/engine/bots';
-import { BILL_DAR, BILL_RIAD, FAIR_STEP, GROUPS, LOAN_MAX, RAIL_RENT, RAIL_SIDE, RAILS, RIAD_PREMIUM, SHUFA_FROM, SP, START_CASH } from '../src/engine/data';
-import { isOwnable, range, unmortCost } from '../src/engine/util';
+import { BILL_DAR, BILL_RIAD, FAIR_STEP, GRAND_BOARD, GROUPS, LOAN_MAX, RAIL_RENT, RAIL_SIDE, RAILS, RIAD_PREMIUM, SHUFA_FROM, SP, SP_GRAND, START_CASH } from '../src/engine/data';
+import { chrikaOf, chrikaValue, isOwnable, range, unmortCost } from '../src/engine/util';
 import type { Game, Settings } from '../src/engine/types';
 
 const NAMES = ['Hamza', 'Salma', 'Youssef', 'Imane'];
@@ -26,7 +26,7 @@ describe('a new game', () => {
   it('starts everyone at Al Inṭilāq with 15,000 DH and every property for sale', () => {
     const G = game(4);
     expect(G.players.map(p => [p.cash, p.pos])).toEqual(range(4).map(() => [START_CASH, 0]));
-    const ownable = SP.map((_, i) => i).filter(isOwnable);
+    const ownable = SP.map((_, i) => i).filter(i => isOwnable(i));
     expect(ownable).toHaveLength(28);
     expect(ownable.every(i => G.props[i].owner === -1)).toBe(true);
     expect([G.cur, G.round, G.phase]).toEqual([0, 1, 'roll']);
@@ -406,7 +406,7 @@ describe('buying and the dlala (auction)', () => {
 describe('3okacha (jail)', () => {
   const allOwnedBy1 = () => {
     const G = game();
-    own(G, 1, ...SP.map((_, i) => i).filter(isOwnable));
+    own(G, 1, ...SP.map((_, i) => i).filter(i => isOwnable(i)));
     return G;
   };
   it('three doubles in a row send you there', () => {
@@ -686,5 +686,219 @@ describe('computer players', () => {
     expect(botDecide(G)).toEqual({ seat: 0, a: { t: 'manage' } });
     apply(G, 0, { t: 'manage' });
     expect(botDecide(G)).toEqual({ seat: 0, a: { t: 'roll' } });
+  });
+});
+
+describe('Grand 52-square board', () => {
+  const grand = (n = 2, extra: Partial<Settings> = {}, human = true) => game(n, { board: 'grand', ...extra }, human);
+
+  it('has 52 squares, 37 ownables, 4 corners, 4 stations and 3 utilities', () => {
+    const G = grand(4);
+    expect(SP_GRAND).toHaveLength(52);
+    expect([GRAND_BOARD.jail, GRAND_BOARD.parking, GRAND_BOARD.gojail]).toEqual([13, 26, 39]);
+    expect(GRAND_BOARD.rails).toEqual([6, 19, 32, 45]);
+    expect(GRAND_BOARD.utils).toEqual([15, 35, 48]);
+    expect(Object.keys(G.props)).toHaveLength(37);
+  });
+
+  it('gives double base rent at 3 of 4 streets in a 4-street city, but requires all 4 to build', () => {
+    const G = grand(2);
+    // Chefchaouen on Grand 52: indices 7, 9, 10, 12 (base rent on 7 is 60 DH)
+    own(G, 1, 7, 9);
+    expect(rentFor(G, 7)).toBe(60);
+    expect(canBuild(G, 7, 1)).toBe(false);
+
+    own(G, 1, 10); // 3 of 4 owned -> double base rent, still cannot build
+    expect(rentFor(G, 7)).toBe(120);
+    expect(canBuild(G, 7, 1)).toBe(false);
+
+    own(G, 1, 12); // all 4 owned -> double base rent and can build
+    expect(rentFor(G, 7)).toBe(120);
+    expect(canBuild(G, 7, 1)).toBe(true);
+  });
+
+  it('requires all 3 streets in 3-street cities (Salé and Casablanca) for double rent and building', () => {
+    const G = grand(2);
+    // Salé on Grand 52: indices 1, 3, 4 (Marina Bouregreg)
+    own(G, 1, 1, 3);
+    expect(rentFor(G, 1)).toBe(20);
+    expect(canBuild(G, 1, 1)).toBe(false);
+    own(G, 1, 4);
+    expect(rentFor(G, 1)).toBe(40);
+    expect(canBuild(G, 1, 1)).toBe(true);
+  });
+
+  it('scales 3 utilities to 40x, 100x and 200x dice, and pays utility bills to all 3 owners', () => {
+    const G = grand(2, { bills: true });
+    G.dice = [3, 4]; // sum 7
+    own(G, 1, 15);
+    expect(rentFor(G, 15)).toBe(280);
+    own(G, 1, 35);
+    expect(rentFor(G, 15)).toBe(700);
+    own(G, 1, 48); // Mazot w Gaz
+    expect(rentFor(G, 15)).toBe(1400);
+    expect(rentFor(G, 48, { util100: true })).toBe(1400);
+
+    // Passing Al Inṭilāq wraps at 52 and pays bills to all 3 owned utilities
+    own(G, 0, 1, 3, 4);
+    G.props[1].houses = 1; // 1 dar = 250 DH per utility -> 750 DH total to player 1
+    G.players[0].pos = 50;
+    const before1 = G.players[1].cash;
+    dice([1, 2]); // lands on 1 (own property), passes 52
+    apply(G, 0, { t: 'roll' });
+    expect(G.players[0].pos).toBe(1);
+    expect(G.players[1].cash).toBe(before1 + 3 * BILL_DAR);
+  });
+
+  it('charges Péage tax (1,500 DH) into Daret and sends Go to 3okacha to square 13', () => {
+    const G = grand(2, { daret: true });
+    G.players[0].pos = 8;
+    dice([1, 2]); // lands on 11 (Péage)
+    apply(G, 0, { t: 'roll' });
+    expect(G.players[0].pos).toBe(11);
+    expect(G.daret).toBe(1500);
+    expect(G.players[0].cash).toBe(START_CASH - 1500);
+
+    G.phase = 'roll';
+    G.players[0].pos = 36;
+    dice([1, 2]); // lands on 39 (Go to 3okacha)
+    apply(G, 0, { t: 'roll' });
+    expect(G.players[0]).toMatchObject({ pos: 13, inJail: true });
+  });
+
+  it('moves Mektoub card destinations to the right Grand-52 squares', () => {
+    const G = grand(2);
+    // Card 1: Advance to Jemaa el-Fna -> index 41 on Grand 52
+    G.decks.mektoub = [1, 2, 5, 8];
+    G.players[0].pos = 6;
+    dice([1, 1]); // lands on 8 (Mektoub)
+    apply(G, 0, { t: 'roll' });
+    expect(G.players[0].pos).toBe(41);
+    expect(SP_GRAND[41].name).toBe('Jemaa el-Fna');
+  });
+
+  it('plays a complete 4-bot Grand-52 game to a clean finish', () => {
+    const G = grand(4, { rounds: 10, fairStart: true, credit: true, shufa: true, bills: true, train: true, chrika: true }, false);
+    for (let step = 0; step < 4000 && !G.over; step++) {
+      const m = botDecide(G);
+      if (!m) break;
+      expect(apply(G, m.seat, m.a)).toBe(true);
+    }
+    expect(G.over).toBe(true);
+    expect(G.winner).not.toBeNull();
+  });
+});
+
+describe('Chrika & L’Ghedr', () => {
+  const chrikaGame = (n = 3, extra: Partial<Settings> = {}) => game(n, { board: 'grand', chrika: true, ...extra }, true);
+
+  it('forms a shared-city Chrika, unlocks building, gives free stay, splits outsider rent, and locks streets', () => {
+    const G = chrikaGame(3);
+    // Salé on Grand 52: 1 (400), 3 (450), 4 (500) -> 3 streets
+    own(G, 0, 1, 3);
+    own(G, 1, 4);
+    expect(chrikaCandidate(G, 0, 'brown')).toBe(1);
+
+    expect(apply(G, 0, { t: 'chrikaPropose', g: 'brown', share: 60 })).toBe(true);
+    expect(actorOf(G)).toBe(1);
+    expect(apply(G, 1, { t: 'chrikaReply', accept: true })).toBe(true);
+    expect(G.phase).toBe('roll'); // proposing before roll does not eat your roll
+    expect(chrikaOf(G, 'brown')).toEqual({ g: 'brown', a: 0, b: 1, shareA: 60 });
+
+    // Both partners can build on their own streets right away; assets are locked from mort/sell/trade
+    expect(canBuild(G, 1, 0)).toBe(true);
+    expect(apply(G, 0, { t: 'build', i: 1 })).toBe(true);
+    expect(apply(G, 0, { t: 'sell', i: 1 })).toBe(false);
+    expect(apply(G, 0, { t: 'mort', i: 3 })).toBe(false);
+    expect(apply(G, 0, { t: 'trade', to: 2, give: [3], cashGet: 100 })).toBe(false);
+
+    // Partner 1 landing on partner 0's street pays 0 DH
+    const cash0 = G.players[0].cash, cash1 = G.players[1].cash, cash2 = G.players[2].cash;
+    G.players[1].pos = 1;
+    land(G, G.players[1]);
+    expect(G.players[1].cash).toBe(cash1);
+    expect(G.players[0].cash).toBe(cash0);
+
+    // Outsider (player 2) landing on street 1 (1 dar = 100 DH rent) splits 60/40
+    G.players[2].pos = 1;
+    land(G, G.players[2]);
+    expect(G.players[2].cash).toBe(cash2 - 100);
+    expect(G.players[0].cash).toBe(cash0 + 60);
+    expect(G.players[1].cash).toBe(cash1 + 40);
+  });
+
+  it('sells all streets & buildings at 80% split 50/50 on Clean Exit', () => {
+    const G = chrikaGame(3);
+    own(G, 0, 1, 3);
+    own(G, 1, 4);
+    apply(G, 0, { t: 'chrikaPropose', g: 'brown', share: 50 });
+    apply(G, 1, { t: 'chrikaReply', accept: true });
+    apply(G, 0, { t: 'build', i: 1 }); // +500 building; total = 400+450+500+500 = 1850; 80% = 1480; 50/50 = 740 each
+    expect(chrikaValue(G, 'brown')).toMatchObject({ total: 1850, payout: 1480, half: 740 });
+
+    const before0 = G.players[0].cash, before1 = G.players[1].cash;
+    expect(apply(G, 0, { t: 'chrikaExit', g: 'brown' })).toBe(true);
+    expect(apply(G, 1, { t: 'chrikaReply', accept: true })).toBe(true);
+    expect(chrikaOf(G, 'brown')).toBeUndefined();
+    expect([G.props[1].owner, G.props[3].owner, G.props[4].owner]).toEqual([-1, -1, -1]);
+    expect(G.props[1].houses).toBe(0);
+    expect(G.players[0].cash).toBe(before0 + 740);
+    expect(G.players[1].cash).toBe(before1 + 740);
+  });
+
+  it('unlocks L’Ghedr only after all properties are bought, stays unlocked, sends betrayer to 3okacha as Gheddar', () => {
+    const G = chrikaGame(3);
+    own(G, 0, 1, 3);
+    own(G, 1, 4);
+    apply(G, 0, { t: 'chrikaPropose', g: 'brown', share: 50 });
+    apply(G, 1, { t: 'chrikaReply', accept: true });
+
+    // Locked while unowned properties remain
+    expect(G.ghedrOpen).toBeFalsy();
+    expect(canGhedr(G, 0, 'brown')).toBe(false);
+    expect(apply(G, 0, { t: 'ghedr', g: 'brown' })).toBe(false);
+
+    // Assign every property except the very last one (51 = Ain Diab)
+    for (const k of Object.keys(G.props)) {
+      const idx = +k;
+      if (idx !== 51 && G.props[idx].owner < 0) G.props[idx].owner = 2;
+    }
+    G.phase = 'buy';
+    G.pending = { type: 'buy', idx: 51 };
+    expect(apply(G, 0, { t: 'buy' })).toBe(true);
+    expect(G.ghedrOpen).toBe(true);
+
+    // Now L'Ghedr is unlocked! Player 0 pulls L'Ghedr on Salé (400+450+500 = 1350 -> 80% = 1080)
+    const before0 = G.players[0].cash;
+    expect(canGhedr(G, 0, 'brown')).toBe(true);
+    expect(apply(G, 0, { t: 'ghedr', g: 'brown' })).toBe(true);
+    expect(G.players[0].cash).toBe(before0 + 1080);
+    expect(G.players[0].inJail).toBe(true);
+    expect(G.players[0].pos).toBe(GRAND_BOARD.jail);
+    expect(G.players[0].gheddar).toBe(true);
+    expect(G.phase).toBe('end');
+    expect([G.props[1].owner, G.props[3].owner, G.props[4].owner]).toEqual([-1, -1, -1]);
+    // Stays unlocked even though Salé streets returned to Bank, and Gheddar cannot form new Chrikas
+    expect(G.ghedrOpen).toBe(true);
+    own(G, 0, 7, 9);
+    own(G, 1, 10, 12);
+    expect(chrikaCandidate(G, 0, 'lblue')).toBe(-1);
+  });
+
+  it('auto-dissolves active Chrikas cleanly when only 2 players remain', () => {
+    const G = chrikaGame(3);
+    own(G, 0, 1, 3);
+    own(G, 1, 4);
+    apply(G, 0, { t: 'chrikaPropose', g: 'brown', share: 50 });
+    apply(G, 1, { t: 'chrikaReply', accept: true });
+    apply(G, 0, { t: 'build', i: 1 });
+
+    // Player 2 goes bankrupt -> only 2 players remain -> Chrika dissolves, streets & buildings stay with owners
+    G.players[2].cash = 0;
+    pay(G, G.players[2], -1, 5000, 'incomeTax');
+    goBankrupt(G, G.players[2]);
+    expect(chrikaOf(G, 'brown')).toBeUndefined();
+    expect(G.props[1]).toMatchObject({ owner: 0, houses: 1 });
+    expect(G.props[4]).toMatchObject({ owner: 1, houses: 0 });
   });
 });

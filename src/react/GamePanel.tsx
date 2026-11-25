@@ -4,14 +4,14 @@ import {useEffect, useState, type CSSProperties, type ReactNode} from 'react';
 import {amHost, dispatch, hostAct} from '../app/authority';
 import {hostOnline, onlineCids} from '../app/online';
 import {app} from '../app/state';
-import {LOAN_MAX, LOAN_RATE, LOAN_STEP, RAIL_RENT, RIAD_PREMIUM, SHUFA_MARKUP, SP} from '../engine/data';
-import {canBuild, canMort, canRiad, canSell, canShufa, canUnmort, interestOn, jailFine, netWorth, rentFor, riadCost, rideTargets} from '../engine/engine';
+import {LOAN_MAX, LOAN_RATE, LOAN_STEP, RAIL_RENT, RIAD_PREMIUM, SHUFA_MARKUP, boardOf} from '../engine/data';
+import {canBuild, canGhedr, canMort, canRiad, canSell, canShufa, canUnmort, chrikaCandidates, interestOn, jailFine, netWorth, rentFor, riadCost, rideTargets} from '../engine/engine';
 import type {Game} from '../engine/types';
-import {colorOf, groupIdx, houseCost, ownedBy, ownsGroup, priceOf, unmortCost} from '../engine/util';
+import {chrikaOf, chrikaValue, colorOf, groupIdx, hasCityRights, houseCost, ownedBy, priceOf, unmortCost, unownedCount} from '../engine/util';
 import {cityN, fmt, spN, t, tl, tokN} from '../i18n/core';
 import {goHome} from '../ui/home';
 import {tableView, toggleView} from '../ui/tableview';
-import {openAuction, openConfirmBankrupt, openDeed, openGameOver, openGuide, openSeat, openTrade, openTradeReply} from '../ui/modals';
+import {openAuction, openChrika, openChrikaReply, openConfirmBankrupt, openDeed, openGameOver, openGhedr, openGuide, openSeat, openTrade, openTradeReply} from '../ui/modals';
 import {HouseRulesList} from './Guide';
 import {sfx} from '../ui/music';
 import {iControl, mySeats, setTab} from '../ui/render';
@@ -76,53 +76,71 @@ export function TurnCard() {
     status = <Rich k="tc.offered" p={{p: G.players[tr.from].name, o: G.players[tr.to].name}} />;
     if (iControl(tr.to)) btns.push(btn('reply', 'red', t('btn.seeOffer'), openTradeReply));
     if (iControl(tr.from)) btns.push(btn('tcancel', '', t('btn.withdraw'), () => dispatch({t: 'tradeCancel'}, tr.from)));
+  } else if (G.chrikaOffer) {
+    const co = G.chrikaOffer;
+    const share = co.shareFrom ?? 50;
+    status = co.kind === 'form'
+      ? <Rich k="tc.chrikaOffer" p={{p: G.players[co.from].name, o: G.players[co.to].name, g: cityN(co.g), n: String(share), m: String(100 - share)}} />
+      : <Rich k="tc.chrikaExitOffer" p={{p: G.players[co.from].name, o: G.players[co.to].name, g: cityN(co.g)}} />;
+    if (iControl(co.to)) btns.push(btn('creply', 'red', t('btn.seeOffer'), openChrikaReply));
+    if (iControl(co.from)) btns.push(btn('ccancel', '', t('btn.withdraw'), () => dispatch({t: 'chrikaCancel'}, co.from)));
   } else if (G.auction) {
     const a = G.auction;
     status = <Rich k="tc.dlala" p={{s: spN(a.idx), a: fmt(a.high), by: a.highBidder >= 0 ? t('tc.by', {p: G.players[a.highBidder].name}) : ''}} />;
     btns.push(btn('auction', 'red', t('btn.openAuc'), openAuction));
   } else if (p.cash < 0) {
     status = <span className="status bad">{t('tc.owes', {p: p.name, a: fmt(-p.cash)})}</span>;
-    if (mine) btns.push(btn('deeds', '', t('btn.myDeeds'), () => setTab('deeds')), btn('trade', '', t('btn.tbadel'), openTrade), btn('bankrupt', 'danger', t('btn.bankrupt'), openConfirmBankrupt));
+    if (mine) {
+      btns.push(btn('deeds', '', t('btn.myDeeds'), () => setTab('deeds')), btn('trade', '', t('btn.tbadel'), openTrade));
+      if (G.settings.chrika && (G.chrikas || []).some(c => c.a === p.id || c.b === p.id)) btns.push(btn('chrika', 'gold', t('btn.chrika'), openChrika));
+      btns.push(btn('bankrupt', 'danger', t('btn.bankrupt'), openConfirmBankrupt));
+    }
   } else if (G.phase === 'buy') {
-    const i = G.pending!.idx, s = SP[i];
-    status = <Rich k="tc.forSale" p={{s: spN(i), c: s.t === 'prop' ? ' · ' + cityN(s.g) : ''}} />;
+    const i = G.pending!.idx, s = boardOf(G).spaces[i];
+    status = <Rich k="tc.forSale" p={{s: spN(i, G), c: s.t === 'prop' ? ' · ' + cityN(s.g) : ''}} />;
     if (mine) btns.push(
-      btn('buy', 'red', t('btn.buy', {a: fmt(priceOf(i))}), () => dispatch({t: 'buy'}), p.cash < priceOf(i)),
+      btn('buy', 'red', t('btn.buy', {a: fmt(priceOf(i, G))}), () => dispatch({t: 'buy'}), p.cash < priceOf(i, G)),
       btn('decline', '', G.settings.dlala ? t('btn.dlala') : t('btn.pass'), () => dispatch({t: 'decline'})),
     );
   } else if (G.phase === 'roll') {
     status = p.inJail ? t('tc.inJail', {p: p.name, n: p.jailTurns + 1, a: fmt(jailFine(G))}) : G.rollAgain ? t('tc.again') : t('tc.toRoll', {p: p.name});
     if (mine) {
+      const chReady = !!G.settings.chrika && (chrikaCandidates(G, p.id).length > 0 || (G.chrikas || []).some(c => c.a === p.id || c.b === p.id));
       btns.push(btn('roll', 'red', t('btn.roll'), () => dispatch({t: 'roll'})));
       if (p.inJail) {
         btns.push(btn('fine', '', t('btn.payFine', {a: fmt(jailFine(G))}), () => dispatch({t: 'fine'}), p.cash < jailFine(G)));
         if (p.goojf.length) btns.push(btn('card', '', t('btn.useCard'), () => dispatch({t: 'card'})));
       }
       btns.push(btn('trade', 'ghost', t('btn.tbadel'), openTrade));
+      if (G.settings.chrika) btns.push(btn('chrika', chReady ? 'gold' : 'ghost', t('btn.chrika'), openChrika));
     }
   } else if (G.phase === 'end') {
     status = tl(G.event);
-    if (mine) btns.push(btn('end', 'green', t('btn.end'), () => dispatch({t: 'end'})), btn('deeds', '', t('btn.build'), () => setTab('deeds')), btn('trade', 'ghost', t('btn.tbadel'), openTrade));
+    if (mine) {
+      const chReady = !!G.settings.chrika && (chrikaCandidates(G, p.id).length > 0 || (G.chrikas || []).some(c => c.a === p.id || c.b === p.id));
+      btns.push(btn('end', 'green', t('btn.end'), () => dispatch({t: 'end'})), btn('deeds', '', t('btn.build'), () => setTab('deeds')), btn('trade', 'ghost', t('btn.tbadel'), openTrade));
+      if (G.settings.chrika) btns.push(btn('chrika', chReady ? 'gold' : 'ghost', t('btn.chrika'), openChrika));
+    }
   }
 
-  if (mine) for (const to of rideTargets(G, G.cur)) btns.push(btn('ride' + to, 'ghost', t('btn.ride', {s: spN(to)}), () => dispatch({t: 'ride', to})));
+  if (mine) for (const to of rideTargets(G, G.cur)) btns.push(btn('ride' + to, 'ghost', t('btn.ride', {s: spN(to, G)}), () => dispatch({t: 'ride', to})));
   let preview: ReactNode = null;
   if (G.phase === 'buy' && G.pending && !app.playing) {
-    const i = G.pending.idx, s = SP[i];
+    const B = boardOf(G), i = G.pending.idx, s = B.spaces[i];
     preview = (
       <div className="preview">
         {s.art && <img src={s.art} alt="" />}
         <div style={{minWidth: 0}}>
-          <div style={{fontWeight: 700}}>{spN(i)} {app.LANG !== 'ar' && <span style={{fontFamily: 'var(--f-ar)', color: 'var(--dim)'}}>{s.ar}</span>}</div>
+          <div style={{fontWeight: 700}}>{spN(i, G)} {app.LANG !== 'ar' && <span style={{fontFamily: 'var(--f-ar)', color: 'var(--dim)'}}>{s.ar}</span>}</div>
           <div className="muted" style={{fontSize: 12.5}}>
-            {s.t === 'prop' ? t('pv.rentProp', {a: fmt(s.rent[0]), b: fmt(s.rent[0] * 2), c: cityN(s.g)}) : s.t === 'rail' ? t('pv.rentRail', {a: fmt(RAIL_RENT[0]), b: fmt(RAIL_RENT[3])}) + (G.settings.train ? t('pv.railSide') : '') : t('pv.rentUtil')}
+            {s.t === 'prop' ? t(groupIdx(s.g, G).length >= 4 ? 'pv.rentProp4' : 'pv.rentProp', {a: fmt(s.rent[0]), b: fmt(s.rent[0] * 2), c: cityN(s.g)}) : s.t === 'rail' ? t('pv.rentRail', {a: fmt(RAIL_RENT[0]), b: fmt(RAIL_RENT[3])}) + (G.settings.train ? t('pv.railSide') : '') : t(B.utils.length >= 3 ? 'pv.rentUtil3' : 'pv.rentUtil')}
           </div>
           <button className="btn ghost sm" style={{marginTop: 6}} onClick={() => openDeed(i)}>{t('btn.viewDeed')}</button>
         </div>
       </div>
     );
   }
-  const waiting = !mine && !G.over && !app.playing && !G.auction && !G.trade;
+  const waiting = !mine && !G.over && !app.playing && !G.auction && !G.trade && !G.chrikaOffer;
 
   return (
     <>
@@ -204,10 +222,10 @@ function PlayersTab({G}: {G: Game}) {
             <div style={{minWidth: 0}}>
               <div className="nm">
                 {on && p.human && <span className={`dotst ${p.cid && on.has(p.cid) ? 'on' : ''}`} />}
-                {p.name} {!p.human && <Small>{t('lbl.computer')}</Small>}{iControl(p.id) && app.MODE !== 'local' && <> <Small>{t('lbl.you')}</Small></>}
+                {p.name} {p.gheddar && <span className="gheddar-badge">{t('badge.gheddar')}</span>} {!p.human && <Small>{t('lbl.computer')}</Small>}{iControl(p.id) && app.MODE !== 'local' && <> <Small>{t('lbl.you')}</Small></>}
               </div>
-              <div className="sub">{p.bankrupt ? t('st.bankrupt') : p.inJail ? t('st.inJail') : spN(p.pos)}{p.goojf.length ? ' · ' + t('st.goojf') : ''}{p.loan ? ' · ' + t('st.loan', {a: fmt(p.loan)}) : ''}</div>
-              <div className="chips">{owned.map(i => <span key={i} className={`chip ${G.props[i].mort ? 'm' : ''}`} title={spN(i)} style={{background: colorOf(i)}} />)}</div>
+              <div className="sub">{p.bankrupt ? t('st.bankrupt') : p.inJail ? t('st.inJail') : spN(p.pos, G)}{p.goojf.length ? ' · ' + t('st.goojf') : ''}{p.loan ? ' · ' + t('st.loan', {a: fmt(p.loan)}) : ''}</div>
+              <div className="chips">{owned.map(i => <span key={i} className={`chip ${G.props[i].mort ? 'm' : ''}`} title={spN(i, G)} style={{background: colorOf(i, G)}} />)}</div>
               {hostControl && <button className="btn ghost sm" style={{marginTop: 4}} onClick={() => hostAct({op: 'bot', seat: p.id})}>{p.human ? t('btn.letBot') : t('btn.handBack')}</button>}
             </div>
             <div className="money"><b>{fmt(p.cash)}</b><span className="sub">{t('st.worth', {a: fmt(netWorth(G, p))})}</span></div>
@@ -251,6 +269,36 @@ function CreditPanel({G, pid, can}: {G: Game; pid: number; can: boolean}) {
   );
 }
 
+/** house rule "chrika": quick summary & actions in My deeds */
+function ChrikaSummary({G, pid, can}: {G: Game; pid: number; can: boolean}) {
+  if (!G.settings.chrika) return null;
+  const mine = (G.chrikas || []).filter(c => c.a === pid || c.b === pid);
+  const cands = chrikaCandidates(G, pid);
+  const left = unownedCount(G);
+  return (
+    <div className="chrika-panel">
+      <div className="chrika-top">
+        <b>{t('btn.chrika')}</b>
+        <span className={`chrika-lock ${G.ghedrOpen ? 'open' : ''}`}>{G.ghedrOpen ? t('ch.unlocked') : t('ch.locked', {n: left})}</span>
+        <button className="btn sm gold" onClick={openChrika}>{cands.length ? t('btn.chrikaPropose') : t('btn.chrika')}</button>
+      </div>
+      {mine.map(c => {
+        const other = c.a === pid ? c.b : c.a;
+        const myShare = c.a === pid ? c.shareA : 100 - c.shareA;
+        const {payout} = chrikaValue(G, c.g);
+        const canBetray = can && canGhedr(G, pid, c.g);
+        return (
+          <div key={c.g} className="chrika-mini">
+            <i className="dot" style={{background: colorOf(groupIdx(c.g, G)[0], G)}} />
+            <span><b>{cityN(c.g)}</b> · {G.players[other].name} ({myShare}/{100 - myShare})</span>
+            {canBetray && <button className="btn sm danger" onClick={() => openGhedr(c.g)}>{t('btn.ghedrGo', {a: fmt(payout)})}</button>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 /** the properties of whoever plays on this device, with building, selling and mortgaging */
 function DeedsTab({G}: {G: Game}) {
   const seats = mySeats();
@@ -258,8 +306,8 @@ function DeedsTab({G}: {G: Game}) {
   if (pid == null) return <div className="muted">{t('dd.watching')}</div>;
   const p = G.players[pid];
   const owned = ownedBy(G, pid).sort((a, b) => a - b);
-  const can = pid === G.cur && !G.auction && !G.trade && !app.playing && !G.over;
-  const extras = <><CreditPanel G={G} pid={pid} can={can} />{Object.keys(G.props).some(i => canShufa(G, pid, +i)) && <div className="shufa-hint">{t('dd.shufa', {n: Math.round(SHUFA_MARKUP * 100)})}</div>}</>;
+  const can = pid === G.cur && !G.auction && !G.trade && !G.chrikaOffer && !app.playing && !G.over;
+  const extras = <><CreditPanel G={G} pid={pid} can={can} /><ChrikaSummary G={G} pid={pid} can={can} />{Object.keys(G.props).some(i => canShufa(G, pid, +i)) && <div className="shufa-hint">{t('dd.shufa', {n: Math.round(SHUFA_MARKUP * 100)})}</div>}</>;
   if (!owned.length) return <>{extras}<div className="muted">{t('dd.none', {p: p.name})}</div></>;
   const act = (ty: 'build' | 'riad' | 'sell' | 'mort' | 'unmort', i: number) => dispatch({t: ty, i}, pid);
   return (
@@ -268,22 +316,25 @@ function DeedsTab({G}: {G: Game}) {
       <div className="muted" style={{fontSize: 12.5, marginBottom: 8}}>{can ? t('dd.help', {n: Math.round(RIAD_PREMIUM * 100)}) : t('dd.notTurn', {p: p.name})}</div>
       <div className="deeds">
         {owned.map(i => {
-          const s = SP[i], pr = G.props[i];
+          const s = boardOf(G).spaces[i], pr = G.props[i];
           const prop = s.t === 'prop' ? s : null;
-          const full = !!prop && ownsGroup(G, pid, prop.g);
-          const group = prop ? groupIdx(prop.g) : [];
+          const ch = prop ? chrikaOf(G, prop.g) : undefined;
+          const full = !!prop && hasCityRights(G, pid, prop.g);
+          const group = prop ? groupIdx(prop.g, G) : [];
           const level = pr.houses === 5 ? t('lv.riad') : pr.houses ? t('lv.dar', {n: pr.houses}) : t('lv.none');
           const rent = !pr.mort && s.t !== 'util' ? fmt(rentFor(G, i)) : '';
           const built = group.some(j => G.props[j].houses > 0);   // buildings have to be sold before a rahn
+          const myGroup = ch ? group.filter(j => G.props[j].owner === pid) : group;
+          const partnerName = ch ? G.players[ch.a === pid ? ch.b : ch.a].name : '';
           return (
             <div key={i} className={'drow' + (pr.mort ? ' mort' : '')}>
-              <button className="th" onClick={() => openDeed(i)} aria-label={spN(i)}>
+              <button className="th" onClick={() => openDeed(i)} aria-label={spN(i, G)}>
                 {s.art ? <img src={s.art} alt="" /> : <span>{s.t === 'util' ? s.glyph : '🚄'}</span>}
               </button>
               <div className="dinfo">
-                <button className="dname" onClick={() => openDeed(i)}>{spN(i)}</button>
+                <button className="dname" onClick={() => openDeed(i)}>{spN(i, G)}</button>
                 <div className="dmeta">
-                  {prop ? <><i className="dot" style={{background: colorOf(i)}} /><span>{full ? cityN(prop.g) : t('dd.part', {n: group.filter(j => G.props[j].owner === pid).length, m: group.length, c: cityN(prop.g)})}</span></>
+                  {prop ? <><i className="dot" style={{background: colorOf(i, G)}} /><span>{ch ? `${cityN(prop.g)} · ${t('btn.chrika')} (${partnerName})` : full ? cityN(prop.g) : t('dd.part', {n: group.filter(j => G.props[j].owner === pid).length, m: group.length, c: cityN(prop.g)})}</span></>
                     : <span>{s.t === 'rail' ? t('lv.station') : t('lv.utility')}</span>}
                   {pr.mort ? <span className="tag">{t('lv.mort')}</span>
                     : full && <><span className="pips" aria-hidden="true">{pr.houses === 5 ? <b>✦</b> : [0, 1, 2, 3].map(k => <i key={k} className={k < pr.houses ? 'on' : ''} />)}</span><span>{level}</span></>}
@@ -293,15 +344,15 @@ function DeedsTab({G}: {G: Game}) {
               <div className="acts">
                 {prop && full && (
                   <>
-                    {pr.houses < 5 && <DeedAct label={pr.houses === 4 ? t('btn.addRiad') : t('btn.addDar')} amt={fmt(houseCost(i))} off={!(can && canBuild(G, i, pid))} on={() => act('build', i)} />}
-                    {G.settings.riadNow !== false && pr.houses < 5 && !(pr.houses >= 4 && group.every(j => G.props[j].houses >= 4)) &&
+                    {pr.houses < 5 && <DeedAct label={pr.houses === 4 ? t('btn.addRiad') : t('btn.addDar')} amt={fmt(houseCost(i, G))} off={!(can && canBuild(G, i, pid))} on={() => act('build', i)} />}
+                    {G.settings.riadNow !== false && pr.houses < 5 && !(pr.houses >= 4 && myGroup.every(j => G.props[j].houses >= 4)) &&
                       <DeedAct cls="gold" label={t('btn.riadNow')} amt={fmt(riadCost(G, i))} off={!(can && canRiad(G, i, pid))} on={() => act('riad', i)} />}
-                    {pr.houses > 0 && <DeedAct cls="plus" label={t('btn.sell')} amt={'+' + fmt(houseCost(i) / 2)} off={!(can && canSell(G, i, pid))} on={() => act('sell', i)} />}
+                    {!ch && pr.houses > 0 && <DeedAct cls="plus" label={t('btn.sell')} amt={'+' + fmt(houseCost(i, G) / 2)} off={!(can && canSell(G, i, pid))} on={() => act('sell', i)} />}
                   </>
                 )}
-                {pr.mort
-                  ? <DeedAct label={t('btn.lift')} amt={fmt(unmortCost(i))} off={!(can && canUnmort(G, i, pid))} on={() => act('unmort', i)} />
-                  : !built && <DeedAct cls="plus" label={t('btn.rahn')} amt={'+' + fmt(priceOf(i) / 2)} off={!(can && canMort(G, i, pid))} on={() => act('mort', i)} />}
+                {!ch && (pr.mort
+                  ? <DeedAct label={t('btn.lift')} amt={fmt(unmortCost(i, G))} off={!(can && canUnmort(G, i, pid))} on={() => act('unmort', i)} />
+                  : !built && <DeedAct cls="plus" label={t('btn.rahn')} amt={'+' + fmt(priceOf(i, G) / 2)} off={!(can && canMort(G, i, pid))} on={() => act('mort', i)} />)}
               </div>
             </div>
           );

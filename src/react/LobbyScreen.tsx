@@ -193,7 +193,7 @@ function Table({V}: {V: Lobby}) {
           {isHost ? (
             <>
               <div className="sec">{t('sec.rules')}</div>
-              <div className="opts"><RulesOptions settings={V.settings} onChange={st => hostAct({op: 'settings', settings: st})} /></div>
+              <RulesOptions settings={V.settings} onChange={st => hostAct({op: 'settings', settings: st})} />
               <div className="ctas" style={{marginTop: 16}}>
                 <button className="btn red" disabled={players.length < 2} onClick={() => hostAct({op: 'start'})}>{t('btn.start')}</button>
                 <span className="muted" style={{fontSize: 12.5}}>{players.length < 2 ? t('lb.need2') : t('lb.ready', {n: players.length})}</span>

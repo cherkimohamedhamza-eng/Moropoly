@@ -2,7 +2,7 @@
 // look of the property cards. It opens once per game on each device, and again from the Rules tab.
 import {useState, type ReactNode} from 'react';
 import {app} from '../app/state';
-import {BAND, BILL_DAR, BILL_RIAD, FAIR_STEP, LOAN_MAX, LOAN_STEP, RAIL_RENT, RAIL_SIDE, SHUFA_FROM, SHUFA_MARKUP, SP} from '../engine/data';
+import {BAND, BILL_DAR, BILL_RIAD, CHRIKA_PAYOUT, FAIR_STEP, LOAN_MAX, LOAN_STEP, RAIL_RENT, RAIL_SIDE, SHUFA_FROM, SHUFA_MARKUP, boardOf} from '../engine/data';
 import {interestOn, salary, startCash} from '../engine/engine';
 import type {Game} from '../engine/types';
 import {fmt, spN, t} from '../i18n/core';
@@ -18,6 +18,7 @@ const ICONS: Record<string, ReactNode> = {
   shufa: ico(<><circle cx="15" cy="24" r="7" /><path d="M22 24h18M34 24v6M39 24v4" /></>),
   bills: ico(<><path d="M20 8 12 26h10l-4 14 14-20H22l4-12z" /><path d="M36 10c3 4 5 7 5 10a5 5 0 0 1-10 0c0-3 2-6 5-10z" /></>),
   train: ico(<><rect x="13" y="8" width="22" height="26" rx="6" /><path d="M13 22h22" /><circle cx="19" cy="28" r="1.6" fill="currentColor" /><circle cx="29" cy="28" r="1.6" fill="currentColor" /><path d="M18 34l-5 7M30 34l5 7M16 39h16" /></>),
+  chrika: ico(<><circle cx="17" cy="24" r="9" /><circle cx="31" cy="24" r="9" /><path d="M24 17v14" /></>),
   pause: ico(<><circle cx="24" cy="25" r="14" /><path d="M24 7v4M20 7h8" /><path d="M20.5 20v10M27.5 20v10" /></>),
 };
 
@@ -34,18 +35,21 @@ export function guideRules(G: Game): Rule[] {
   if (s.credit) out.push({k: 'credit', ar: 'الكريدي', band: '#0f5a3a', icon: ICONS.credit, p: {a: fmt(LOAN_MAX), s: fmt(LOAN_STEP)},
     ex: t('gd.credit.ex', {a: fmt(2000), b: fmt(interestOn(2000))})});
   if (s.solidarity) out.push({k: 'solidarity', ar: 'راتب التضامن', band: '#b5532a', icon: ICONS.solidarity, ex: t('gd.solidarity.ex', {a: fmt(salary(G) * 2), b: fmt(salary(G))})});
+  const B = boardOf(G);
   if (s.shufa) {
-    const i = 24, price = (SP[i] as {price: number}).price;
+    const i = Math.max(0, B.spaces.findIndex(x => x.id === '24')), price = (B.spaces[i] as {price: number}).price;
     out.push({k: 'shufa', ar: 'الشفعة', band: '#7a1f24', icon: ICONS.shufa, p: {r: SHUFA_FROM, n: Math.round(SHUFA_MARKUP * 100)},
-      ex: t('gd.shufa.ex', {s: spN(i), a: fmt(price), b: fmt(Math.round(price * SHUFA_MARKUP))})});
+      ex: t('gd.shufa.ex', {s: spN(i, G), a: fmt(price), b: fmt(Math.round(price * SHUFA_MARKUP))})});
   }
   if (s.bills) out.push({k: 'bills', ar: 'الفواتير', band: '#3f5b68', icon: ICONS.bills, p: {a: fmt(BILL_DAR), b: fmt(BILL_RIAD)},
     ex: t('gd.bills.ex', {a: fmt(3 * BILL_DAR + BILL_RIAD)})});
   if (s.train) {
-    let row = 0; for (let j = 11; j < 20; j++) { const sp = SP[j]; if (sp.t === 'prop') row += sp.rent[5]; }
+    const rv = Math.max(0, B.spaces.findIndex(x => x.id === '15')), side = Math.floor(rv / B.side);
+    let row = 0; for (let j = side * B.side + 1; j < side * B.side + B.side; j++) { const sp = B.spaces[j]; if (sp.t === 'prop') row += sp.rent[5]; }
     out.push({k: 'train', ar: 'السفر بالقطار', band: BAND.rail, icon: ICONS.train, p: {n: Math.round(RAIL_SIDE * 100)},
-      ex: t('gd.train.ex', {s: spN(15), a: fmt(RAIL_RENT[0]), b: fmt(RAIL_RENT[0] + Math.round(row * RAIL_SIDE / 10) * 10)})});
+      ex: t('gd.train.ex', {s: spN(rv, G), a: fmt(RAIL_RENT[0]), b: fmt(RAIL_RENT[0] + Math.round(row * RAIL_SIDE / 10) * 10)})});
   }
+  if (s.chrika) out.push({k: 'chrika', ar: 'الشركة والغدر', band: '#8b2635', icon: ICONS.chrika, p: {n: Math.round(CHRIKA_PAYOUT * 100)}, ex: t('gd.chrika.ex')});
   if (s.timer) out.push({k: 'pause', ar: 'توقيف المؤقت', band: '#3f4a5c', icon: ICONS.pause, ex: t('gd.pause.ex')});
   return out;
 }

@@ -78,8 +78,9 @@ describe('host controls', () => {
       expect(r.handle(ANA, { t: 'host', ...op }, T0)).toBe('rejected');
     }
     expect(r.handle(HOST, { t: 'host', op: 'start' }, T0)).toBe('rejected'); // needs 2 players
-    r.handle(HOST, { t: 'host', op: 'settings', settings: { rounds: 15, timer: 999 as never, daret: 'yes' as never, fast: true } }, T0);
-    expect(L(r).settings).toEqual({ daret: true, dlala: true, rounds: 15, fast: true, timer: 0, fairStart: true, credit: true, shufa: true, bills: true, train: true });
+    r.handle(HOST, { t: 'host', op: 'settings', settings: { rounds: 15, timer: 999 as never, daret: 'yes' as never, fast: true, board: 'grand' } }, T0);
+    expect(L(r).settings).toEqual({ daret: true, dlala: true, rounds: 15, fast: true, timer: 0, fairStart: true, credit: true, shufa: true, bills: true, train: true, chrika: true, board: 'grand' });
+    expect(cleanSettings({ board: 'huge' as never })).toEqual({});
     r.handle(HOST, { t: 'host', op: 'addBot' }, T0);
     expect(L(r).players[1]).toMatchObject({ cid: null, human: false, name: 'Salma' });
     r.handle(HOST, { t: 'host', op: 'start' }, T0);
@@ -208,8 +209,8 @@ describe('the turn timer', () => {
 
 describe('the house rules a host sends', () => {
   it('keeps the choices on offer and drops anything else', () => {
-    expect(cleanSettings({ cash: 30000, salary: 3000, fine: 250, goDouble: true, riadNow: false, jailRent: false }))
-      .toEqual({ cash: 30000, salary: 3000, fine: 250, goDouble: true, riadNow: false, jailRent: false });
-    expect(cleanSettings({ cash: 999999, salary: -5, fine: 0, goDouble: 'yes' as unknown as boolean })).toEqual({});
+    expect(cleanSettings({ board: 'grand', chrika: true, cash: 30000, salary: 3000, fine: 250, goDouble: true, riadNow: false, jailRent: false }))
+      .toEqual({ board: 'grand', chrika: true, cash: 30000, salary: 3000, fine: 250, goDouble: true, riadNow: false, jailRent: false });
+    expect(cleanSettings({ cash: 999999, salary: -5, fine: 0, goDouble: 'yes' as unknown as boolean, chrika: 1 as unknown as boolean })).toEqual({});
   });
 });

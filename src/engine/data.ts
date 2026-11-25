@@ -1,10 +1,10 @@
 /* ============================================================
    DATA: the board, the colour groups and the tokens
    ============================================================ */
-import type {Group, GroupId, Space, Token} from './types';
+import type {BoardId, Game, Group, GroupId, Space, Token} from './types';
 
 const pad2=(n: number)=>String(n).padStart(2,'0');
-const ART=(i: number)=>`assets/card-${pad2(i)}.webp`;
+const ART=(id: string)=>`assets/card-${id}.webp`;
 /** the colour band of the squares that are not properties, as on their cards */
 /** the band on squares that are not streets. Utilities, Mektoub, Baraka and the taxes get patterns, not solid colours,
     so they cannot be taken for a city: a fine grid on slate for the utilities, small gold dots on charcoal for the card
@@ -69,9 +69,109 @@ export const SP: Space[]=[
 ];
 /* every square that is a card has its picture: the properties, stations, utilities and taxes their own card, the
    Mektoub and Baraka squares the card of their deck (scripts/cards/cards.html) */
-const CARD_ID=(i: number)=>SP[i].t==='mektoub'||SP[i].t==='baraka'?SP[i].t:pad2(i);
-SP.forEach((s,i)=>{if(['prop','rail','util','tax','mektoub','baraka'].includes(s.t)){const id=CARD_ID(i); s.art=`assets/card-${id}.webp`; s.tile=`assets/art-${id}.webp`; s.tileSet=`assets/art-${id}-112.webp 112w, ${s.tile} 224w`;}}); SP[30].art=ART(30); SP[10].art=ART(30);
-export const RAILS=[5,15,25,35], UTILS=[12,28], RAIL_RENT=[250,500,1000,2000];
+function hydrate(spaces: Space[]): Space[]{
+  spaces.forEach((s,i)=>{
+    if(!s.id) s.id=s.t==='mektoub'||s.t==='baraka'?s.t:['go','jail','parking','gojail'].includes(s.t)?s.t:pad2(i);
+    if(['prop','rail','util','tax','mektoub','baraka'].includes(s.t)){
+      const id=s.t==='mektoub'||s.t==='baraka'?s.t:s.id;
+      s.art=ART(id); s.tile=`assets/art-${id}.webp`; s.tileSet=`assets/art-${id}-112.webp 112w, ${s.tile} 224w`;
+    } else if(s.t==='jail'||s.t==='gojail') s.art=ART('30');
+  });
+  return spaces;
+}
+hydrate(SP);
+
+const cloneClassic=(i: number): Space=>({...SP[i]});
+/** the 52-square Grand Map: +1 street in each of the 8 cities, a 3rd utility (Mazot w Gaz), a 3rd tax (Péage),
+    plus 1 extra Mektoub and 1 extra Baraka so every side has 12 squares and both card decks. */
+export const SP_GRAND: Space[]=hydrate([
+  // Side 0 — Bottom (0..12)
+  cloneClassic(0),
+  cloneClassic(1),
+  cloneClassic(2),
+  cloneClassic(3),
+  {t:'prop',id:'marina',g:'brown',name:'Marina Bouregreg',ar:'مارينا أبي رقراق',price:500,rent:R(5,25,75,225,360,500),note:'Modern waterfront promenade, yachts and cafés facing Rabat.'},
+  cloneClassic(4),
+  cloneClassic(5),
+  cloneClassic(6),
+  cloneClassic(7),
+  cloneClassic(8),
+  cloneClassic(9),
+  {t:'tax',id:'peage',name:'Péage',ar:'الطريق السيار',amount:1500,why:'peage'},
+  {t:'prop',id:'outa',g:'lblue',name:'Outa El Hammam',ar:'وطاء الحمام',price:700,rent:R(8,40,105,320,475,650),note:'Chefchaouen’s lively cobbled square beneath the Kasbah.'},
+  // Side 1 — Left (13..25)
+  cloneClassic(10),
+  cloneClassic(11),
+  cloneClassic(12),
+  cloneClassic(13),
+  cloneClassic(14),
+  {t:'prop',id:'boujeloud',g:'pink',name:'Bab Bou Jeloud',ar:'باب بوجلود',price:1300,rent:R(12,60,180,500,725,925),note:'The iconic Blue Gate opening onto Fès’s medina.'},
+  cloneClassic(15),
+  cloneClassic(16),
+  cloneClassic(17),
+  cloneClassic(18),
+  cloneClassic(19),
+  {t:'mektoub',name:'Mektoub',ar:'مكتوب'},
+  {t:'prop',id:'taghazout',g:'orange',name:'Taghazout',ar:'تغازوت',price:1700,rent:R(16,80,230,625,825,1025),note:'Surf village of white terraces and Atlantic waves.'},
+  // Side 2 — Top (26..38)
+  cloneClassic(20),
+  cloneClassic(21),
+  cloneClassic(22),
+  cloneClassic(23),
+  cloneClassic(24),
+  {t:'prop',id:'spartel',g:'red',name:'Cap Spartel',ar:'رأس سبارتيل',price:2100,rent:R(20,100,310,775,950,1125),note:'The lighthouse where the Atlantic meets the Strait of Gibraltar.'},
+  cloneClassic(25),
+  cloneClassic(26),
+  cloneClassic(27),
+  cloneClassic(28),
+  cloneClassic(29),
+  {t:'baraka',name:'Baraka',ar:'بركة'},
+  {t:'prop',id:'oudayas',g:'yellow',name:'Kasbah des Oudayas',ar:'قصبة الأوداية',price:2500,rent:R(24,120,370,875,1050,1225),note:'Blue-and-white fortress alleys overlooking the ocean.'},
+  // Side 3 — Right (39..51)
+  cloneClassic(30),
+  cloneClassic(31),
+  cloneClassic(32),
+  cloneClassic(33),
+  cloneClassic(34),
+  {t:'prop',id:'majorelle',g:'green',name:'Jardin Majorelle',ar:'حديقة ماجوريل',price:3200,rent:R(30,160,475,1050,1250,1450),note:'Cobalt-blue villa, cacti and tranquil pools in Marrakech.'},
+  cloneClassic(35),
+  cloneClassic(36),
+  {t:'prop',id:'anfa',g:'dblue',name:'Anfa',ar:'أنفا',price:3600,rent:R(32,165,480,1075,1275,1475),note:'Palm-lined avenues and modernist coastal villas.'},
+  {t:'util',id:'fuel',name:'Mazot w Gaz',ar:'المازوط والغاز',price:1500,kind:'Fuel and gas',glyph:'⛽'},
+  cloneClassic(37),
+  cloneClassic(38),
+  cloneClassic(39),
+]);
+
+export interface BoardDef {
+  id: BoardId;
+  spaces: Space[];
+  size: number;
+  side: number;
+  rails: number[];
+  utils: number[];
+  jail: number;
+  parking: number;
+  gojail: number;
+}
+function makeBoard(id: BoardId, spaces: Space[]): BoardDef {
+  const size = spaces.length, side = size / 4;
+  return {
+    id, spaces, size, side,
+    rails: spaces.map((s, i) => s.t === 'rail' ? i : -1).filter(i => i >= 0),
+    utils: spaces.map((s, i) => s.t === 'util' ? i : -1).filter(i => i >= 0),
+    jail: spaces.findIndex(s => s.t === 'jail'),
+    parking: spaces.findIndex(s => s.t === 'parking'),
+    gojail: spaces.findIndex(s => s.t === 'gojail'),
+  };
+}
+export const CLASSIC_BOARD = makeBoard('classic', SP);
+export const GRAND_BOARD = makeBoard('grand', SP_GRAND);
+export const boardOf = (G?: Pick<Game, 'settings'> | {settings?: {board?: BoardId}} | null): BoardDef =>
+  G && typeof G === 'object' && G.settings?.board === 'grand' ? GRAND_BOARD : CLASSIC_BOARD;
+export const spacesOf = (G?: Pick<Game, 'settings'> | {settings?: {board?: BoardId}} | null): Space[] => boardOf(G).spaces;
+
+export const RAILS=CLASSIC_BOARD.rails, UTILS=CLASSIC_BOARD.utils, RAIL_RENT=[250,500,1000,2000];
 export const SALARY=2000, JAIL_FINE=500, START_CASH=15000;
 /** house rule "credit": borrow in steps of LOAN_STEP up to LOAN_MAX; LOAN_RATE of what is owed is charged at each pass of Al Inṭilāq */
 export const LOAN_MAX=5000, LOAN_STEP=500, LOAN_RATE=0.1;
@@ -85,6 +185,8 @@ export const SHUFA_MARKUP=1.5;
 /** house rule "shufa": the first round it can be used in. Before then everyone's worth is within a rent or two of
     everyone else's, so "furthest behind" would only mean "paid the last rent". */
 export const SHUFA_FROM=6;
+/** house rule "chrika": share of combined street + building value paid by the bank on a Clean Exit or L'Ghedr */
+export const CHRIKA_PAYOUT=0.8;
 /** house rule "fairStart": the extra starting money for each seat after the first, by number of players
     (found by simulating thousands of games, so that every seat wins about equally often) */
 export const FAIR_STEP: Record<number, number>={2:300,3:300,4:300,5:350,6:400,7:400,8:450};

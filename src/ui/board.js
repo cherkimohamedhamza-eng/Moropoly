@@ -7,6 +7,7 @@ import {$} from './dom';
 /* ---------- board ---------- */
 /** draws the board for the current game (also after a language change) and puts the dice back */
 export function buildBoard(){
+  const b=$('board'); if(b) b.classList.toggle('grand',app.V?.settings?.board==='grand');
   app.boardFx=noBoardFx(); refresh();
   setDice(app.V.dice||[3,4],false);
 }
@@ -39,7 +40,7 @@ export function setDice(d,anim,speed=1){
   showDice3d(d,anim,speed);
 }
 export function cellBox(i){const c=$('c'+i); if(!c) return {x:0,y:0,w:0,h:0}; return {x:c.offsetLeft+c.offsetWidth/2,y:c.offsetTop+c.offsetHeight/2,w:c.offsetWidth,h:c.offsetHeight};}
-export function pawnSize(){const b=$('board'); if(!b) return 30; const w=b.offsetWidth; return w*(w<480?0.06:0.047);}
+export function pawnSize(){const b=$('board'); if(!b) return 30; const w=b.offsetWidth, g=app.V?.settings?.board==='grand'; return w*(w<480?(g?0.048:0.06):(g?0.039:0.047));}
 export function syncDpos(){app.dpos={}; if(app.V&&app.V.players) app.V.players.forEach(p=>app.dpos[p.id]=p.pos);}
 /* Where a pawn stands. Pieces are standing figures on a round base as wide as the pawn's box, so pieces sharing a
    square are set out in rows, side by side, and all shrunk by the same factor `k` until they fit the square. Of the

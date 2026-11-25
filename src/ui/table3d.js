@@ -10,7 +10,7 @@
 // where each pawn element is (ui/board.js places them, ui/anim.js moves them), how many buildings each
 // property has, and which dice were rolled.
 import {app} from '../app/state';
-import {SP, TOKENS} from '../engine/data';
+import {TOKENS, boardOf} from '../engine/data';
 import {isOwnable} from '../engine/util';
 import {cellBox, layoutPawns, pawnSize} from './board';
 import {$} from './dom';
@@ -165,19 +165,20 @@ function pawns(){
   for(const [id,o] of S.pawns) if(!seen.has(id)){scene.remove(o); S.pawns.delete(id);}
 }
 function houses(){
-  const {scene,W}=S, V=app.V, fx=app.boardFx, now=performance.now();
-  for(let i=0;i<SP.length;i++){
-    if(!isOwnable(i)||SP[i].t!=='prop') continue;
-    const n=fx.houses[i]??V.props[i].houses, have=S.houses.get(i);
+  const {scene,W}=S, V=app.V, B=boardOf(V), fx=app.boardFx, now=performance.now(), sc=B.id==='grand'?.8:1;
+  for(const [k,h] of S.houses) if(k>=B.size||B.spaces[k]?.t!=='prop'){h.list.forEach(o=>scene.remove(o)); S.houses.delete(k);}
+  for(let i=0;i<B.spaces.length;i++){
+    if(!isOwnable(i,V)||B.spaces[i].t!=='prop') continue;
+    const n=fx.houses[i]??V.props[i]?.houses??0, have=S.houses.get(i);
     if(have&&have.n===n){for(const o of have.list){const t=Math.min(1,(now-o.userData.born)/420), e=1-Math.pow(1-t,3); o.scale.setScalar(o.userData.size*(t<1?e*(1+.25*Math.sin(t*Math.PI)):1)); o.position.y=1+(1-e)*W*.05;} continue;}
     if(have) have.list.forEach(o=>scene.remove(o));
     const list=[]; S.houses.set(i,{n,list}); if(!n) continue;
-    const b=cellBox(i), side=i<10?'b':i<20?'l':i<30?'t':'r', riad=n===5, count=riad?1:n;
+    const b=cellBox(i), side=i<B.side?'b':i<B.side*2?'l':i<B.side*3?'t':'r', riad=n===5, count=riad?1:n;
     for(let k=0;k<count;k++){
       const along=(k-(count-1)/2)*(side==='b'||side==='t'?b.w:b.h)*.235;
       const [bx,by]=side==='b'?[b.x+along,b.y-b.h*.415]:side==='t'?[b.x+along,b.y+b.h*.415]:side==='l'?[b.x+b.w*.43,b.y+along]:[b.x-b.w*.43,b.y+along];
       const [x,z]=onBoard(bx,by,W), o=new T.Group();
-      o.position.set(x,1,z); o.userData={size:(riad?W*.0062:W*.0098),born:have?now:0}; o.scale.setScalar(o.userData.size);
+      o.position.set(x,1,z); o.userData={size:(riad?W*.0062:W*.0098)*sc,born:have?now:0}; o.scale.setScalar(o.userData.size);
       model(riad?'models/riad.glb':'models/dar.glb').then(m=>{if(S&&S.houses.get(i)?.list.includes(o)) o.add(m.clone());});
       scene.add(o); list.push(o);
     }

@@ -1,21 +1,23 @@
 /* ============================================================
    MEKTOUB and BARAKA cards
    ============================================================ */
-import {RAILS, UTILS} from './data';
+import {boardOf} from './data';
 import {gain, jumpTo, land, moveTo, pay, payTax, repairs, sendToJail} from './engine';
 import {alive, nextOf} from './util';
-import type {Card} from './types';
+import type {Card, Game} from './types';
+
+const byId=(G: Game,id: string)=>Math.max(0,boardOf(G).spaces.findIndex(s=>s.id===id));
 
 export const MEKTOUB: Card[]=[
  {text:'Advance to Al Inṭilāq. Collect 2,000 DH.',act:(G,p)=>moveTo(G,p,0)},
- {text:'Grand taxi to Marrakech. Advance to Jemaa el-Fna.',act:(G,p)=>{moveTo(G,p,32);land(G,p);}},
- {text:'Weekend in Tangier. Advance to Marshan.',act:(G,p)=>{moveTo(G,p,21);land(G,p);}},
- {text:'Take Al Boraq. Advance to the nearest station and pay the owner double rent.',act:(G,p)=>{moveTo(G,p,nextOf(p.pos,RAILS));land(G,p,{railDouble:true});}},
- {text:'Take Al Boraq. Advance to the nearest station and pay the owner double rent.',act:(G,p)=>{moveTo(G,p,nextOf(p.pos,RAILS));land(G,p,{railDouble:true});}},
- {text:'Summer on the corniche. Advance to Ain Diab.',act:(G,p)=>{moveTo(G,p,39);land(G,p);}},
- {text:'The power is out. Advance to the nearest utility. If it is owned, pay 100 × the dice.',act:(G,p)=>{moveTo(G,p,nextOf(p.pos,UTILS));land(G,p,{util100:true});}},
+ {text:'Grand taxi to Marrakech. Advance to Jemaa el-Fna.',act:(G,p)=>{moveTo(G,p,byId(G,'32'));land(G,p);}},
+ {text:'Weekend in Tangier. Advance to Marshan.',act:(G,p)=>{moveTo(G,p,byId(G,'21'));land(G,p);}},
+ {text:'Take Al Boraq. Advance to the nearest station and pay the owner double rent.',act:(G,p)=>{moveTo(G,p,nextOf(p.pos,boardOf(G).rails));land(G,p,{railDouble:true});}},
+ {text:'Take Al Boraq. Advance to the nearest station and pay the owner double rent.',act:(G,p)=>{moveTo(G,p,nextOf(p.pos,boardOf(G).rails));land(G,p,{railDouble:true});}},
+ {text:'Summer on the corniche. Advance to Ain Diab.',act:(G,p)=>{moveTo(G,p,byId(G,'39'));land(G,p);}},
+ {text:'The power is out. Advance to the nearest utility. If it is owned, pay 100 × the dice.',act:(G,p)=>{moveTo(G,p,nextOf(p.pos,boardOf(G).utils));land(G,p,{util100:true});}},
  {text:'Radar on the autoroute. Pay a 300 DH fine.',act:(G,p)=>payTax(G,p,300,'speeding')},
- {text:'You left your CIN at home. Go back 3 spaces.',act:(G,p)=>{jumpTo(G,p,(p.pos+37)%40);land(G,p);}},
+ {text:'You left your CIN at home. Go back 3 spaces.',act:(G,p)=>{const sz=boardOf(G).size; jumpTo(G,p,(p.pos+sz-3)%sz);land(G,p);}},
  {text:'Go directly to 3okacha. Do not pass Al Inṭilāq.',act:(G,p)=>sendToJail(G,p)},
  {text:'Your cousin is a lawyer. Get out of 3okacha free.',goojf:true},
  {text:'You resold your Mawazine tickets. Collect 500 DH.',act:(G,p)=>gain(G,p,500)},
