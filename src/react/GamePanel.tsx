@@ -10,6 +10,7 @@ import type {Game} from '../engine/types';
 import {chrikaOf, chrikaValue, colorOf, groupIdx, hasCityRights, houseCost, ownedBy, priceOf, unmortCost, unownedCount} from '../engine/util';
 import {cityN, fmt, spN, t, tl} from '../i18n/core';
 import {goHome} from '../ui/home';
+import {layoutPawns} from '../ui/board';
 import {tableView, toggleView} from '../ui/tableview';
 import {openAuction, openChrika, openChrikaReply, openConfirmBankrupt, openDeed, openGameOver, openGhedr, openGuide, openSeat, openTrade, openTradeReply} from '../ui/modals';
 import {sfx} from '../ui/music';
@@ -20,6 +21,35 @@ import {HouseRulesList} from './Guide';
 import {refresh, useRefresh} from './store';
 
 const playingGame = (): Game | null => (app.V && app.V.status === 'play' ? (app.V as Game) : null);
+
+/* ---------- collapsible sidebar state (focus-board mode on desktop) ---------- */
+let sideCollapsed = (() => {
+  try { return localStorage.getItem('moropoly-side-collapsed') === '1'; } catch { return false; }
+})();
+
+export const isSideCollapsed = () => sideCollapsed;
+
+function syncSideBody(active: boolean) {
+  document.body.classList.toggle('side-collapsed', active && sideCollapsed);
+  if (active) {
+    requestAnimationFrame(() => {
+      layoutPawns();
+      setTimeout(() => layoutPawns(), 80);
+    });
+  }
+}
+
+export function setSideCollapsed(next: boolean) {
+  sideCollapsed = next;
+  try { localStorage.setItem('moropoly-side-collapsed', next ? '1' : '0'); } catch { /* ignore */ }
+  syncSideBody(!!playingGame());
+  refresh();
+}
+
+export function openSideTo(tab?: string) {
+  if (tab) setTab(tab);
+  if (sideCollapsed) setSideCollapsed(false);
+}
 
 /* ---------- the bar above the board ---------- */
 export function GameBar() {
@@ -33,6 +63,15 @@ export function GameBar() {
       <div className="sp" />
       {G?.code && <span className="chipcode" id="codeChip" dir="ltr">{t('chip.game', {c: G.code.toUpperCase()})}</span>}
       <LangSwitch />
+      {G && (
+        <button
+          className={`btn ghost sm side-toggle-btn${sideCollapsed ? ' active' : ''}`}
+          id="sideToggleBtn"
+          onClick={() => setSideCollapsed(!sideCollapsed)}
+        >
+          {sideCollapsed ? `◧ ${t('btn.showSide')}` : `◫ ${t('btn.hideSide')}`}
+        </button>
+      )}
       {G && app.MODE !== 'local' && seatedIn(G) && !G.over && <button className="btn ghost sm" id="mySeatBtn" onClick={openSeat}>{t('btn.mySeat')}</button>}
       {G && <button className="btn ghost sm" id="viewBtn" onClick={() => { toggleView(); refresh(); }}>{t(tableView() ? 'btn.viewFlat' : 'btn.viewTable')}</button>}
       <button className="btn ghost sm" id="leaveBtn" onClick={goHome}>{t('btn.leave')}</button>
@@ -44,17 +83,34 @@ export function GameBar() {
 export function Banner() {
   useRefresh();
   const V = app.V as Game | null;
+  const G = playingGame();
   const guest = app.MODE === 'guest' || app.MODE === 'online';
   const watching = guest && !!V && !!V.players && !seatedIn(V) && !V.over;
-  if (watching && hostOnline()) {
-    return <div className="banner" style={{marginBottom: 12, background: 'rgba(201,207,216,.08)', borderColor: 'var(--line-2)', color: 'var(--text)'}}>{t('watching')}</div>;
-  }
-  if (guest && !hostOnline()) return <div className="banner" style={{marginBottom: 12}}>{t(app.MODE === 'online' ? 'banner.offline' : 'banner.paused')}</div>;
-  return null;
+  const alert = watching && hostOnline()
+    ? <div className="banner" style={{marginBottom: 12, background: 'rgba(201,207,216,.08)', borderColor: 'var(--line-2)', color: 'var(--text)'}}>{t('watching')}</div>
+    : guest && !hostOnline()
+      ? <div className="banner" style={{marginBottom: 12}}>{t(app.MODE === 'online' ? 'banner.offline' : 'banner.paused')}</div>
+      : null;
+  if (!G || !sideCollapsed) return alert;
+  return (
+    <>
+      {alert}
+      <button type="button" className="side-reopen" onClick={() => setSideCollapsed(false)} aria-label={t('btn.showSide')}>
+        <span>◀</span>
+        <b>{t('btn.showSide')}</b>
+      </button>
+      {tableView() && (
+        <div className="table-focus-dock">
+          <FeltControls G={G} />
+        </div>
+      )}
+    </>
+  );
 }
 
 /* ---------- Live HUD sidebar (mounted in #turnCard) ---------- */
-interface TurnAct {
+/* ---------- shared turn action builder (used by both Live HUD & Collapsed Felt Controls) ---------- */
+export interface TurnAct {
   key: string;
   cls: string;
   label: string;
@@ -62,26 +118,9 @@ interface TurnAct {
   disabled?: boolean;
 }
 
-function logTone(l: unknown): string {
-  const k = typeof l === 'object' && l && 'k' in l ? String((l as {k: string}).k) : '';
-  if (/ghedr|jail|bank|payShort|threeDoubles/i.test(k)) return 'red';
-  if (/buys|build|riad|daret|passGo|win|collect|saved|chrikaFormed/i.test(k)) return 'green';
-  if (/dlala|sold|deal|chrika|shufa|borrow/i.test(k)) return 'gold';
-  return '';
-}
-
-export function TurnCard() {
-  useRefresh();
-  const G = playingGame();
-  if (!G) return null;
-
+export function buildTurnState(G: Game, onOpenDeeds = () => setTab('deeds')) {
   const p = G.players[G.cur];
   const mine = iControl(G.cur) && !app.playing && !G.over;
-  const on = app.MODE === 'local' ? null : onlineCids();
-  const seats = mySeats();
-  const myPid = seats.includes(G.cur) ? G.cur : seats[0];
-  const myOwned = myPid != null ? ownedBy(G, myPid).sort((a, b) => a - b) : [];
-
   let status: ReactNode = null;
   let bad = false;
   const primary: TurnAct[] = [];
@@ -113,7 +152,7 @@ export function TurnCard() {
     bad = true;
     status = t('tc.owes', {p: p.name, a: fmt(-p.cash)});
     if (mine) {
-      primary.push({key: 'deeds', cls: 'gold', label: t('btn.myDeeds'), onClick: () => setTab('deeds')});
+      primary.push({key: 'deeds', cls: 'gold', label: t('btn.myDeeds'), onClick: onOpenDeeds});
       sub.push({key: 'trade', cls: 'ghost', label: t('btn.tbadel'), onClick: openTrade});
       if (G.settings.chrika && (G.chrikas || []).some(c => c.a === p.id || c.b === p.id)) {
         sub.push({key: 'chrika', cls: 'gold', label: t('btn.chrika'), onClick: openChrika});
@@ -146,7 +185,7 @@ export function TurnCard() {
     if (mine) {
       const chReady = !!G.settings.chrika && (chrikaCandidates(G, p.id).length > 0 || (G.chrikas || []).some(c => c.a === p.id || c.b === p.id));
       primary.push({key: 'end', cls: 'green', label: t('btn.end'), onClick: () => dispatch({t: 'end'})});
-      sub.push({key: 'deeds', cls: 'ghost', label: t('btn.build'), onClick: () => setTab('deeds')});
+      sub.push({key: 'deeds', cls: 'ghost', label: t('btn.build'), onClick: onOpenDeeds});
       sub.push({key: 'trade', cls: 'ghost', label: t('btn.tbadel'), onClick: openTrade});
       if (G.settings.chrika) sub.push({key: 'chrika', cls: chReady ? 'gold' : 'ghost', label: t('btn.chrika'), onClick: openChrika});
     }
@@ -160,6 +199,79 @@ export function TurnCard() {
 
   const buyIdx = G.phase === 'buy' && G.pending && !app.playing ? G.pending.idx : null;
   const waiting = !mine && !G.over && !app.playing && !G.auction && !G.trade && !G.chrikaOffer;
+  const canRoll = mine && !G.trade && !G.chrikaOffer && !G.auction && p.cash >= 0 && G.phase === 'roll';
+  return {p, mine, status, bad, primary, sub, buyIdx, waiting, canRoll};
+}
+
+/** Compact on-board felt command deck rendered inside .center when the sidebar is collapsed */
+export function FeltControls({G}: {G: Game}) {
+  if (!sideCollapsed) return null;
+  const {p, mine, status, bad, primary, sub, buyIdx, waiting} = buildTurnState(G, () => openSideTo('deeds'));
+  const hasDeals = !!(G.settings.credit || G.settings.chrika);
+  return (
+    <div className="felt-hud" style={{'--pc': p.color} as CSSProperties} onClick={e => e.stopPropagation()}>
+      <div className="fh-top">
+        <Coin token={p.token} style={{boxShadow: `0 0 0 2px ${p.color}`}} />
+        <span className="fh-nm">{p.name}</span>
+        <span className="fh-cash">{fmt(p.cash)}</span>
+        {mine && <span className="fh-tag">{t('tc.yourTurn')}</span>}
+        <button type="button" className="fh-open" onClick={() => setSideCollapsed(false)} title={t('btn.showSide')}>
+          ◧ {t('btn.showSide')}
+        </button>
+      </div>
+      {buyIdx !== null && (
+        <div className="fh-buy">
+          {boardOf(G).spaces[buyIdx].art && <img src={boardOf(G).spaces[buyIdx].art} alt="" />}
+          <span className="fh-buy-t">{spN(buyIdx, G)}</span>
+          <button type="button" className="fh-buy-v" onClick={() => openDeed(buyIdx)}>{t('btn.viewDeed')}</button>
+        </div>
+      )}
+      {primary.length > 0 && (
+        <div className={`fh-prim${primary.length > 1 ? ' split' : ''}`}>
+          {primary.map(a => (
+            <button key={a.key} type="button" className={`btn ${a.cls}`} disabled={a.disabled} onClick={a.onClick}>{a.label}</button>
+          ))}
+        </div>
+      )}
+      <div className="fh-sub">
+        {sub.map(a => (
+          <button key={a.key} type="button" className={`fh-pill ${a.cls}`} disabled={a.disabled} onClick={a.onClick}>{a.label}</button>
+        ))}
+        <button type="button" className="fh-pill" onClick={() => openSideTo('deeds')}>{t('tab.deeds')}</button>
+        {hasDeals && <button type="button" className="fh-pill" onClick={() => openSideTo('deals')}>{t('tab.deals')}</button>}
+      </div>
+      {waiting && (
+        <div className={`fh-wait${bad ? ' bad' : ''}`}>
+          {p.human ? (app.MODE === 'local' ? status : t('tc.waiting', {p: p.name})) : t('tc.thinking')}
+        </div>
+      )}
+      <TurnTimer />
+    </div>
+  );
+}
+
+function logTone(l: unknown): string {
+  const k = typeof l === 'object' && l && 'k' in l ? String((l as {k: string}).k) : '';
+  if (/ghedr|jail|bank|payShort|threeDoubles/i.test(k)) return 'red';
+  if (/buys|build|riad|daret|passGo|win|collect|saved|chrikaFormed/i.test(k)) return 'green';
+  if (/dlala|sold|deal|chrika|shufa|borrow/i.test(k)) return 'gold';
+  return '';
+}
+
+export function TurnCard() {
+  useRefresh();
+  const G = playingGame();
+  useEffect(() => {
+    syncSideBody(!!G);
+    return () => { document.body.classList.remove('side-collapsed'); };
+  }, [!!G]);
+  if (!G) return null;
+
+  const {p, mine, status, bad, primary, sub, buyIdx, waiting} = buildTurnState(G);
+  const on = app.MODE === 'local' ? null : onlineCids();
+  const seats = mySeats();
+  const myPid = seats.includes(G.cur) ? G.cur : seats[0];
+  const myOwned = myPid != null ? ownedBy(G, myPid).sort((a, b) => a - b) : [];
   const hasDeals = !!(G.settings.credit || G.settings.chrika);
   const dealsLabel = G.settings.credit && G.settings.chrika ? t('tab.deals') : G.settings.credit ? t('cr.title') : t('btn.chrika');
   const dealsHot = hasDeals && myPid != null && (

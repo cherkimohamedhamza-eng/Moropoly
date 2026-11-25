@@ -336,6 +336,7 @@ S('toast.taken','That token is taken.','Ce pion est déjà pris.','هذه الق
 S('banner.paused','Can’t reach the host, so the game is paused. It reconnects on its own when the host’s game is open again.','Impossible de joindre l’hôte : la partie est en pause. Elle se reconnecte toute seule quand l’hôte rouvre la partie.','تعذّر الوصول إلى المضيف، فاللعبة متوقفة مؤقتًا. ستعود تلقائيًا عندما يفتح المضيف اللعبة من جديد.');
 S('meta.round','Round {n}{of} · Daret {a}','Tour {n}{of} · Daret {a}','الجولة {n}{of} · الدارت {a}'); S('meta.of',' of {m}',' sur {m}',' من {m}');
 S('btn.leave','Leave','Quitter','غادر'); S('btn.viewTable','Table view','Vue table','عرض الطاولة'); S('btn.viewFlat','Flat view','Vue à plat','عرض مسطّح');
+S('btn.hideSide','Expand board','Agrandir','تكبير اللوحة'); S('btn.showSide','Show panel','Afficher panneau','إظهار اللوحة الجانبية');
 /* pwa */
 S('pwa.installed','Moropoly is on your home screen.','Moropoly est sur votre écran d’accueil.','موروبولي الآن على شاشتك الرئيسية.'); S('pwa.title','Install Moropoly','Installer Moropoly','ثبّت موروبولي');
 S('pwa.ios','<b>iPhone or iPad (Safari):</b> tap the Share button, then <b>Add to Home Screen</b>.','<b>iPhone ou iPad (Safari) :</b> touchez Partager, puis <b>Sur l’écran d’accueil</b>.','<b>آيفون أو آيباد (Safari):</b> اضغط زر المشاركة، ثم <b>إضافة إلى الشاشة الرئيسية</b>.');

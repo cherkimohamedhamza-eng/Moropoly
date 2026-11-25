@@ -1269,3 +1269,76 @@ html[dir="rtl"] .sb-pulse .tp-col+.tp-col::before{inset:7px 0 7px auto}
 
 
 
+
+
+/* ==================== COLLAPSIBLE SIDEBAR & ON-BOARD FELT CONTROLS ==================== */
+.side-toggle-btn.active{border-color:rgba(227,179,74,.55);color:#f5d57c;background:rgba(227,179,74,.12)}
+@media (max-width:1000px){.side-toggle-btn,.side-reopen,.felt-hud,.table-focus-dock{display:none!important}}
+
+/* Clickable dice directly on the board */
+.dice.can-roll{cursor:pointer;border-radius:1.8cqi;transition:transform .16s ease,filter .16s ease}
+.dice.can-roll:hover{transform:scale(1.06);filter:drop-shadow(0 0 1.4cqi rgba(227,179,74,.55))}
+.dice.can-roll:active{transform:scale(.97)}
+
+/* Expanded board mode when sidebar is collapsed (desktop > 1000px) */
+@media (min-width:1001px){
+  body.side-collapsed #game.wrap{max-width:1540px;padding-block:6px 10px}
+  body.side-collapsed .gamebar{margin-bottom:6px}
+  body.side-collapsed .layout{grid-template-columns:minmax(0,1fr);gap:0}
+  body.side-collapsed .side{display:none}
+  body.side-collapsed .board-box{width:min(100%,calc(100vh - 60px),1260px);padding:clamp(6px,1vw,14px)}
+  body.side-collapsed .board-box.table{width:min(100%,calc((100vh - 60px)*1.28),1440px)}
+  body.side-collapsed .board-box.live3d .felt-hud{display:none}
+}
+
+/* Frosted Felt Command Deck inside the board center */
+.felt-hud{position:relative;z-index:2;width:min(54cqi,400px);max-width:92%;margin-top:.4cqi;padding:10px 12px;border-radius:15px;
+  background:rgba(5,16,11,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(227,179,74,.32);box-shadow:0 14px 36px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.1);
+  display:flex;flex-direction:column;gap:7px;overflow:hidden}
+.felt-hud::before{content:"";position:absolute;inset:0 0 auto;height:2.5px;background:var(--pc,var(--gold))}
+.fh-top{display:flex;align-items:center;gap:7px;min-width:0}
+.fh-top .coin{width:26px;height:26px;padding:0;background:none;flex:none}
+.fh-nm{font-family:var(--f-display);font-size:12.5px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fh-cash{font-family:var(--f-display);font-size:12.5px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+.fh-tag{padding:1px 7px;border-radius:999px;font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  background:rgba(227,179,74,.18);border:1px solid rgba(227,179,74,.5);color:#f5d57c;white-space:nowrap}
+.fh-open{margin-inline-start:auto;padding:3px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);
+  color:#d7e3dc;font-size:10.5px;font-weight:700;white-space:nowrap;transition:all .14s}
+.fh-open:hover{border-color:var(--gold);color:#fff;background:rgba(227,179,74,.16)}
+
+.fh-buy{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:10px;
+  background:linear-gradient(180deg,#faf1db,#ebd9b4);border:1px solid #8a5a2b;color:#24160a}
+.fh-buy img{width:24px;height:36px;object-fit:cover;border-radius:4px;flex:none}
+.fh-buy-t{font-weight:800;font-size:12.5px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fh-buy-v{padding:3px 9px;border-radius:999px;border:1px solid rgba(43,29,18,.3);background:rgba(43,29,18,.1);color:#24160a;font-size:11px;font-weight:700;flex:none}
+.fh-buy-v:hover{background:rgba(43,29,18,.2)}
+
+.fh-prim{display:grid;grid-template-columns:1fr;gap:6px}
+.fh-prim.split{grid-template-columns:1.25fr 1fr}
+.fh-prim .btn{width:100%;justify-content:center;padding:9px 10px;font-size:13px;font-weight:800;border-radius:11px}
+
+.fh-sub{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.fh-pill{padding:5px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#dce8e1;
+  font-size:11px;font-weight:700;transition:all .14s;white-space:nowrap}
+.fh-pill:hover:not(:disabled){background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);color:#fff}
+.fh-pill.gold{border-color:rgba(227,179,74,.55);background:rgba(227,179,74,.16);color:#f7d77a}
+.fh-pill.danger{border-color:rgba(232,71,77,.55);background:rgba(193,39,45,.2);color:#ffb3b6}
+.fh-pill:disabled{opacity:.38;cursor:not-allowed}
+.fh-wait{font-size:11.5px;color:#b8cfc2;text-align:center}
+.fh-wait.bad{color:#ff9ba0;font-weight:700}
+.felt-hud .ttimer{margin-top:0;height:22px}
+.felt-hud .ttimer span{line-height:20px;font-size:11.5px}
+
+/* Floating Right-Edge Reopen Pill when Collapsed */
+.side-reopen{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:25;display:flex;align-items:center;gap:6px;
+  padding:10px 12px 10px 10px;border-radius:14px 0 0 14px;border:1px solid rgba(227,179,74,.4);border-right:0;
+  background:rgba(14,19,26,.92);backdrop-filter:blur(10px);color:#eef2f6;font-size:12px;font-weight:700;
+  box-shadow:-6px 0 24px rgba(0,0,0,.45);transition:padding .15s,border-color .15s,background .15s}
+.side-reopen span{color:var(--gold);font-size:11px}
+.side-reopen:hover{padding-inline-end:16px;border-color:var(--gold);background:rgba(22,30,40,.96)}
+html[dir="rtl"] .side-reopen{right:auto;left:0;border-radius:0 14px 14px 0;border-right:1px solid rgba(227,179,74,.4);border-left:0}
+
+/* Fixed bottom wrapper when Table View (3D) is active AND sidebar is collapsed */
+.table-focus-dock{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:25;width:min(420px,calc(100vw - 32px))}
+.table-focus-dock .felt-hud{width:100%;max-width:none;margin:0}

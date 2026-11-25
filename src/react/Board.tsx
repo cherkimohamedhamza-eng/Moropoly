@@ -3,12 +3,14 @@
 // the dice and show reveals, floating money and confetti in elements React leaves alone: pawn positions,
 // the dice's rotation, the caption (#eventLine) and the reveal stage (#stage).
 import {useLayoutEffect, useState, type CSSProperties, type ReactNode} from 'react';
+import {dispatch} from '../app/authority';
 import {app} from '../app/state';
 import {BAND, GROUPS, TOKENS, boardOf, type BoardDef} from '../engine/data';
 import type {Game} from '../engine/types';
 import {chrikaOf, isOwnable, range} from '../engine/util';
 import {fmt, num, spN, t} from '../i18n/core';
 import {openDeed} from '../ui/modals';
+import {FeltControls, buildTurnState} from './GamePanel';
 import {useRefresh} from './store';
 
 const pos2grid = (i: number, side: number) => {
@@ -31,6 +33,8 @@ export function Board() {
   if (!V) return null;
   const ar = app.LANG === 'ar', fx = app.boardFx;
   const landed = fx.hl ?? V.landed;
+  const {canRoll} = buildTurnState(V);
+  const rollOnClick = () => { if (canRoll) dispatch({t: 'roll'}); };
   return (
     <>
       {B.spaces.map((_, i) => <Square key={i} i={i} B={B} V={V} landed={landed === i} />)}
@@ -39,7 +43,15 @@ export function Board() {
         <div className="ttl"><div className="tif">ⵎⵓⵔⵓⴱⵓⵍⵉ</div><div className="ar">مُوروبولي</div><div className="lat">MOROPOLY</div></div>
         {/* The dice. The canvas shows the 3D model (ui/dice3d.js); the CSS cubes under it are what you see until
             the model has loaded or where WebGL is missing (ui/board.js setDice turns them and shades their faces) */}
-        <div className="dice" id="dice">
+        <div
+          className={`dice${canRoll ? ' can-roll' : ''}`}
+          id="dice"
+          role={canRoll ? 'button' : undefined}
+          tabIndex={canRoll ? 0 : undefined}
+          title={canRoll ? t('btn.roll') : undefined}
+          onClick={rollOnClick}
+          onKeyDown={e => { if (canRoll && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); rollOnClick(); } }}
+        >
           <canvas className="dice-gl" id="diceGl" aria-hidden="true" />
           {[0, 1].map(k => (
             <div key={k} className="dslot">
@@ -55,6 +67,7 @@ export function Board() {
           ))}
         </div>
         <div className="event" id="eventLine" />
+        <FeltControls G={V} />
       </div>
       <div className="stage" id="stage" dir={ar ? 'rtl' : 'ltr'} />
       {/* pawns are placed and moved by the animation code (ui/board.js layoutPawns, ui/anim.js) */}
