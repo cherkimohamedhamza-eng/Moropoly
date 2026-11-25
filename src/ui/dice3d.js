@@ -55,7 +55,8 @@ function bind(){
 }
 function size(){
   const {cv,renderer,camera}=S, w=cv.clientWidth, h=cv.clientHeight; if(!w||!h) return;
-  renderer.setPixelRatio(Math.min(Math.max(devicePixelRatio||1,2),3));   // at least 2: the dice are small, extra pixels keep their edges clean renderer.setSize(w,h,false);
+  renderer.setPixelRatio(Math.min(Math.max(devicePixelRatio||1,2),3));   // at least 2: the dice are small, extra pixels keep their edges clean
+  renderer.setSize(w,h,false);
   camera.aspect=w/h;
   const d=VIEW_W/camera.aspect/(2*Math.tan(FOV*Math.PI/360));   // far enough back to show VIEW_W units across
   camera.position.set(0,LOOK_Y+d*Math.sin(ELEV),d*Math.cos(ELEV)); camera.lookAt(0,LOOK_Y,0);

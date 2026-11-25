@@ -46,7 +46,7 @@ export function Board() {
               <div className="dview" id={'dv' + k}>
                 <div className="die" id={'d' + k}>
                   {[1, 2, 3, 4, 5, 6].map(f => (
-                    <div key={f} className={'face f' + f}>{range(9).map(j => <i key={j} style={{visibility: PIPS[f].includes(j) ? 'visible' : 'hidden'}} />)}</div>
+                    <div key={f} className={'face f' + f}>{range(9).map(j => <i key={j} className={PIPS[f].includes(j) ? 'on' : undefined} />)}</div>
                   ))}
                   {[1, 2, 3, 4, 5, 6].map(f => <span key={'c' + f} className={'core f' + f} />)}
                 </div>
