@@ -2,7 +2,7 @@
 // 0 Al Inṭilāq · 1 Sidi Moussa (400) · 3 Tabriket (450) · 4 Impôts (2,000 tax) · 5 Tanger TGV (station)
 // 6, 8, 9 Chefchaouen · 10 3okacha · 12 ONEE (utility) · 20 Qahwa · 28 Maroc Telecom (utility)
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { actorOf, apply, billFor, canBuild, canGhedr, canRide, rideTargets, canSell, canShufa, chrikaCandidate, freshGame, goBankrupt, interestOn, land, netWorth, pay, rentFor, shufaPrice } from '../src/engine/engine';
+import { actorOf, apply, billFor, canBuild, canGhedr, canRide, rideTargets, canSell, canShufa, chrikaCandidate, freshGame, goBankrupt, interestOn, jailFine, land, netWorth, pay, rentFor, shufaPrice } from '../src/engine/engine';
 import { botDecide } from '../src/engine/bots';
 import { BILL_DAR, BILL_RIAD, FAIR_STEP, GRAND_BOARD, GROUPS, LOAN_MAX, RAIL_RENT, RAIL_SIDE, RAILS, RIAD_PREMIUM, SHUFA_FROM, SP, SP_GRAND, START_CASH } from '../src/engine/data';
 import { chrikaOf, chrikaValue, isOwnable, range, unmortCost } from '../src/engine/util';
@@ -827,14 +827,15 @@ describe('Chrika & L’Ghedr', () => {
     expect(G.players[1].cash).toBe(cash1 + 40);
   });
 
-  it('sells all streets & buildings at 80% split 50/50 on Clean Exit', () => {
+  it('splits Clean Exit (80% bank buyout) proportionally to what each partner invested', () => {
     const G = chrikaGame(3);
-    own(G, 0, 1, 3);
-    own(G, 1, 4);
+    own(G, 0, 1, 3); // 400 + 450 = 850
+    own(G, 1, 4);    // 500
     apply(G, 0, { t: 'chrikaPropose', g: 'brown', share: 50 });
     apply(G, 1, { t: 'chrikaReply', accept: true });
-    apply(G, 0, { t: 'build', i: 1 }); // +500 building; total = 400+450+500+500 = 1850; 80% = 1480; 50/50 = 740 each
-    expect(chrikaValue(G, 'brown')).toMatchObject({ total: 1850, payout: 1480, half: 740 });
+    apply(G, 0, { t: 'build', i: 1 }); // +500 by player 0 -> player 0 invested 1350, player 1 invested 500, total = 1850
+    // 80% = 1480 -> player 0 gets 1080, player 1 gets 400
+    expect(chrikaValue(G, 'brown')).toMatchObject({ total: 1850, payout: 1480, keep: 1300, daretCut: 180 });
 
     const before0 = G.players[0].cash, before1 = G.players[1].cash;
     expect(apply(G, 0, { t: 'chrikaExit', g: 'brown' })).toBe(true);
@@ -842,47 +843,101 @@ describe('Chrika & L’Ghedr', () => {
     expect(chrikaOf(G, 'brown')).toBeUndefined();
     expect([G.props[1].owner, G.props[3].owner, G.props[4].owner]).toEqual([-1, -1, -1]);
     expect(G.props[1].houses).toBe(0);
-    expect(G.players[0].cash).toBe(before0 + 740);
-    expect(G.players[1].cash).toBe(before1 + 740);
+    expect(G.players[0].cash).toBe(before0 + 1080);
+    expect(G.players[1].cash).toBe(before1 + 400);
   });
 
-  it('unlocks L’Ghedr only after all properties are bought, stays unlocked, sends betrayer to 3okacha as Gheddar', () => {
-    const G = chrikaGame(3);
+  it('unlocks L’Ghedr at 75% claimed OR Round 8, succeeds on 7+ (70% + 10% Daret + loan clawback), and applies full Gheddar curse', () => {
+    const G = chrikaGame(3, { credit: true, daret: true });
     own(G, 0, 1, 3);
     own(G, 1, 4);
     apply(G, 0, { t: 'chrikaPropose', g: 'brown', share: 50 });
     apply(G, 1, { t: 'chrikaReply', accept: true });
 
-    // Locked while unowned properties remain
+    // Locked while <75% owned and before Round 8
     expect(G.ghedrOpen).toBeFalsy();
     expect(canGhedr(G, 0, 'brown')).toBe(false);
-    expect(apply(G, 0, { t: 'ghedr', g: 'brown' })).toBe(false);
 
-    // Assign every property except the very last one (51 = Ain Diab)
-    for (const k of Object.keys(G.props)) {
-      const idx = +k;
-      if (idx !== 51 && G.props[idx].owner < 0) G.props[idx].owner = 2;
-    }
+    // 75% of 37 ownables = ceil(27.75) = 28 tiles. Assign 24 more (total 27 -> still locked), then buy 28th -> unlocks!
+    const unowned = Object.keys(G.props).map(Number).filter(i => G.props[i].owner < 0);
+    for (let k = 0; k < 24; k++) G.props[unowned[k]].owner = 2;
+    expect(G.ghedrOpen).toBeFalsy();
+
     G.phase = 'buy';
-    G.pending = { type: 'buy', idx: 51 };
+    G.pending = { type: 'buy', idx: unowned[24] };
     expect(apply(G, 0, { t: 'buy' })).toBe(true);
     expect(G.ghedrOpen).toBe(true);
 
-    // Now L'Ghedr is unlocked! Player 0 pulls L'Ghedr on Salé (400+450+500 = 1350 -> 80% = 1080)
-    const before0 = G.players[0].cash;
-    expect(canGhedr(G, 0, 'brown')).toBe(true);
+    // Give player 0 an existing 500 DH bank loan to verify blacklist clawback on heist
+    G.players[0].loan = 500;
+    // Salé total = 400+450+500 = 1350 -> 80% = 1080, 70% keep = 950, 10% daretCut = 130
+    const before0 = G.players[0].cash, beforeDaret = G.daret;
+    dice([4, 3]); // 7 -> Escape succeeds!
     expect(apply(G, 0, { t: 'ghedr', g: 'brown' })).toBe(true);
-    expect(G.players[0].cash).toBe(before0 + 1080);
-    expect(G.players[0].inJail).toBe(true);
-    expect(G.players[0].pos).toBe(GRAND_BOARD.jail);
-    expect(G.players[0].gheddar).toBe(true);
-    expect(G.phase).toBe('end');
+    expect(G.players[0].cash).toBe(before0 + 950 - 500); // 950 heist minus 500 loan clawback
+    expect(G.players[0].loan).toBe(0);
+    expect(G.daret).toBe(beforeDaret + 130);
+    expect(G.players[0]).toMatchObject({ inJail: true, pos: GRAND_BOARD.jail, gheddar: true, ghedrVictims: [1] });
     expect([G.props[1].owner, G.props[3].owner, G.props[4].owner]).toEqual([-1, -1, -1]);
-    // Stays unlocked even though Salé streets returned to Bank, and Gheddar cannot form new Chrikas
-    expect(G.ghedrOpen).toBe(true);
-    own(G, 0, 7, 9);
-    own(G, 1, 10, 12);
+
+    // Gheddar curse checks:
+    // 1) 3x jail bail (1,500 DH)
+    expect(jailFine(G, 0)).toBe(1500);
+    // 2) Collects 0 rent while jailed (even though jailRent is default on)
+    own(G, 0, 7);
+    const p2Before = G.players[2].cash;
+    G.players[2].pos = 7;
+    land(G, G.players[2]);
+    expect(G.players[2].cash).toBe(p2Before);
+    // 3) Bank Credit blacklisted
+    G.phase = 'roll';
+    expect(apply(G, 0, { t: 'borrow', a: 1000 })).toBe(false);
+    // 4) Cannot claim Daret pot at Qahwa
+    const potBefore = G.daret;
+    G.players[0].inJail = false;
+    G.players[0].pos = GRAND_BOARD.parking;
+    land(G, G.players[0]);
+    expect(G.daret).toBe(potBefore);
+    // 5) Pays +25% revenge rent to betrayed victim (player 1)
+    own(G, 1, 9); // Ras El Maa / Kasbah: 60 DH base rent -> +25% = 75 -> rounded to 80 DH
+    const p0BeforeRev = G.players[0].cash, p1BeforeRev = G.players[1].cash;
+    G.players[0].pos = 9;
+    land(G, G.players[0]);
+    expect(G.players[0].cash).toBe(p0BeforeRev - 80);
+    expect(G.players[1].cash).toBe(p1BeforeRev + 80);
+    // 6) Cannot form new Chrikas
+    own(G, 0, 10, 12);
     expect(chrikaCandidate(G, 0, 'lblue')).toBe(-1);
+  });
+
+  it('unlocks L’Ghedr at Round 8 even if <75% owned, and busts on 2–6 handing the entire city monopoly to the victim', () => {
+    const G = chrikaGame(3);
+    own(G, 0, 1, 3);
+    own(G, 1, 4);
+    apply(G, 0, { t: 'chrikaPropose', g: 'brown', share: 50 });
+    apply(G, 1, { t: 'chrikaReply', accept: true });
+    apply(G, 0, { t: 'build', i: 1 }); // 1 dar built by player 0
+
+    // Advance from end of Round 7 into Round 8 -> L'Ghedr unlocks immediately
+    G.round = 7;
+    G.cur = 2;
+    G.phase = 'end';
+    expect(G.ghedrOpen).toBeFalsy();
+    expect(apply(G, 2, { t: 'end' })).toBe(true);
+    expect(G.round).toBe(8);
+    expect(G.ghedrOpen).toBe(true);
+
+    // Player 0 gambles on L'Ghedr and rolls 2+4 = 6 -> BUSTED!
+    const before0 = G.players[0].cash;
+    dice([2, 4]);
+    expect(apply(G, 0, { t: 'ghedr', g: 'brown' })).toBe(true);
+    expect(G.players[0].cash).toBe(before0); // 0 DH payout
+    expect(G.players[0]).toMatchObject({ inJail: true, pos: GRAND_BOARD.jail, gheddar: true, ghedrVictims: [1] });
+    // Victim (player 1) seizes EVERY street of Salé with existing buildings intact!
+    expect(G.props[1]).toMatchObject({ owner: 1, houses: 1, mort: false });
+    expect(G.props[3]).toMatchObject({ owner: 1, houses: 0, mort: false });
+    expect(G.props[4]).toMatchObject({ owner: 1, houses: 0, mort: false });
+    expect(chrikaOf(G, 'brown')).toBeUndefined();
   });
 
   it('auto-dissolves active Chrikas cleanly when only 2 players remain', () => {

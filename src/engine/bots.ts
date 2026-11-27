@@ -1,7 +1,7 @@
 /* ---------- computer players ---------- */
 import {GROUPS, LOAN_MAX, LOAN_STEP, boardOf} from './data';
 import {actorOf, canGhedr, canShufa, chrikaCandidates, jailFine, rentFor, rideTargets, shufaPrice} from './engine';
-import {chrikaValue, groupIdx, houseCost, ownedBy, ownsGroup, priceOf} from './util';
+import {chrikaExitSplit, chrikaValue, groupIdx, houseCost, ownedBy, ownsGroup, priceOf} from './util';
 import type {Action, ChrikaOffer, Game, GroupId, Trade} from './types';
 
 const GROUP_IDS=Object.keys(GROUPS) as GroupId[];
@@ -66,9 +66,8 @@ function botChrikaReply(G: Game,o: ChrikaOffer,res: number){
     const offered=100-(o.shareFrom??50);
     return offered>=Math.max(20,fair-10);
   }
-  const {half}=chrikaValue(G,o.g);
-  const myVal=gi.filter(i=>G.props[i].owner===bot).reduce((s,i)=>s+priceOf(i,G)+G.props[i].houses*houseCost(i,G),0);
-  return p.cash<res||half>=myVal*0.85;
+  const {b:myExit,valB:myVal}=chrikaExitSplit(G,o.g,o.from,bot);
+  return p.cash<res||myExit>=myVal*0.75;
 }
 function botGhedrPick(G: Game,seat: number): GroupId | null{
   if(!G.settings.chrika||!G.ghedrOpen||!(G.chrikas&&G.chrikas.length)) return null;
@@ -76,11 +75,12 @@ function botGhedrPick(G: Game,seat: number): GroupId | null{
   for(const c of G.chrikas){
     if(c.a!==seat&&c.b!==seat) continue;
     if(!canGhedr(G,seat,c.g)) continue;
-    const {payout}=chrikaValue(G,c.g);
+    const {keep}=chrikaValue(G,c.g);
     const gi=groupIdx(c.g,G);
     const myVal=gi.filter(i=>G.props[i].owner===seat).reduce((s,i)=>s+priceOf(i,G)+G.props[i].houses*houseCost(i,G),0);
-    if(p.cash<0&&payout>=-p.cash) return c.g;
-    if(!p.inJail&&payout>=myVal*1.4&&(danger(G,seat,p.pos)>650||payout-myVal>=2500)) return c.g;
+    // 7+ escape is ~58% chance: take the gamble if desperate in debt, or when the heist haul hugely outweighs our stake
+    if(p.cash<0&&keep>=-p.cash) return c.g;
+    if(!p.inJail&&keep>=myVal*1.85&&(keep-myVal>=3500||danger(G,seat,p.pos)>800)) return c.g;
   }
   return null;
 }
@@ -110,13 +110,13 @@ export function botDecide(G: Game): {seat: number; a: Action} | null{
   // the train: ride when the squares ahead of another station cost clearly less to land on, or to buy a station
   {const to=ridePick(G,seat); if(to>=0) return {seat,a:{t:'ride',to}};}
   if(G.phase==='roll'){
-    if(p.inJail){if(p.goojf.length) return {seat,a:{t:'card'}}; if(p.cash>jailFine(G)+res&&G.round<12) return {seat,a:{t:'fine'}};}
+    if(p.inJail){if(p.goojf.length) return {seat,a:{t:'card'}}; if(p.cash>jailFine(G,seat)+res&&G.round<12) return {seat,a:{t:'fine'}};}
     return {seat,a:{t:'roll'}};
   }
   if(G.phase==='buy'){
     const i=G.pending!.idx,price=priceOf(i,G); const want=wantValue(G,seat,i)>=price*1.15||p.cash-price>=res;
     // credit: borrow the difference for a property worth having, early enough for it to pay for itself
-    if(want&&p.cash<price&&G.settings.credit&&!p.loan&&!lastRounds(G)&&wantValue(G,seat,i)>=price*1.15){
+    if(want&&p.cash<price&&G.settings.credit&&!p.loan&&!p.gheddar&&!lastRounds(G)&&wantValue(G,seat,i)>=price*1.15){
       const need=Math.ceil((price-p.cash+res/2)/LOAN_STEP)*LOAN_STEP;
       if(need<=LOAN_MAX) return {seat,a:{t:'borrow',a:need}};
     }

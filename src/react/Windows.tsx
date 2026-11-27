@@ -4,10 +4,10 @@
 import {useEffect, useRef, useState, type CSSProperties, type ReactNode} from 'react';
 import {commit, dispatch, drafting, lobbyJoin, playJoin, sendIntent} from '../app/authority';
 import {app, saveName} from '../app/state';
-import {BAND, BILL_DAR, BILL_RIAD, GROUPS, RAIL_RENT, RAIL_SIDE, boardOf} from '../engine/data';
+import {BAND, BILL_DAR, BILL_RIAD, GHEDR_UNLOCK_ROUND, GROUPS, RAIL_RENT, RAIL_SIDE, boardOf} from '../engine/data';
 import {canGhedr, canShufa, chrikaCandidates, netWorth, shufaPrice, sideBonus, tradeable} from '../engine/engine';
 import type {Action, Game, GroupId} from '../engine/types';
-import {alive, chrikaOf, chrikaValue, colorOf, groupIdx, isOwnable, ownedBy, priceOf, unownedCount} from '../engine/util';
+import {alive, chrikaExitSplit, chrikaOf, chrikaValue, colorOf, ghedrProgress, groupIdx, isOwnable, ownedBy, priceOf} from '../engine/util';
 import {cityN, fmt, noteN, num, spN, t, tokN} from '../i18n/core';
 import type {Lobby} from '../online/table';
 import {toast} from '../ui/dom';
@@ -519,6 +519,59 @@ function TradeReplyWindow() {
 
 /* ---------- Chrika (city pacts) ---------- */
 const SPLITS = [20, 30, 40, 50, 60, 70, 80];
+
+/** Painted street strip for a city showing who owns each street & any buildings */
+function CityStreetStrip({V, g, meId}: {V: Game; g: GroupId; meId: number}) {
+  const B = boardOf(V);
+  const gi = groupIdx(g, V);
+  return (
+    <div className="ch-strip">
+      {gi.map(i => {
+        const s = B.spaces[i], pr = V.props[i];
+        const owner = pr.owner >= 0 ? V.players[pr.owner] : null;
+        const isMe = pr.owner === meId;
+        return (
+          <div key={i} className={`ch-tile${isMe ? ' mine' : owner ? ' partner' : ' free'}`}>
+            <div className="ch-tile-art">
+              {s.art ? <img src={s.art} alt="" /> : <span />}
+              {pr.houses > 0 && (
+                <span className="ch-tile-b">{pr.houses === 5 ? '✦' : '▪'.repeat(pr.houses)}</span>
+              )}
+            </div>
+            <div className="ch-tile-nm">{spN(i, V)}</div>
+            <div className="ch-tile-own">
+              {owner ? (
+                <>
+                  <i style={{background: owner.color}} />
+                  <span>{isMe ? t('ch.yours') : owner.name}</span>
+                </>
+              ) : (
+                <span className="free-lbl">{t('ch.unowned')}</span>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Cities where `me` owns >= 1 street, at most 1 rival owns streets, and 1–2 streets remain unowned */
+function almostReadyCities(V: Game, pid: number) {
+  const out: {g: GroupId; missing: number; other: number}[] = [];
+  for (const g of Object.keys(GROUPS) as GroupId[]) {
+    if (chrikaOf(V, g)) continue;
+    const gi = groupIdx(g, V);
+    const mine = gi.filter(i => V.props[i].owner === pid).length;
+    if (mine === 0 || mine === gi.length) continue;
+    const missing = gi.filter(i => V.props[i].owner < 0).length;
+    if (missing === 0 || missing > 2) continue;
+    const others = [...new Set(gi.map(i => V.props[i].owner).filter(o => o >= 0 && o !== pid))];
+    if (others.length <= 1) out.push({g, missing, other: others[0] ?? -1});
+  }
+  return out;
+}
+
 function ChrikaWindow() {
   const V = game();
   const seats = mySeats();
@@ -543,7 +596,9 @@ function ChrikaWindow() {
   const active = (V.chrikas || []).filter(c => c.a === me.id || c.b === me.id);
   const allActive = V.chrikas || [];
   const chosen = cands.find(c => c.g === city) || cands[0] || null;
-  const left = unownedCount(V);
+  const gp = ghedrProgress(V);
+  const unlockPct = gp.needed ? Math.min(100, Math.round((gp.owned / gp.needed) * 100)) : 0;
+  const almost = !chosen && !me.gheddar ? almostReadyCities(V, me.id) : [];
   const pickCity = (g: GroupId) => { setCity(g); setShare(defaultShare(g)); };
   const propose = () => {
     if (!chosen || !canAct || me.cash < 0) return;
@@ -560,34 +615,62 @@ function ChrikaWindow() {
     toast(t('ch.exitSent', {p: V.players[partner].name}));
   };
   return (
-    <Frame kind="chrika" title={t('ch.title')} footer={<button className="btn" onClick={closeModal}>{t('btn.done')}</button>}>
-      <div className={`chrika-banner ${V.ghedrOpen ? 'open' : ''}`}>
-        {V.ghedrOpen ? '🔥 ' + t('ch.unlocked') : '🔒 ' + t('ch.locked', {n: left})}
+    <Frame kind="chrika" cls="wide chrika-modal" title={<><span>{t('ch.title')}</span> <span className="tr-ar">شركة</span></>} footer={<button className="btn" onClick={closeModal}>{t('btn.done')}</button>}>
+      {/* Live L'Ghedr Unlock Progress Banner */}
+      <div className={`ch-ubanner${V.ghedrOpen ? ' open' : ''}`}>
+        <div className="ch-ub-top">
+          <span>{V.ghedrOpen ? '🔥 ' + t('ch.unlocked') : '🔒 ' + t('ch.locked', {n: gp.leftToUnlock, r: GHEDR_UNLOCK_ROUND})}</span>
+          <b>{V.ghedrOpen ? '7+ OPEN' : `${gp.owned}/${gp.needed} · R${V.round}/${GHEDR_UNLOCK_ROUND}`}</b>
+        </div>
+        <div className="ch-ub-bar"><i style={{width: `${V.ghedrOpen ? 100 : unlockPct}%`}} /></div>
       </div>
 
+      {/* Active Partnerships */}
       {active.length > 0 && (
         <div className="chrika-sec">
           <h4>{t('ch.active')}</h4>
           {active.map(c => {
             const other = c.a === me.id ? c.b : c.a;
+            const partner = V.players[other];
             const myShare = c.a === me.id ? c.shareA : 100 - c.shareA;
-            const {payout} = chrikaValue(V, c.g);
+            const {keep} = chrikaValue(V, c.g);
+            const ex = chrikaExitSplit(V, c.g, me.id, other);
             const ghedrOk = canAct && canGhedr(V, me.id, c.g);
             return (
-              <div key={c.g} className="chrika-card">
-                <div className="chrika-card-hd">
-                  <span className="chip" style={{background: GROUPS[c.g].color}} />
-                  <b>{cityN(c.g)}</b>
-                  <span className="muted">{t('ch.partner', {o: V.players[other].name})}</span>
+              <div key={c.g} className="ch-desk-card" style={{'--cc': GROUPS[c.g].color} as CSSProperties}>
+                <div className="ch-dc-hd">
+                  <span className="ch-city-dot" style={{background: GROUPS[c.g].color}} />
+                  <div className="ch-dc-ttl">
+                    <b>{cityN(c.g)}</b>
+                    {app.LANG !== 'ar' && <span className="ch-dc-ar">{GROUPS[c.g].ar}</span>}
+                  </div>
+                  <div className="ch-duo">
+                    <Coin token={me.token} style={{boxShadow: `0 0 0 2px ${me.color}`}} />
+                    <span>🤝</span>
+                    <Coin token={partner.token} style={{boxShadow: `0 0 0 2px ${partner.color}`}} />
+                    <b>{partner.name}</b>
+                  </div>
                 </div>
-                <div className="chrika-card-meta">
-                  <span>{t('ch.splitLine', {p: me.name, n: myShare, o: V.players[other].name, m: 100 - myShare})}</span>
-                  <span>{t('ch.val', {a: fmt(payout)})}</span>
+
+                <CityStreetStrip V={V} g={c.g} meId={me.id} />
+
+                <div className="ch-bar-vis">
+                  <div className="ch-bv-lbls">
+                    <span>{me.name} <b>{myShare}%</b></span>
+                    <span><b>{100 - myShare}%</b> {partner.name}</span>
+                  </div>
+                  <div className="ch-bv-track">
+                    <i style={{width: `${myShare}%`, background: me.color}} />
+                    <i style={{width: `${100 - myShare}%`, background: partner.color}} />
+                  </div>
                 </div>
-                <div className="chrika-card-acts">
-                  <button className="btn sm" disabled={!canAct} onClick={() => askExit(c.g, other)}>{t('btn.chrikaExit')}</button>
+
+                <div className="ch-dc-acts">
+                  <button className="btn sm ghost" disabled={!canAct} onClick={() => askExit(c.g, other)}>
+                    🤝 {t('btn.chrikaExit')} · <b>+{fmt(ex.a)}</b>
+                  </button>
                   <button className="btn sm danger" disabled={!ghedrOk} title={V.ghedrOpen ? undefined : t('ch.ghedrLockedTip')} onClick={() => openGhedr(c.g)}>
-                    {t('btn.ghedrGo', {a: fmt(payout)})}
+                    🎲 {t('btn.ghedrGo', {a: fmt(keep)})}
                   </button>
                 </div>
               </div>
@@ -596,41 +679,82 @@ function ChrikaWindow() {
         </div>
       )}
 
+      {/* Ready to Partner / Gheddar Lock / Almost Ready */}
       {me.gheddar ? (
-        <p className="chrika-warn">{t('ch.blocked')}</p>
+        <div className="chrika-warn">⛔ {t('ch.blocked')}</div>
       ) : chosen ? (
         <div className="chrika-sec">
           <h4>{t('ch.available')}</h4>
           <div className="chrika-cities">
-            {cands.map(c => (
-              <button key={c.g} className={`chrika-city${chosen.g === c.g ? ' on' : ''}`} onClick={() => pickCity(c.g)}>
-                <span className="chip" style={{background: GROUPS[c.g].color}} />
-                <b>{cityN(c.g)}</b>
-                <span className="muted">· {V.players[c.other].name}</span>
-              </button>
-            ))}
+            {cands.map(c => {
+              const prt = V.players[c.other];
+              return (
+                <button key={c.g} type="button" className={`chrika-city${chosen.g === c.g ? ' on' : ''}`} onClick={() => pickCity(c.g)}>
+                  <span className="chip" style={{background: GROUPS[c.g].color}} />
+                  <b>{cityN(c.g)}</b>
+                  <Coin token={prt.token} style={{boxShadow: `0 0 0 2px ${prt.color}`, width: 22, height: 22}} />
+                  <span className="muted">{prt.name}</span>
+                </button>
+              );
+            })}
           </div>
-          <div className="chrika-split">
-            <div className="muted" style={{fontSize: 12.5}}>{t('ch.split')}: <b>{t('ch.splitLine', {p: me.name, n: share, o: V.players[chosen.other].name, m: 100 - share})}</b></div>
+
+          <div className="ch-desk-card" style={{'--cc': GROUPS[chosen.g].color} as CSSProperties}>
+            <CityStreetStrip V={V} g={chosen.g} meId={me.id} />
+            <div className="ch-perks">
+              <span>🏗️ {t('ch.perkBuild')}</span>
+              <span>🏠 {t('ch.perkFree')}</span>
+              <span>💸 {t('ch.perkSplit')}</span>
+            </div>
+            <div className="ch-bar-vis">
+              <div className="ch-bv-lbls">
+                <span>{me.name} <b>{share}%</b></span>
+                <span><b>{100 - share}%</b> {V.players[chosen.other].name}</span>
+              </div>
+              <div className="ch-bv-track">
+                <i style={{width: `${share}%`, background: me.color}} />
+                <i style={{width: `${100 - share}%`, background: V.players[chosen.other].color}} />
+              </div>
+            </div>
             <div className="chrika-pills">
               {SPLITS.map(v => (
                 <button key={v} type="button" className={share === v ? 'on' : ''} onClick={() => setShare(v)}>{v}/{100 - v}</button>
               ))}
             </div>
+            <button className="btn gold" style={{justifyContent: 'center'}} disabled={!canAct || me.cash < 0} onClick={propose}>
+              🤝 {t('btn.chrikaPropose')} · {cityN(chosen.g)} ({share}/{100 - share})
+            </button>
           </div>
-          <button className="btn gold" style={{marginTop: 10}} disabled={!canAct || me.cash < 0} onClick={propose}>{t('btn.chrikaPropose')}</button>
+        </div>
+      ) : almost.length > 0 ? (
+        <div className="chrika-sec">
+          <h4>{t('ch.almost')}</h4>
+          <div className="ch-almost-list">
+            {almost.slice(0, 2).map(a => (
+              <div key={a.g} className="ch-almost-card" style={{'--cc': GROUPS[a.g].color} as CSSProperties}>
+                <div className="ch-al-hd">
+                  <span className="chip" style={{background: GROUPS[a.g].color}} />
+                  <b>{cityN(a.g)}</b>
+                  <span className="ch-al-miss">{t('ch.missing', {n: a.missing})}</span>
+                </div>
+                <CityStreetStrip V={V} g={a.g} meId={me.id} />
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
-        <p className="muted" style={{fontSize: 13}}>{t('ch.none')}</p>
+        <div className="tr-empty">{t('ch.none')}</div>
       )}
 
       {allActive.length > active.length && (
         <div className="chrika-sec">
-          <div className="muted" style={{fontSize: 12}}>
+          <h4>{t('ch.otherPacts')}</h4>
+          <div className="ch-others">
             {allActive.filter(c => c.a !== me.id && c.b !== me.id).map(c => (
-              <div key={c.g} style={{display: 'flex', alignItems: 'center', gap: 6, marginTop: 4}}>
+              <div key={c.g} className="ch-oth-row">
                 <span className="chip" style={{background: GROUPS[c.g].color}} />
-                <b>{cityN(c.g)}</b>: {V.players[c.a].name} ({c.shareA}%) &amp; {V.players[c.b].name} ({100 - c.shareA}%)
+                <b>{cityN(c.g)}</b>
+                <span>{V.players[c.a].name} ({c.shareA}%) 🤝 {V.players[c.b].name} ({100 - c.shareA}%)</span>
               </div>
             ))}
           </div>
@@ -645,44 +769,107 @@ function ChrikaReplyWindow() {
   const V = game(), o = V?.chrikaOffer;
   if (!V || !o) return null;
   const from = V.players[o.from], to = V.players[o.to];
-  const share = o.shareFrom ?? 50;
-  const {payout, half} = chrikaValue(V, o.g);
+  const shareFrom = o.shareFrom ?? 50;
+  const shareTo = 100 - shareFrom;
+  const ex = chrikaExitSplit(V, o.g, o.from, o.to);
   const answer = (accept: boolean) => { closeModal(); dispatch({t: 'chrikaReply', accept}, o.to); };
   return (
-    <Frame kind="creply" title={t(o.kind === 'form' ? 'chr.formTitle' : 'chr.exitTitle', {p: to.name})} mine footer={<>
-      <button className="btn" onClick={() => answer(false)}>{t('btn.refuse')}</button>
+    <Frame kind="creply" cls="wide chrika-modal" title={t(o.kind === 'form' ? 'chr.formTitle' : 'chr.exitTitle', {p: to.name})} mine footer={<>
+      <button className="btn ghost" onClick={() => answer(false)}>{t('btn.refuse')}</button>
       <button className="btn green" onClick={() => answer(true)}>{t('btn.accept')}</button>
     </>}>
-      {app.MODE === 'local' && <p><Rich k="trr.pass" p={{p: to.name}} /></p>}
-      <div className="preview" style={{flexDirection: 'column', alignItems: 'flex-start', gap: 8}}>
-        <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
-          <span className="chip" style={{background: GROUPS[o.g].color, width: 14, height: 14}} />
-          <b>{cityN(o.g)}</b>
+      {app.MODE === 'local' && <p style={{margin: 0}}><Rich k="trr.pass" p={{p: to.name}} /></p>}
+      <div className="ch-desk-card" style={{'--cc': GROUPS[o.g].color} as CSSProperties}>
+        <div className="ch-dc-hd">
+          <span className="ch-city-dot" style={{background: GROUPS[o.g].color}} />
+          <div className="ch-dc-ttl">
+            <b>{cityN(o.g)}</b>
+            {app.LANG !== 'ar' && <span className="ch-dc-ar">{GROUPS[o.g].ar}</span>}
+          </div>
+          <div className="ch-duo">
+            <Coin token={from.token} style={{boxShadow: `0 0 0 2px ${from.color}`}} />
+            <b>{from.name}</b>
+          </div>
         </div>
-        <div>
-          {o.kind === 'form'
-            ? <Rich k="chr.formBody" p={{p: from.name, o: to.name, g: cityN(o.g), n: String(share), m: String(100 - share)}} />
-            : <Rich k="chr.exitBody" p={{p: from.name, g: cityN(o.g), a: fmt(payout), b: fmt(half)}} />}
-        </div>
+
+        <CityStreetStrip V={V} g={o.g} meId={to.id} />
+
+        {o.kind === 'form' ? (
+          <>
+            <div className="ch-perks">
+              <span>🏗️ {t('ch.perkBuild')}</span>
+              <span>🏠 {t('ch.perkFree')}</span>
+              <span>💸 {t('ch.perkSplit')}</span>
+            </div>
+            <div className="ch-bar-vis">
+              <div className="ch-bv-lbls">
+                <span>{to.name} <b>{shareTo}%</b></span>
+                <span><b>{shareFrom}%</b> {from.name}</span>
+              </div>
+              <div className="ch-bv-track">
+                <i style={{width: `${shareTo}%`, background: to.color}} />
+                <i style={{width: `${shareFrom}%`, background: from.color}} />
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="gh-outcomes">
+            <div className="gh-box win">
+              <small>{t('ch.youGet', {p: to.name})}</small>
+              <div className="gh-big">+{fmt(ex.b)}</div>
+            </div>
+            <div className="gh-box neutral">
+              <small>{t('ch.youGet', {p: from.name})}</small>
+              <div className="gh-big gold">+{fmt(ex.a)}</div>
+            </div>
+          </div>
+        )}
       </div>
     </Frame>
   );
 }
 
-/* ---------- confirming L'Ghedr ---------- */
+/* ---------- confirming High-Risk Hybrid L'Ghedr ---------- */
 function GhedrWindow({g}: {g: GroupId}) {
   const V = game(); if (!V) return null;
   const ch = chrikaOf(V, g); if (!ch) return null;
   const pid = V.cur;
   if (ch.a !== pid && ch.b !== pid) return null;
   const victim = V.players[ch.a === pid ? ch.b : ch.a];
-  const {payout} = chrikaValue(V, g);
+  const {keep, daretCut} = chrikaValue(V, g);
   return (
-    <Frame kind="ghedr" title={t('ch.ghedrTitle', {g: cityN(g)})} footer={<>
-      <button className="btn" onClick={closeModal}>{t('btn.cancel')}</button>
-      <button className="btn danger" disabled={!canGhedr(V, pid, g)} onClick={() => { closeModal(); dispatch({t: 'ghedr', g}, pid); }}>{t('btn.ghedrGo', {a: fmt(payout)})}</button>
+    <Frame kind="ghedr" cls="wide chrika-modal ghedr-modal" title={<><span>{t('ch.ghedrTitle', {g: cityN(g)})}</span> <span className="tr-ar">الغدر</span></>} footer={<>
+      <button className="btn ghost" onClick={closeModal}>{t('btn.cancel')}</button>
+      <button className="btn danger" disabled={!canGhedr(V, pid, g)} onClick={() => { closeModal(); dispatch({t: 'ghedr', g}, pid); }}>
+        🎲 {t('btn.ghedrGo', {a: fmt(keep)})}
+      </button>
     </>}>
-      <p>{t('ch.ghedrBody', {g: cityN(g), o: victim.name, a: fmt(payout)})}</p>
+      <CityStreetStrip V={V} g={g} meId={pid} />
+
+      <div className="gh-outcomes">
+        <div className="gh-box win">
+          <div className="gh-top"><b>🎲 7+ Escape</b><span>~58%</span></div>
+          <div className="gh-big">+{fmt(keep)}</div>
+          <div className="gh-meta">
+            {V.settings.daret && daretCut > 0 && <span>{t('ch.daretCut', {a: fmt(daretCut)})}</span>}
+            <span>{t('ch.cityToBank', {g: cityN(g)})}</span>
+          </div>
+        </div>
+        <div className="gh-box lose">
+          <div className="gh-top"><b>🚨 2–6 Busted</b><span>~42%</span></div>
+          <div className="gh-big red">0 DH</div>
+          <div className="gh-meta">
+            <span>{t('ch.seizesAll', {o: victim.name, g: cityN(g)})}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="gh-curse-grid">
+        <span>🔒 {t('ch.cBail')}</span>
+        <span>🏦 {t('ch.cCredit')}</span>
+        <span>☕ {t('ch.cDaret')}</span>
+        <span>⚔️ {t('ch.cRevenge', {o: victim.name})}</span>
+      </div>
     </Frame>
   );
 }

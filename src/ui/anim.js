@@ -17,7 +17,7 @@ export async function runAnim(a){
   const G=app.PEND||app.V, B=boardOf(G);
   const sp=speed(), rm=reduceMotion();
   switch(a.k){
-    case 'dice':{sfx('dice'); setTimeout(()=>sfx('land'),rm?50:560*sp); setDice(a.d,!rm,sp); setEvent(tl(['rolls',{p:pname(a.pid),d1:a.d[0],d2:a.d[1]}])+(a.d[0]===a.d[1]?t('ev.double'):'')); await sleep(rm?100:950*sp); break;}
+    case 'dice':{sfx('dice'); setTimeout(()=>sfx('land'),rm?50:560*sp); setDice(a.d,!rm,sp); setEvent(a.ghedr?t('ev.ghedrRoll',{p:pname(a.pid),d1:a.d[0],d2:a.d[1],tot:a.d[0]+a.d[1]}):tl(['rolls',{p:pname(a.pid),d1:a.d[0],d2:a.d[1]}])+(a.d[0]===a.d[1]?t('ev.double'):'')); await sleep(rm?100:950*sp); break;}
     case 'move':{
       const el=$('pw'+a.pid); if(!el){app.dpos[a.pid]=(a.from+a.steps)%B.size; break;}
       el.style.zIndex=9;   // above every piece standing on a square
@@ -50,8 +50,9 @@ export async function runAnim(a){
       else if(a.f==='build'){sfx('build'); const p=app.PEND||app.V; app.boardFx.houses[a.idx]=p.props[a.idx].houses; app.boardFx.pop=a.idx; refresh(); await sleep(220*sp);}
       else if(a.f==='deal'){sfx('deal'); floatAt(a.pid,t('fl.deal'),'gold'); floatAt(a.to,t('fl.deal'),'gold'); await sleep(500*sp);}
       else if(a.f==='chrika'){sfx('deal'); floatAt(a.pid,t('fl.chrika'),'gold'); floatAt(a.to,t('fl.chrika'),'gold'); await sleep(550*sp);}
-      else if(a.f==='chrikaExit'){sfx('coins'); floatAt(a.pid,'+'+fmt(a.amt),'plus'); floatAt(a.to,'+'+fmt(a.amt),'plus'); await sleep(550*sp);}
-      else if(a.f==='ghedr'){sfx('gavel'); floatAt(a.pid,'+'+fmt(a.amt),'gold'); floatAt(a.to,t('fl.ghedr'),'minus'); await sleep(750*sp);}
+      else if(a.f==='chrikaExit'){sfx('coins'); floatAt(a.pid,'+'+fmt(a.amt),'plus'); floatAt(a.to,'+'+fmt(a.amtB??a.amt),'plus'); await sleep(550*sp);}
+      else if(a.f==='ghedr'){sfx('gavel'); floatAt(a.pid,'+'+fmt(a.amt),'gold'); floatAt(a.to,t('fl.ghedr'),'minus'); confettiAt(null,90); await showHeistStamp(true,t('fl.ghedr'),`${pname(a.pid)} +${fmt(a.amt)}`,sp);}
+      else if(a.f==='ghedrBusted'){sfx('jail'); floatAt(a.pid,t('fl.busted'),'minus'); floatAt(a.to,t('fl.monopoly'),'gold'); await showHeistStamp(false,t('fl.busted'),`${pname(a.to)} · ${t('fl.monopoly')}`,sp);}
       else if(a.f==='ghedrOpen'){sfx('gavel'); setEvent(t('ev.ghedrOpen')); await sleep(600*sp);}
       else if(a.f==='dlala'){sfx('gavel'); setEvent(t('ev.dlala')); await sleep(400);}
       else if(a.f==='bankrupt'){sfx('sad'); floatAt(a.pid,t('fl.bankrupt'),'minus'); await sleep(800*sp);}
@@ -79,6 +80,12 @@ function confettiAt(box,count){
 function jailBars(jailIdx=10){
   const b=$('board'); if(!b||reduceMotion()) return; const c=cellBox(jailIdx); const d=document.createElement('div'); d.className='jailbars';
   d.style.left=(c.x-c.w/2)+'px'; d.style.top=(c.y-c.h/2)+'px'; d.style.width=c.w+'px'; d.style.height=c.h+'px'; b.appendChild(d); setTimeout(()=>d.remove(),1000);
+}
+async function showHeistStamp(win,title,sub,sp=1){
+  const st=$('stage'); if(!st){await sleep(750*sp); return;}
+  st.innerHTML=`<div class="heist-stamp ${win?'win':'lose'}"><div class="hs-ico">${win?'💰':'🚨'}</div><div class="hs-t">${esc(title)}</div><div class="hs-s">${esc(sub)}</div></div>`;
+  await sleep(reduceMotion()?250:1550*sp);
+  st.innerHTML='';
 }
 /* A revealed card is a real two-sided card (styles: .card3d): it lifts off the square `from` face down, turns
    over on its way to the middle of the board and lands facing the players. `sp` scales how long that takes. */

@@ -1342,3 +1342,94 @@ html[dir="rtl"] .side-reopen{right:auto;left:0;border-radius:0 14px 14px 0;borde
 /* Fixed bottom wrapper when Table View (3D) is active AND sidebar is collapsed */
 .table-focus-dock{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:25;width:min(420px,calc(100vw - 32px))}
 .table-focus-dock .felt-hud{width:100%;max-width:none;margin:0}
+
+
+/* Hybrid L'Ghedr Confirmation Briefing & Gheddar Blacklist */
+.gh-outcomes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.gh-outcomes{grid-template-columns:1fr}}
+.gh-box{padding:11px 12px;border-radius:13px;border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:5px}
+.gh-box b{font-family:var(--f-display);font-size:13.5px}
+.gh-box p{margin:0;font-size:12.5px;line-height:1.45;color:#dbe4ee}
+.gh-box.win{background:linear-gradient(155deg,rgba(23,168,98,.18),rgba(10,34,22,.65));border-color:rgba(23,168,98,.48)}
+.gh-box.win b{color:#5ee39a}
+.gh-box.lose{background:linear-gradient(155deg,rgba(232,71,77,.2),rgba(38,12,15,.7));border-color:rgba(232,71,77,.5)}
+.gh-box.lose b{color:#ff8a8f}
+.gh-curse{padding:9px 11px;border-radius:11px;background:rgba(227,179,74,.1);border:1px solid rgba(227,179,74,.38);color:#f4d685;font-size:12px;line-height:1.45}
+.cc-blacklisted{padding:8px 10px;border-radius:10px;background:rgba(232,71,77,.16);border:1px solid rgba(232,71,77,.42);color:#ff9ba0;font-size:12px;font-weight:600;line-height:1.4}
+
+
+/* ==================== VISUAL CHRIKA DESK & L'GHEDR HEIST BRIEFING ==================== */
+.modal.chrika-modal{background:linear-gradient(180deg,#121a17 0%,#0c1015 100%);border:1px solid rgba(227,179,74,.34);box-shadow:0 36px 90px rgba(0,0,0,.72)}
+.modal.ghedr-modal{background:linear-gradient(180deg,#1c1013 0%,#0e0b0d 100%);border-color:rgba(232,71,77,.5)}
+.ch-ubanner{padding:10px 13px;border-radius:13px;background:rgba(23,168,98,.1);border:1px solid rgba(23,168,98,.32);display:flex;flex-direction:column;gap:7px}
+.ch-ubanner.open{background:linear-gradient(135deg,rgba(232,71,77,.2),rgba(227,179,74,.1));border-color:rgba(232,71,77,.55)}
+.ch-ub-top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:#dbe9e0}
+.ch-ubanner.open .ch-ub-top{color:#ffb9bc;font-weight:700}
+.ch-ub-top b{font-family:var(--f-display);font-size:11.5px;color:var(--gold);white-space:nowrap}
+.ch-ub-bar{height:5px;border-radius:999px;background:rgba(255,255,255,.09);overflow:hidden}
+.ch-ub-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#17a862,#e3b34a);transition:width .35s ease}
+.ch-ubanner.open .ch-ub-bar i{background:linear-gradient(90deg,#f59e0b,#ef4444)}
+
+.ch-desk-card{padding:12px;border-radius:15px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1);
+  border-top:3px solid var(--cc,var(--gold));display:flex;flex-direction:column;gap:11px}
+.ch-dc-hd{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.ch-city-dot{width:12px;height:12px;border-radius:50%;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.2)}
+.ch-dc-ttl{display:flex;align-items:baseline;gap:6px;flex:1;min-width:0}
+.ch-dc-ttl b{font-family:var(--f-display);font-size:15px;color:#fff}
+.ch-dc-ar{font-family:var(--f-ar);font-size:13px;color:var(--gold);font-weight:700}
+.ch-duo{display:inline-flex;align-items:center;gap:6px;padding:3px 9px 3px 5px;border-radius:999px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);font-size:12px}
+.ch-duo .coin{width:24px;height:24px;padding:0;background:none}
+.ch-duo b{color:#fff}
+
+/* Painted City Street Strip */
+.ch-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:8px}
+.ch-tile{padding:7px;border-radius:11px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
+.ch-tile.mine{border-color:rgba(227,179,74,.45);background:rgba(227,179,74,.07)}
+.ch-tile.free{opacity:.62;border-style:dashed}
+.ch-tile-art{position:relative;width:54px;height:80px;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,.2);background:#192028;box-shadow:0 6px 14px rgba(0,0,0,.4)}
+.ch-tile-art img{width:100%;height:100%;object-fit:cover;display:block}
+.ch-tile-b{position:absolute;top:3px;right:3px;padding:1px 4px;border-radius:4px;background:rgba(0,0,0,.78);color:#5ee39a;font-size:9.5px;font-weight:800;line-height:1}
+.ch-tile-nm{font-size:11.5px;font-weight:700;color:#fff;line-height:1.2;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch-tile-own{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;color:#b8c7d6}
+.ch-tile-own i{width:7px;height:7px;border-radius:50%}
+.ch-tile-own .free-lbl{color:#8c98a8;font-style:italic}
+
+/* Visual Split Ratio Bar */
+.ch-bar-vis{display:flex;flex-direction:column;gap:5px}
+.ch-bv-lbls{display:flex;justify-content:space-between;font-size:12px;color:#cfd8e3}
+.ch-bv-lbls b{color:var(--gold);font-family:var(--f-display)}
+.ch-bv-track{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;display:flex;gap:2px}
+.ch-bv-track i{display:block;height:100%;border-radius:999px;transition:width .2s ease}
+
+.ch-perks{display:flex;flex-wrap:wrap;gap:6px}
+.ch-perks span{padding:4px 9px;border-radius:999px;background:rgba(23,168,98,.14);border:1px solid rgba(23,168,98,.32);color:#9bf0c0;font-size:11.5px;font-weight:700}
+.ch-dc-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ch-dc-acts .btn{justify-content:center}
+
+/* Almost Ready Cities */
+.ch-almost-list{display:flex;flex-direction:column;gap:9px}
+.ch-almost-card{padding:10px;border-radius:13px;background:rgba(255,255,255,.025);border:1px dashed rgba(255,255,255,.16);border-top:2.5px solid var(--cc,var(--gold));display:flex;flex-direction:column;gap:8px}
+.ch-al-hd{display:flex;align-items:center;gap:7px;font-size:13px}
+.ch-al-miss{margin-inline-start:auto;padding:2px 8px;border-radius:999px;background:rgba(227,179,74,.14);color:var(--gold);font-size:11px;font-weight:700}
+.ch-others{display:flex;flex-direction:column;gap:5px}
+.ch-oth-row{display:flex;align-items:center;gap:7px;font-size:12px;color:#b8c4d0;padding:5px 8px;border-radius:8px;background:rgba(255,255,255,.03)}
+
+/* Scannable L'Ghedr Outcomes & Curse Chips */
+.gh-box.neutral{background:rgba(255,255,255,.04);border-color:rgba(227,179,74,.32)}
+.gh-box small{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim)}
+.gh-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.gh-top span{font-family:var(--f-display);font-size:11px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(0,0,0,.35);color:#fff}
+.gh-big{font-family:var(--f-display);font-size:24px;font-weight:900;color:#5ee39a;line-height:1.15;font-variant-numeric:tabular-nums;margin:2px 0}
+.gh-big.red{color:#ff7b80}.gh-big.gold{color:var(--gold)}
+.gh-meta{display:flex;flex-direction:column;gap:2px;font-size:12px;color:#d6e0ea}
+.gh-curse-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.gh-curse-grid span{padding:6px 9px;border-radius:9px;background:rgba(227,179,74,.1);border:1px solid rgba(227,179,74,.32);color:#f4d685;font-size:11.5px;font-weight:700}
+
+/* Center-Board Dramatic Heist / Busted Stamp */
+.heist-stamp{padding:16px 26px;border-radius:18px;text-align:center;backdrop-filter:blur(8px);box-shadow:0 24px 60px rgba(0,0,0,.72);animation:popin .35s cubic-bezier(.3,1.6,.5,1)}
+.heist-stamp.win{background:linear-gradient(155deg,rgba(16,86,49,.95),rgba(7,32,19,.96));border:2px solid var(--gold)}
+.heist-stamp.lose{background:linear-gradient(155deg,rgba(155,24,30,.95),rgba(48,8,12,.96));border:2px solid #ff7b80}
+.hs-ico{font-size:34px;line-height:1;margin-bottom:4px}
+.hs-t{font-family:var(--f-display);font-size:22px;font-weight:900;letter-spacing:.08em;color:#fff}
+.heist-stamp.win .hs-t{color:var(--gold)}
+.hs-s{font-size:13.5px;font-weight:700;color:#eef3f7;margin-top:4px}

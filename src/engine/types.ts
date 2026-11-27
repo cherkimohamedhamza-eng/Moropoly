@@ -54,6 +54,8 @@ export interface Player {
   shufaUsed?: boolean;
   /** permanent traitor mark after pulling L'Ghedr (house rule: chrika) */
   gheddar?: boolean;
+  /** seat ids betrayed via L'Ghedr (they collect +25% revenge rent from this player) */
+  ghedrVictims?: number[];
   /** computer players: the turn they last proposed a Chrika */
   chrikaTried?: number;
 }

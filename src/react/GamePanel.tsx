@@ -4,10 +4,10 @@ import {useEffect, useState, type CSSProperties, type ReactNode} from 'react';
 import {amHost, dispatch, hostAct} from '../app/authority';
 import {hostOnline, onlineCids} from '../app/online';
 import {app} from '../app/state';
-import {LOAN_MAX, LOAN_RATE, LOAN_STEP, RAIL_RENT, RIAD_PREMIUM, SHUFA_MARKUP, boardOf} from '../engine/data';
+import {GHEDR_UNLOCK_ROUND, LOAN_MAX, LOAN_RATE, LOAN_STEP, RAIL_RENT, RIAD_PREMIUM, SHUFA_MARKUP, boardOf} from '../engine/data';
 import {canBuild, canGhedr, canMort, canRiad, canSell, canShufa, canUnmort, chrikaCandidates, interestOn, jailFine, netWorth, rentFor, riadCost, rideTargets} from '../engine/engine';
 import type {Game} from '../engine/types';
-import {chrikaOf, chrikaValue, colorOf, groupIdx, hasCityRights, houseCost, ownedBy, priceOf, unmortCost, unownedCount} from '../engine/util';
+import {chrikaOf, chrikaValue, colorOf, ghedrProgress, groupIdx, hasCityRights, houseCost, ownedBy, priceOf, unmortCost} from '../engine/util';
 import {cityN, fmt, spN, t, tl} from '../i18n/core';
 import {goHome} from '../ui/home';
 import {layoutPawns} from '../ui/board';
@@ -169,12 +169,13 @@ export function buildTurnState(G: Game, onOpenDeeds = () => setTab('deeds')) {
       );
     }
   } else if (G.phase === 'roll') {
-    status = p.inJail ? t('tc.inJail', {p: p.name, n: p.jailTurns + 1, a: fmt(jailFine(G))}) : G.rollAgain ? t('tc.again') : t('tc.toRoll', {p: p.name});
+    const fine = jailFine(G, p.id);
+    status = p.inJail ? t('tc.inJail', {p: p.name, n: p.jailTurns + 1, a: fmt(fine)}) : G.rollAgain ? t('tc.again') : t('tc.toRoll', {p: p.name});
     if (mine) {
       const chReady = !!G.settings.chrika && (chrikaCandidates(G, p.id).length > 0 || (G.chrikas || []).some(c => c.a === p.id || c.b === p.id));
       primary.push({key: 'roll', cls: 'red', label: t('btn.roll'), onClick: () => dispatch({t: 'roll'})});
       if (p.inJail) {
-        sub.push({key: 'fine', cls: 'gold', label: t('btn.payFine', {a: fmt(jailFine(G))}), onClick: () => dispatch({t: 'fine'}), disabled: p.cash < jailFine(G)});
+        sub.push({key: 'fine', cls: 'gold', label: t('btn.payFine', {a: fmt(fine)}), onClick: () => dispatch({t: 'fine'}), disabled: p.cash < fine});
         if (p.goojf.length) sub.push({key: 'card', cls: 'green', label: t('btn.useCard'), onClick: () => dispatch({t: 'card'})});
       }
       sub.push({key: 'trade', cls: 'ghost', label: t('btn.tbadel'), onClick: openTrade});
@@ -281,7 +282,7 @@ export function TurnCard() {
   const view = app.tab === 'deeds' || app.tab === 'book' || (app.tab === 'deals' && hasDeals) ? app.tab : 'log';
   const chOn = !!G.settings.chrika;
   const chCount = (G.chrikas || []).length;
-  const ghedrLeft = chOn ? unownedCount(G) : 0;
+  const gp = chOn ? ghedrProgress(G) : null;
 
   return (
     <div className="sb-root sb-hud">
@@ -302,7 +303,14 @@ export function TurnCard() {
                 <div className="hud-nm">
                   {on && pl.human && <span className={`dotst ${pl.cid && on.has(pl.cid) ? 'on' : ''}`} />}
                   <span>{pl.name}</span>
-                  {pl.gheddar && <span className="gheddar-badge">{t('badge.gheddar')}</span>}
+                  {pl.gheddar && (
+                    <span
+                      className="gheddar-badge"
+                      title={t('ch.ghedrCurse', {o: (pl.ghedrVictims || []).map(v => G.players[v]?.name).filter(Boolean).join(', ') || '…'})}
+                    >
+                      {t('badge.gheddar')}
+                    </span>
+                  )}
                 </div>
                 <div className="hud-cs">{fmt(pl.cash)}</div>
                 <div className="hud-loc">
@@ -400,7 +408,7 @@ export function TurnCard() {
             <>
               <button type="button" className="tp-col btn" onClick={openChrika}>
                 <small>{t('tp.ghedr')}</small>
-                <strong className={G.ghedrOpen ? 'r' : ''}>{G.ghedrOpen ? `🔥 ${t('tp.open')}` : `🔒 ${t('tp.left', {n: ghedrLeft})}`}</strong>
+                <strong className={G.ghedrOpen ? 'r' : ''}>{G.ghedrOpen ? `🔥 ${t('tp.open')}` : `🔒 ${t('tp.left', {n: gp!.leftToUnlock})} · R${GHEDR_UNLOCK_ROUND}`}</strong>
               </button>
               <button type="button" className="tp-col btn" onClick={openChrika}>
                 <small>{t('tp.chrikas')}</small>
@@ -516,6 +524,8 @@ function CreditPanel({G, pid, can}: {G: Game; pid: number; can: boolean}) {
             </button>
           </div>
         </>
+      ) : p.gheddar ? (
+        <div className="cc-blacklisted">⛔ {t('cr.blacklisted')}</div>
       ) : (
         <div className="cc-borrow">
           <div className="cc-chips" role="group" aria-label={t('cr.amount')}>
@@ -539,10 +549,8 @@ function ChrikaSummary({G, pid, can}: {G: Game; pid: number; can: boolean}) {
   if (!G.settings.chrika) return null;
   const mine = (G.chrikas || []).filter(c => c.a === pid || c.b === pid);
   const cands = chrikaCandidates(G, pid);
-  const totalBuyable = boardOf(G).spaces.filter(s => s.t === 'prop' || s.t === 'rail' || s.t === 'util').length;
-  const left = unownedCount(G);
-  const bought = Math.max(0, totalBuyable - left);
-  const pct = totalBuyable ? Math.round((bought / totalBuyable) * 100) : 0;
+  const gp = ghedrProgress(G);
+  const pct = gp.needed ? Math.min(100, Math.round((gp.owned / gp.needed) * 100)) : 0;
   return (
     <div className={`chrika-card-hud${G.ghedrOpen ? ' open' : ''}`}>
       <div className="ch-hd">
@@ -550,21 +558,21 @@ function ChrikaSummary({G, pid, can}: {G: Game; pid: number; can: boolean}) {
         <div className="ch-ttl">
           <b>{t('btn.chrika')} <span className="ch-ar">شركة</span></b>
           <small className={G.ghedrOpen ? 'open' : ''}>
-            {G.ghedrOpen ? t('ch.unlocked') : t('ch.locked', {n: left})}
+            {G.ghedrOpen ? t('ch.unlocked') : t('ch.locked', {n: gp.leftToUnlock, r: GHEDR_UNLOCK_ROUND})}
           </small>
         </div>
         <button className={`ch-cta${cands.length || G.ghedrOpen ? ' hot' : ''}`} onClick={openChrika}>
           {cands.length ? t('btn.chrikaPropose') : `${mine.length ? `${mine.length} · ` : ''}Open →`}
         </button>
       </div>
-      <div className="ch-prog" title={`${bought} / ${totalBuyable}`}>
+      <div className="ch-prog" title={`${gp.owned} / ${gp.needed}`}>
         <div className="ch-pbar"><i style={{width: `${G.ghedrOpen ? 100 : pct}%`}} /></div>
-        <span>{G.ghedrOpen ? '100%' : `${bought}/${totalBuyable}`}</span>
+        <span>{G.ghedrOpen ? '100%' : `${gp.owned}/${gp.needed}`}</span>
       </div>
       {mine.map(c => {
         const other = c.a === pid ? c.b : c.a;
         const myShare = c.a === pid ? c.shareA : 100 - c.shareA;
-        const {payout} = chrikaValue(G, c.g);
+        const {keep} = chrikaValue(G, c.g);
         const canBetray = can && canGhedr(G, pid, c.g);
         const col = colorOf(groupIdx(c.g, G)[0], G);
         return (
@@ -578,7 +586,7 @@ function ChrikaSummary({G, pid, can}: {G: Game; pid: number; can: boolean}) {
             <div className="ch-splitbar"><i style={{width: `${myShare}%`, background: col}} /></div>
             {canBetray && (
               <button className="ch-betray" onClick={() => openGhedr(c.g)}>
-                🗡️ {t('btn.ghedrGo', {a: fmt(payout)})}
+                🎲 {t('btn.ghedrGo', {a: fmt(keep)})}
               </button>
             )}
           </div>

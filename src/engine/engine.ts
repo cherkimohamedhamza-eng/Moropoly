@@ -2,8 +2,8 @@
    ENGINE (pure on G; runs on the authority only)
    ============================================================ */
 import {BARAKA, MEKTOUB} from './cards';
-import {COLORS, FAIR_STEP, GROUPS, JAIL_FINE, LOAN_MAX, LOAN_RATE, LOAN_STEP, RAIL_RENT, BILL_DAR, BILL_RIAD, RAIL_SIDE, RIAD_PREMIUM, SALARY, SHUFA_FROM, SHUFA_MARKUP, START_CASH, boardOf} from './data';
-import {alive, chrikaOf, chrikaValue, groupIdx, hasCityRights, houseCost, isOwnable, ownedBy, ownsDoubleRent, ownsGroup, priceOf, range, rid, rnd6, shuffle, unmortCost, unownedCount} from './util';
+import {COLORS, FAIR_STEP, GHEDR_BAIL_MULT, GHEDR_REVENGE, GHEDR_TARGET, GHEDR_UNLOCK_ROUND, GROUPS, JAIL_FINE, LOAN_MAX, LOAN_RATE, LOAN_STEP, RAIL_RENT, BILL_DAR, BILL_RIAD, RAIL_SIDE, RIAD_PREMIUM, SALARY, SHUFA_FROM, SHUFA_MARKUP, START_CASH, boardOf} from './data';
+import {alive, chrikaExitSplit, chrikaOf, chrikaValue, ghedrProgress, groupIdx, hasCityRights, houseCost, isOwnable, ownedBy, ownsDoubleRent, ownsGroup, priceOf, range, rid, rnd6, shuffle, unmortCost, unownedCount} from './util';
 import type {Action, Anim, Deck, Game, GroupId, Payee, Player, Seat, Settings} from './types';
 
 /** how rent is worked out for a landing caused by a card */
@@ -11,7 +11,7 @@ export interface RentOpts { railDouble?: boolean; util100?: boolean }
 /** the house rules that have numbers, with the classic value when a game does not set them */
 export const startCash=(s?: Partial<Settings>)=>s?.cash??START_CASH;
 export const salary=(G: Game)=>G.settings.salary??SALARY;
-export const jailFine=(G: Game)=>G.settings.fine??JAIL_FINE;
+export const jailFine=(G: Game,pid?: number)=>(G.settings.fine??JAIL_FINE)*(pid!=null&&G.players[pid]?.gheddar?GHEDR_BAIL_MULT:1);
 interface GameExtra { mode?: string; code?: string | null; hostCid?: string | null; ack?: Record<string, number> }
 
 export function A(G: Game,o: Anim){G.seq=(G.seq||0)+1; o.n=G.seq; G.anims.push(o); if(G.anims.length>50) G.anims.splice(0,G.anims.length-50);}
@@ -150,7 +150,9 @@ export function canGhedr(G: Game,pid: number,g: GroupId){
   const c=chrikaOf(G,g); return !!c&&(c.a===pid||c.b===pid);
 }
 function checkGhedrUnlock(G: Game){
-  if(!G.settings.chrika||G.ghedrOpen||unownedCount(G)>0) return;
+  if(!G.settings.chrika||G.ghedrOpen) return;
+  const pr=ghedrProgress(G);
+  if(pr.leftToUnlock>0&&G.round<GHEDR_UNLOCK_ROUND) return;
   G.ghedrOpen=true;
   log(G,'ghedrOpen');
   A(G,{k:'fx',f:'ghedrOpen'});
@@ -168,23 +170,30 @@ export function land(G: Game,p: Player,opts?: RentOpts){
       else if(pr.mort) log(G,'mortNoRent',{s:i,o:G.players[pr.owner].name});
       else {
         const ch=s.t==='prop'?chrikaOf(G,s.g):undefined;
+        const noRent=(ownerId: number)=>G.players[ownerId].inJail&&(G.settings.jailRent===false||!!G.players[ownerId].gheddar);
+        const rev=(amt: number,ownerId: number)=>p.ghedrVictims?.includes(ownerId)?Math.round(amt*(1+GHEDR_REVENGE)/10)*10:amt;
         if(ch&&(ch.a===p.id||ch.b===p.id)){log(G,'chrikaFree',{p:p.name,s:i,o:G.players[pr.owner].name});}
         else if(ch){
           const total=rentFor(G,i,opts);
           const partA=Math.round(total*ch.shareA/100), partB=total-partA;
-          const jailOff=G.settings.jailRent===false;
-          if(partA>0&&!(jailOff&&G.players[ch.a].inJail)) pay(G,p,ch.a,partA,'chrikaRent',{s:i,n:ch.shareA});
-          if(partB>0&&!(jailOff&&G.players[ch.b].inJail)) pay(G,p,ch.b,partB,'chrikaRent',{s:i,n:100-ch.shareA});
+          if(partA>0&&!noRent(ch.a)) pay(G,p,ch.a,rev(partA,ch.a),'chrikaRent',{s:i,n:ch.shareA});
+          if(partB>0&&!noRent(ch.b)) pay(G,p,ch.b,rev(partB,ch.b),'chrikaRent',{s:i,n:100-ch.shareA});
         }
-        else if(G.settings.jailRent===false&&G.players[pr.owner].inJail) log(G,'jailNoRent',{s:i,o:G.players[pr.owner].name});
-        else pay(G,p,pr.owner,rentFor(G,i,opts),'rent',{s:i});
+        else if(noRent(pr.owner)) log(G,'jailNoRent',{s:i,o:G.players[pr.owner].name});
+        else {
+          const base=rentFor(G,i,opts), final=rev(base,pr.owner);
+          pay(G,p,pr.owner,final,final>base?'revengeRent':'rent',{s:i});
+        }
       }
       break;}
     case 'tax': payTax(G,p,s.amount,s.why); break;
     case 'mektoub':case 'baraka': drawCard(G,p,s.t); break;
     case 'gojail': sendToJail(G,p); break;
     case 'parking':
-      if(G.settings.daret&&G.daret>0){const a=G.daret; G.daret=0; p.cash+=a; log(G,'daret',{p:p.name,a}); A(G,{k:'fx',f:'daret',pid:p.id,amt:a});}
+      if(G.settings.daret&&G.daret>0){
+        if(p.gheddar) log(G,'gheddarNoDaret',{p:p.name,a:G.daret});
+        else {const a=G.daret; G.daret=0; p.cash+=a; log(G,'daret',{p:p.name,a}); A(G,{k:'fx',f:'daret',pid:p.id,amt:a});}
+      }
       else log(G,'tea',{p:p.name});
       break;
     case 'go': log(G,'landGo',{p:p.name});
@@ -284,6 +293,7 @@ function nextTurn(G: Game){
   const n=G.players.length; let k=G.cur;
   for(let s=0;s<n;s++){k=(k+1)%n; if(!G.players[k].bankrupt) break;}
   if(k<=G.cur){G.round++; if(G.settings.rounds&&G.round>G.settings.rounds){G.round=G.settings.rounds; finishGame(G); return;}}
+  checkGhedrUnlock(G);
   G.cur=k; G.turn++; G.phase='roll'; G.landed=-1;
   G.event=['turn',{p:G.players[k].name}];
   A(G,{k:'turn',pid:k});
@@ -317,7 +327,7 @@ function applyCore(G: Game,seat: number,a: Action){
         G.rollAgain=false;
         if(dbl){p.inJail=false;p.jailTurns=0;log(G,'jailDouble',{p:p.name});moveBy(G,p,d1+d2);land(G,p);}
         else{p.jailTurns++;
-          if(p.jailTurns>=3){p.inJail=false;p.jailTurns=0;payTax(G,p,jailFine(G),'jail');moveBy(G,p,d1+d2);land(G,p);}
+          if(p.jailTurns>=3){p.inJail=false;p.jailTurns=0;payTax(G,p,jailFine(G,p.id),'jail');moveBy(G,p,d1+d2);land(G,p);}
           else log(G,'jailStay',{p:p.name,d1,d2,n:p.jailTurns});}
       } else {
         if(dbl){G.doubles++; if(G.doubles>=3){log(G,'threeDoubles',{p:p.name}); sendToJail(G,p); settle(G); return true;}}
@@ -354,8 +364,9 @@ function applyCore(G: Game,seat: number,a: Action){
       if(!isCur||!free||G.phase!=='end'||p.cash<0) return false;
       nextTurn(G); return true;}
     case 'fine':{
-      if(!isCur||!free||!p.inJail||G.phase!=='roll'||p.cash<jailFine(G)) return false;
-      payTax(G,p,jailFine(G),'jail'); p.inJail=false; p.jailTurns=0; return true;}
+      const f=jailFine(G,p.id);
+      if(!isCur||!free||!p.inJail||G.phase!=='roll'||p.cash<f) return false;
+      payTax(G,p,f,'jail'); p.inJail=false; p.jailTurns=0; return true;}
     case 'card':{
       if(!isCur||!free||!p.inJail||G.phase!=='roll'||!p.goojf.length) return false;
       const c=p.goojf.pop()!; G.decks[c.deck].push(c.id); p.inJail=false; p.jailTurns=0; log(G,'useCard',{p:p.name}); return true;}
@@ -404,8 +415,8 @@ function applyCore(G: Game,seat: number,a: Action){
       if(G.drafting!==seat) return false; delete G.drafting; return true;}
     case 'tradeCancel':{
       if(!G.trade||G.trade.from!==seat) return false; G.trade=null; log(G,'withdraw',{p:p.name}); return true;}
-    case 'borrow':{ // house rule "credit": one loan at a time, also to get out of debt
-      const amt=Math.round(+a_(a)); if(!G.settings.credit||!isCur||!free||p.loan||!(amt>=LOAN_STEP&&amt<=LOAN_MAX&&amt%LOAN_STEP===0)) return false;
+    case 'borrow':{ // house rule "credit": one loan at a time, blocked for Gheddars
+      const amt=Math.round(+a_(a)); if(!G.settings.credit||!isCur||!free||p.loan||p.gheddar||!(amt>=LOAN_STEP&&amt<=LOAN_MAX&&amt%LOAN_STEP===0)) return false;
       p.cash+=amt; p.loan=amt; log(G,'borrow',{p:p.name,a:amt,b:interestOn(amt)}); A(G,{k:'fx',f:'gain',pid:p.id,amt});
       return true;}   // the turn carries on where it was; apply() then pays any debts from the loan
     case 'repay':{
@@ -452,30 +463,48 @@ function applyCore(G: Game,seat: number,a: Action){
       } else {
         const ch=chrikaOf(G,o.g);
         if(ch&&(ch.a===o.from||ch.b===o.from)){
-          const {half,otherHalf}=chrikaValue(G,o.g);
+          const {a:shareFrom,b:shareTo}=chrikaExitSplit(G,o.g,o.from,o.to);
           groupIdx(o.g,G).forEach(i=>{G.props[i]={owner:-1,houses:0,mort:false};});
           G.chrikas=(G.chrikas||[]).filter(c=>c.g!==o.g);
-          G.players[o.from].cash+=half; p.cash+=otherHalf;
+          G.players[o.from].cash+=shareFrom; p.cash+=shareTo;
           payDebts(G,G.players[o.from]); payDebts(G,p);
-          log(G,'chrikaExit',{p:G.players[o.from].name,o:p.name,g:o.g,a:half});
-          A(G,{k:'fx',f:'chrikaExit',pid:o.from,to:o.to,amt:half,g:o.g});
+          log(G,'chrikaExit',{p:G.players[o.from].name,o:p.name,g:o.g,a:shareFrom,b:shareTo});
+          A(G,{k:'fx',f:'chrikaExit',pid:o.from,to:o.to,amt:shareFrom,amtB:shareTo,g:o.g});
         } else log(G,'tradeVoid');
       }
       if(!wasRoll) settle(G); return true;}
     case 'chrikaCancel':{
       if(!G.chrikaOffer||G.chrikaOffer.from!==seat) return false;
       G.chrikaOffer=null; log(G,'withdraw',{p:p.name}); return true;}
-    case 'ghedr':{ // house rule "chrika": L'Ghedr — liquidate city to bank at 80%, pocket all cash, go to 3okacha as Gheddar
+    case 'ghedr':{ // house rule "chrika": Hybrid L'Ghedr — 7+ escape roll nets 70% (+10% Daret, city to bank); 2–6 busted hands city to partner!
       if(!canGhedr(G,seat,a.g)) return false;
       const ch=chrikaOf(G,a.g)!; const victim=ch.a===seat?ch.b:ch.a;
-      const {payout}=chrikaValue(G,a.g);
-      groupIdx(a.g,G).forEach(i=>{G.props[i]={owner:-1,houses:0,mort:false};});
+      const {keep,daretCut}=chrikaValue(G,a.g);
+      const d1=rnd6(), d2=rnd6(), tot=d1+d2;
+      G.dice=[d1,d2];
+      A(G,{k:'dice',d:[d1,d2],pid:seat,ghedr:true});
       G.chrikas=(G.chrikas||[]).filter(c=>c.g!==a.g);
-      p.cash+=payout; p.gheddar=true; payDebts(G,p);
+      p.gheddar=true;
+      p.ghedrVictims=Array.from(new Set([...(p.ghedrVictims||[]),victim]));
       jumpTo(G,p,boardOf(G).jail,'jail');
       p.inJail=true; p.jailTurns=0; G.rollAgain=false; G.doubles=0;
-      log(G,'ghedr',{p:p.name,o:G.players[victim].name,g:a.g,a:payout});
-      A(G,{k:'fx',f:'ghedr',pid:seat,to:victim,amt:payout,g:a.g});
+      if(tot>=GHEDR_TARGET){
+        groupIdx(a.g,G).forEach(i=>{G.props[i]={owner:-1,houses:0,mort:false};});
+        p.cash+=keep;
+        const seized=G.settings.daret?daretCut:0;
+        if(seized>0) G.daret+=seized;
+        if(p.loan&&p.loan>0){
+          const claw=Math.min(p.loan,Math.max(0,p.cash));
+          if(claw>0){p.cash-=claw; p.loan-=claw; log(G,'ghedrClawback',{p:p.name,a:claw});}
+        }
+        payDebts(G,p);
+        log(G,'ghedr',{p:p.name,o:G.players[victim].name,g:a.g,a:keep,d:seized,d1,d2,tot});
+        A(G,{k:'fx',f:'ghedr',pid:seat,to:victim,amt:keep,g:a.g});
+      } else {
+        groupIdx(a.g,G).forEach(i=>{G.props[i].owner=victim; G.props[i].mort=false;});
+        log(G,'ghedrBusted',{p:p.name,o:G.players[victim].name,g:a.g,d1,d2,tot});
+        A(G,{k:'fx',f:'ghedrBusted',pid:seat,to:victim,g:a.g});
+      }
       settle(G); return true;}
   }
   return false;

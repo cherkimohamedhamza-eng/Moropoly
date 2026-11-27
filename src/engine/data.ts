@@ -185,8 +185,9 @@ export const SHUFA_MARKUP=1.5;
 /** house rule "shufa": the first round it can be used in. Before then everyone's worth is within a rent or two of
     everyone else's, so "furthest behind" would only mean "paid the last rent". */
 export const SHUFA_FROM=6;
-/** house rule "chrika": share of combined street + building value paid by the bank on a Clean Exit or L'Ghedr */
-export const CHRIKA_PAYOUT=0.8;
+/** house rule "chrika": Hybrid L'Ghedr constants — unlocks at 75% owned or Round 8; 7+ escape roll nets 70% (+10% Daret), 2–6 busted hands city to partner */
+export const CHRIKA_PAYOUT=0.8, GHEDR_KEEP=0.7, GHEDR_DARET=0.1, GHEDR_TARGET=7;
+export const GHEDR_UNLOCK_PCT=0.75, GHEDR_UNLOCK_ROUND=8, GHEDR_BAIL_MULT=3, GHEDR_REVENGE=0.25;
 /** house rule "fairStart": the extra starting money for each seat after the first, by number of players
     (found by simulating thousands of games, so that every seat wins about equally often) */
 export const FAIR_STEP: Record<number, number>={2:300,3:300,4:300,5:350,6:400,7:400,8:450};

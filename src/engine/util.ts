@@ -1,7 +1,7 @@
 /* ============================================================
    HELPERS (pure)
    ============================================================ */
-import {CHRIKA_PAYOUT, GROUPS, spacesOf} from './data';
+import {CHRIKA_PAYOUT, GHEDR_KEEP, GHEDR_UNLOCK_PCT, GHEDR_UNLOCK_ROUND, GROUPS, spacesOf} from './data';
 import type {BoardId, Chrika, Game, GroupId, OwnableSpace, PropSpace} from './types';
 
 type BoardLike = Pick<Game, 'settings'> | {settings?: {board?: BoardId}} | null | undefined;
@@ -31,12 +31,34 @@ export const chrikaOf=(G: Game,g: GroupId): Chrika | undefined=>(G.chrikas||[]).
 export const hasCityRights=(G: Game,pid: number,g: GroupId)=>{if(ownsGroup(G,pid,g)) return true; const c=chrikaOf(G,g); return !!c&&(c.a===pid||c.b===pid);};
 /** how many ownable spaces on the board are still unowned */
 export const unownedCount=(G: Game)=>Object.keys(G.props).filter(k=>G.props[+k].owner<0).length;
-/** combined street + building value of city g, and the 80% bank liquidation payout (rounded to 10 DH) */
+/** L'Ghedr unlock progress (unlocks at 75% of ownable spaces claimed OR Round 8, whichever comes first) */
+export const ghedrProgress=(G: Game)=>{
+  const total=Object.keys(G.props).length;
+  const owned=total-unownedCount(G);
+  const needed=Math.ceil(total*GHEDR_UNLOCK_PCT);
+  return {owned,total,needed,leftToUnlock:Math.max(0,needed-owned),roundsLeft:Math.max(0,GHEDR_UNLOCK_ROUND-G.round),open:!!G.ghedrOpen};
+};
+/** combined street + building value of city g, 80% total liquidation, 70% heist keep, and 10% Daret cut */
 export const chrikaValue=(G: Game,g: GroupId)=>{
   const gi=groupIdx(g,G);
   let total=0;
   for(const i of gi) total+=priceOf(i,G)+(G.props[i]?.houses||0)*houseCost(i,G);
-  const payout=Math.round(total*CHRIKA_PAYOUT/10)*10;
+  const payout=Math.round(Math.round(total*CHRIKA_PAYOUT)/10)*10;
+  const keep=Math.round(Math.round(total*GHEDR_KEEP)/10)*10;
+  const daretCut=Math.max(0,payout-keep);
   const half=Math.ceil(payout/2);
-  return {total,payout,half,otherHalf:payout-half};
+  return {total,payout,keep,daretCut,half,otherHalf:payout-half};
+};
+/** proportional Clean Exit split between partner `pidA` and `pidB` based on each partner's invested streets + buildings */
+export const chrikaExitSplit=(G: Game,g: GroupId,pidA: number,pidB: number)=>{
+  const gi=groupIdx(g,G);
+  let valA=0, valB=0;
+  for(const i of gi){
+    const v=priceOf(i,G)+(G.props[i]?.houses||0)*houseCost(i,G);
+    if(G.props[i]?.owner===pidA) valA+=v;
+    else if(G.props[i]?.owner===pidB) valB+=v;
+  }
+  const {payout}=chrikaValue(G,g), sum=valA+valB;
+  const a=sum>0?Math.round((payout*valA/sum)/10)*10:Math.ceil(payout/2);
+  return {a,b:payout-a,payout,valA,valB};
 };
