@@ -1,0 +1,548 @@
+// Every piece of text in the game, in English, French and Arabic.
+import {S} from './core';
+
+/* ---------- log lines ---------- */
+S('log.start','Bismillah. {n} players set off from Al Inṭilāq with {a} each.','Bismillah. {n} joueurs partent d’Al Inṭilāq avec {a} chacun.','بسم الله. ينطلق {n} لاعبين من الانطلاق، ومع كل واحد {a}.');
+S('log.collect','{p} collects {a}.','{p} reçoit {a}.','{p} يحصل على {a}.');
+S('log.payShort','{p} owes {a} to {to} for {why} but only has {b}, so only {b} is paid for now.','{p} doit {a} à {to} pour {why} mais n’a que {b} : seuls {b} sont payés pour l’instant.','{p} مدين بـ{a} إلى {to} مقابل {why} لكنه لا يملك سوى {b}، فيُدفع {b} فقط الآن.');
+S('log.debtPaid','{p} pays {a} more to {to} toward the debt.','{p} verse encore {a} à {to} pour sa dette.','{p} يدفع {a} إضافية إلى {to} من دينه.');
+S('log.liquidated','{p}’s buildings are sold and properties mortgaged to pay the debt.','Les bâtiments de {p} sont vendus et ses propriétés hypothéquées pour payer la dette.','تُباع مباني {p} وتُرهن ممتلكاته لتسديد الدين.');
+S('log.saved','{p} manages to pay everything and stays in the game.','{p} parvient à tout payer et reste dans la partie.','{p} يتمكن من دفع كل شيء ويبقى في اللعبة.');
+S('log.timeUp','Time’s up for {p}. The game plays for them.','Temps écoulé pour {p}. Le jeu joue à sa place.','انتهى الوقت لـ{p}. اللعبة تلعب مكانه.');
+S('tm.paused','paused for {p}','en pause pour {p}','متوقف لـ{p}'); S('opt.timer','Turn timer','Minuteur de tour','مؤقت الدور'); S('opt.timerD','When time runs out, the game moves for the player: roll, skip buying, end the turn, or leave the auction.','Quand le temps est écoulé, le jeu joue à la place du joueur : lancer, ne pas acheter, finir le tour ou quitter l’enchère.','عند انتهاء الوقت تلعب اللعبة مكان اللاعب: رمي النرد، عدم الشراء، إنهاء الدور أو مغادرة المزاد.');
+S('opt.off','Off','Désactivé','متوقف'); S('opt.sec','{n} seconds','{n} secondes','{n} ثانية'); S('opt.min','{n} minutes','{n} minutes','{n} دقائق');
+S('log.pay','{p} pays {a} to {to} for {why}.','{p} paie {a} à {to} pour {why}.','{p} يدفع {a} إلى {to} مقابل {why}.');
+S('w.bank','the bank','la banque','البنك'); S('w.daret','the Daret','la Daret','الدارت');
+S('why.rent','rent at {s}','le loyer de {s}','كراء {s}');
+S('why.incomeTax','income tax','l’impôt sur le revenu','الضريبة على الدخل');
+S('why.wedding','wedding season','la saison des mariages','موسم الأعراس');
+S('why.peage','the motorway toll','le péage de l’autoroute','أداء الطريق السيار');
+S('why.fuel','fuel prices','les prix du carburant','أسعار المحروقات'); S('why.parking','parking at Morocco Mall','le parking du Morocco Mall','موقف موروكو مول'); S('why.fiber','the fibre repair','la réparation de la fibre','إصلاح الألياف'); S('why.mqaddem','the mqaddem’s coffee','le café du moqaddem','قهوة المقدّم');
+S('why.speeding','a speeding fine','un excès de vitesse','مخالفة السرعة');
+S('why.eid','the Eid sheep','le mouton de l’Aïd','حولي العيد');
+S('why.henna','henna night','la soirée du henné','ليلة الحناء');
+S('why.birthday','a birthday gift','un cadeau d’anniversaire','هدية عيد الميلاد');
+S('why.hammam','the hammam','le hammam','الحمّام');
+S('why.doctor','doctor’s fees','les frais de médecin','مصاريف الطبيب');
+S('why.ftour','ftour','le ftour','الفطور');
+S('why.couscous','Friday couscous','le couscous du vendredi','كسكس الجمعة');
+S('why.assoc','association dues','la cotisation de l’association','واجب الجمعية');
+S('why.jail','release from 3okacha','sortir de 3okacha','الخروج من عكاشة');
+S('why.repairs','{d} dar and {r} riad repairs','les réparations ({d} dar, {r} riad)','إصلاح {d} دار و{r} رياض');
+S('log.passGo','{p} passes Al Inṭilāq and collects {a}.','{p} passe par Al Inṭilāq et reçoit {a}.','{p} يمرّ بالانطلاق ويحصل على {a}.');
+S('log.toJail','{p} is sent to 3okacha.','{p} est envoyé à 3okacha.','{p} يُرسَل إلى عكاشة.');
+S('log.forSale','{p} lands on {s}. It is for sale at {a}.','{p} arrive sur {s}, à vendre pour {a}.','{p} يصل إلى {s}. معروض للبيع بـ {a}.');
+S('log.home','{p} is home at {s}.','{p} est chez lui à {s}.','{p} في ملكه: {s}.');
+S('log.mortNoRent','{s} is mortgaged, so {o} collects no rent.','{s} est hypothéqué : {o} ne touche pas de loyer.','{s} مرهون، فلا يقبض {o} أي كراء.');
+S('log.daret','{p} sits down at the Qahwa and takes the Daret: {a}.','{p} s’assoit à la Qahwa et rafle la Daret : {a}.','{p} يجلس في القهوة ويأخذ الدارت: {a}.');
+S('log.tea','{p} takes a mint tea break at the Qahwa.','{p} prend un thé à la menthe à la Qahwa.','{p} يستريح مع كأس أتاي في القهوة.');
+S('log.landGo','{p} lands on Al Inṭilāq.','{p} s’arrête sur Al Inṭilāq.','{p} يتوقف عند الانطلاق.');
+S('log.visit','{p} is just visiting 3okacha.','{p} est en simple visite à 3okacha.','{p} في زيارة فقط لعكاشة.');
+S('log.draw','{p} draws {deckN}: {card}','{p} tire {deckN} : {card}','{p} يسحب {deckN}: {card}');
+S('deck.mektoub','Mektoub','Mektoub','مكتوب'); S('deck.baraka','Baraka','Baraka','بركة');
+S('log.noBuild','{p} owns no buildings and pays nothing.','{p} n’a aucun bâtiment et ne paie rien.','{p} لا يملك أي بناء ولا يدفع شيئًا.');
+S('log.bankTo','{p} is bankrupt. {o} gets only what {p} could pay, plus {p}’s mortgaged properties.','{p} fait faillite. {o} ne reçoit que ce que {p} pouvait payer, plus ses propriétés hypothéquées.','{p} أفلس. يحصل {o} فقط على ما استطاع {p} دفعه، إضافة إلى ممتلكاته المرهونة.');
+S('log.bankBank','{p} is bankrupt. Their properties return to the bank.','{p} fait faillite. Ses propriétés reviennent à la banque.','{p} أفلس. ممتلكاته تعود إلى البنك.');
+S('log.win','{p} wins Moropoly with a net worth of {a}. Mabrouk!','{p} remporte Moropoly avec une fortune de {a}. Mabrouk !','{p} يفوز بموروبولي بثروة قدرها {a}. مبروك!');
+S('log.turn','{p}’s turn.','Au tour de {p}.','دور {p}.');
+S('log.jailDouble','{p} rolls a double and walks out of 3okacha.','{p} fait un double et sort de 3okacha.','{p} يرمي دوبل ويخرج من عكاشة.');
+S('log.jailStay','{p} rolls {d1} and {d2} and stays in 3okacha ({n} of 3).','{p} fait {d1} et {d2} et reste à 3okacha ({n} sur 3).','{p} يرمي {d1} و{d2} ويبقى في عكاشة ({n} من 3).');
+S('log.threeDoubles','{p} rolls three doubles in a row.','{p} fait trois doubles d’affilée.','{p} يرمي ثلاث دوبلات متتالية.');
+S('log.rolls','{p} rolls {d1} and {d2}.','{p} fait {d1} et {d2}.','{p} يرمي {d1} و{d2}.');
+S('log.buys','{p} buys {s} for {a}.','{p} achète {s} pour {a}.','{p} يشتري {s} بـ {a}.');
+S('log.dlalaOpen','The dlal opens the auction for {s}.','Le dlal ouvre les enchères pour {s}.','الدلّال يفتح المزاد على {s}.');
+S('log.passOn','{p} passes on {s}.','{p} laisse passer {s}.','{p} يتخلى عن {s}.');
+S('log.bids','{p} bids {a} for {s}.','{p} enchérit {a} pour {s}.','{p} يزايد بـ {a} على {s}.');
+S('log.leaveAuc','{p} leaves the auction.','{p} quitte les enchères.','{p} ينسحب من المزاد.');
+S('log.sold','Sold! {p} takes {s} at the Dlala for {a}.','Adjugé ! {p} remporte {s} à la Dlala pour {a}.','بيع! {p} يأخذ {s} في الدلالة بـ {a}.');
+S('log.noBids','Nobody bids. {s} stays with the bank.','Personne n’enchérit. {s} reste à la banque.','لا أحد زايد. {s} يبقى عند البنك.');
+S('log.useCard','{p} uses a get-out card and leaves 3okacha.','{p} utilise sa carte et sort de 3okacha.','{p} يستعمل بطاقة الخروج ويغادر عكاشة.');
+S('log.buildDar','{p} builds a dar on {s}.','{p} construit une dar sur {s}.','{p} يبني دارًا في {s}.');
+S('log.buildRiad','{p} builds a riad on {s}.','{p} construit un riad sur {s}.','{p} يبني رياضًا في {s}.');
+S('log.sellB','{p} sells a building on {s} for {a}.','{p} vend un bâtiment sur {s} pour {a}.','{p} يبيع بناءً في {s} بـ {a}.');
+S('log.mort','{p} mortgages {s} (rahn) for {a}.','{p} hypothèque {s} (rahn) pour {a}.','{p} يرهن {s} مقابل {a}.');
+S('log.unmort','{p} lifts the mortgage on {s}.','{p} lève l’hypothèque sur {s}.','{p} يفكّ رهن {s}.');
+S('log.botBuild',p=>`${p.p} builds ${p.n} ${p.n==1?'building':'buildings'}.`,p=>`${p.p} construit ${p.n} bâtiment${p.n>1?'s':''}.`,p=>`${p.p} يبني ${p.n} ${p.n==1?'بناية':'بنايات'}.`);
+S('log.offer','{p} offers {o} a trade.','{p} propose un échange à {o}.','{p} يعرض على {o} تبادلًا.');
+S('log.deal','Tbadel! {p} and {o} shake hands on a trade.','Tbadel ! {p} et {o} topent pour un échange.','تبادل! {p} و{o} يتصافحان على الصفقة.');
+S('log.tradeVoid','The trade no longer adds up and is cancelled.','L’échange n’est plus possible : il est annulé.','لم تعد الصفقة ممكنة فأُلغيت.');
+S('log.refuse','{p} refuses the trade.','{p} refuse l’échange.','{p} يرفض التبادل.');
+S('log.withdraw','{p} withdraws the offer.','{p} retire son offre.','{p} يسحب عرضه.');
+S('log.tableSet','The table is set. Waiting for players.','La table est prête. En attente des joueurs.','الطاولة جاهزة. في انتظار اللاعبين.');
+S('log.joins','{p} joins the table.','{p} rejoint la table.','{p} ينضم إلى الطاولة.');
+S('log.back','{p} is back at the table.','{p} est de retour à la table.','{p} عاد إلى الطاولة.');
+S('log.botPlays','The computer plays for {p} for now.','L’ordinateur joue pour {p} pour l’instant.','الحاسوب يلعب مكان {p} مؤقتًا.');
+
+/* ---------- board ---------- */
+S('b.goLat','AL INṬILĀQ','AL INṬILĀQ',''); S('b.goTiny','Collect 2,000 DH','Recevez 2 000 DH','احصل على 2,000 درهم');
+S('b.jailLat','3OKACHA','3OKACHA',''); S('b.jailTiny','Ziyara · just visiting','Ziyara · simple visite','زيارة فقط');
+S('b.parkLat','QAHWA','QAHWA',''); S('b.parkTiny','Daret pot','Cagnotte Daret','صندوق الدارت');
+S('b.gojailLat','GO TO 3OKACHA','ALLEZ À 3OKACHA',''); S('b.gojailTiny','No salary','Pas de salaire','بدون راتب');
+S('b.mektoub','Mektoub','Mektoub',''); S('b.baraka','Baraka','Baraka','');
+S('b.pay','Pay {n}','Payez {n}','ادفع {n}');
+S('ev.double',' Double!',' Double !',' دوبل!');
+S('ev.draws','{p} draws {deckN}','{p} tire {deckN}','{p} يسحب {deckN}');
+S('ev.dlala','The dlal opens the auction','Le dlal ouvre les enchères','الدلّال يفتح المزاد');
+S('fl.sold','SOLD','VENDU','مُباع'); S('fl.daret','DARET','DARET','الدارت'); S('fl.deal','TBADEL · TRADE','TBADEL · ÉCHANGE','تبادل'); S('fl.bankrupt','BANKRUPT','FAILLITE','إفلاس');
+S('fl.jail','3okacha!','3okacha !','عكاشة!');
+S('fate.mektoub','Mektoub · fate','Mektoub · le destin','مكتوب · القدر'); S('fate.baraka','Baraka · blessing','Baraka · la bénédiction','بركة · الخير');
+
+/* ---------- turn card ---------- */
+S('tc.wins','<b>{p}</b> wins Moropoly. Mabrouk!','<b>{p}</b> remporte Moropoly. Mabrouk !','<b>{p}</b> يفوز بموروبولي. مبروك!');
+S('btn.results','Results','Résultats','النتائج');
+S('tc.offered','<b>{p}</b> offered <b>{o}</b> a trade.','<b>{p}</b> propose un échange à <b>{o}</b>.','<b>{p}</b> عرض على <b>{o}</b> تبادلًا.');
+S('btn.seeOffer','See the offer','Voir l’offre','اطّلع على العرض'); S('btn.withdraw','Withdraw offer','Retirer l’offre','اسحب العرض');
+S('tc.dlala','Dlala for <b>{s}</b>: {a}{by}.','Dlala pour <b>{s}</b> : {a}{by}.','الدلالة على <b>{s}</b>: {a}{by}.');
+S('tc.by',' by {p}',' par {p}',' لصالح {p}');
+S('btn.openAuc','Open the auction','Ouvrir les enchères','افتح المزاد');
+S('tc.owes','{p} owes {a}. Sell buildings or mortgage in My deeds, trade, or declare bankruptcy.','{p} doit {a}. Vendez des bâtiments ou hypothéquez dans Mes titres, échangez, ou déclarez faillite.','{p} مدين بـ {a}. بع بنايات أو ارهن من «ممتلكاتي»، أو تبادل، أو أعلن الإفلاس.');
+S('btn.myDeeds','My deeds','Mes titres','ممتلكاتي'); S('btn.tbadel','Tbadel · Trade','Tbadel · Échange','تبادل'); S('btn.bankrupt','Declare bankruptcy','Déclarer faillite','أعلن الإفلاس');
+S('tc.forSale','For sale: <b>{s}</b>{c}','À vendre : <b>{s}</b>{c}','للبيع: <b>{s}</b>{c}');
+S('btn.buy','Buy for {a}','Acheter pour {a}','اشترِ بـ {a}'); S('btn.dlala','Send to the Dlala','Mettre à la Dlala','إلى الدلالة'); S('btn.pass','Pass','Passer','تخلَّ');
+S('tc.inJail','{p} is in 3okacha (try {n} of 3). Roll a double, pay {a} or use a card.','{p} est à 3okacha (essai {n} sur 3). Faites un double, payez {a} ou utilisez une carte.','{p} في عكاشة (المحاولة {n} من 3). ارمِ دوبل أو ادفع {a} أو استعمل بطاقة.');
+S('tc.again','Double! Roll again.','Double ! Rejouez.','دوبل! ارمِ مرة أخرى.'); S('tc.toRoll','{p} to roll.','À {p} de lancer.','دور {p} في رمي النرد.');
+S('btn.roll','🎲 Roll the dice','🎲 Lancer les dés','🎲 ارمِ النرد'); S('btn.payFine','Pay {a}','Payer {a}','ادفع {a}'); S('btn.useCard','Use get-out card','Utiliser la carte','استعمل بطاقة الخروج');
+S('btn.seeBoard','See board','Voir le plateau','اعرض اللوحة');
+S('pill.trade','Your trade offer · tap to finish','Votre offre d’échange · touchez pour finir','عرض التبادل · المس للإكمال');
+S('pill.treply','Tbadel (trade) offer for you · tap to answer','Offre de Tbadel (échange) pour vous · touchez pour répondre','عرض تبادل لك · المس للرد');
+S('pill.auction','Dlala (auction) · tap to open','Dlala (enchère) · touchez pour ouvrir','الدلالة · المس للفتح');
+S('btn.riadNow','Riad now','Riad direct','رياض مباشرة');
+S('log.riadNow','{p} builds a riad straight away on {s}.','{p} construit directement un riad sur {s}.','{p} يبني رياضًا مباشرة في {s}.');
+S('fate.tap','Tap to continue','Touchez pour continuer','المس للمتابعة');
+S('btn.end','End turn','Fin du tour','أنهِ الدور'); S('btn.build','Build','Construire','ابنِ');
+S('pv.rentProp','Rent {a}, or {b} with all of {c}','Loyer {a}, ou {b} avec tout {c}','الكراء {a}، أو {b} مع كل {c}');
+S('pv.rentProp4','Rent {a}, or {b} with 3 of 4 in {c}','Loyer {a}, ou {b} avec 3 sur 4 à {c}','الكراء {a}، أو {b} مع 3 من 4 في {c}');
+S('pv.rentRail','Station rent {a} to {b}','Loyer de gare : {a} à {b}','كراء المحطة من {a} إلى {b}');
+S('pv.rentUtil','Rent 40 or 100 × the dice','Loyer : 40 ou 100 × les dés','الكراء 40 أو 100 × النرد');
+S('pv.rentUtil3','Rent 40, 100 or 200 × the dice','Loyer : 40, 100 ou 200 × les dés','الكراء 40 أو 100 أو 200 × النرد');
+S('btn.viewDeed','View deed','Voir le titre','اعرض العقد');
+S('tc.waiting','Waiting for {p}…','En attente de {p}…','في انتظار {p}…'); S('tc.thinking','Computer player is thinking…','L’ordinateur réfléchit…','الحاسوب يفكر…');
+S('lbl.computer','computer','ordinateur','حاسوب'); S('lbl.you','you','vous','أنت'); S('lbl.host','host','hôte','المضيف');
+S('tc.yourTurn','Your turn','Votre tour','دورك');
+S('tp.daret','Daret pot','Cagnotte Daret','صندوق الدارت');
+S('tp.ghedr','L’Ghedr','L’Ghedr','الغدر');
+S('tp.left','{n} left','{n} rest.','بقي {n}');
+S('tp.open','Open!','Ouvert !','مفتوح!');
+S('tp.chrikas','Chrikas','Chrikas','الشراكات');
+S('tp.round','Round','Tour','الجولة');
+S('tp.board','Board','Plateau','الخريطة');
+S('tp.squares','{n} sq','{n} cases','{n} خانة');
+/* tabs */
+S('tab.players','Players','Joueurs','اللاعبون'); S('tab.deeds','My deeds','Mes titres','ممتلكاتي'); S('tab.deals','Credit & Chrika','Crédit & Chrika','الكريدي والشركة'); S('tab.dealsShort','Deals','Accords','صفقات'); S('tab.log','Journal','Journal','السجل'); S('tab.book','Rules','Règles','القواعد');
+S('btn.letBot','Let computer play','Laisser l’ordinateur jouer','دع الحاسوب يلعب'); S('btn.handBack','Hand back to player','Rendre au joueur','أعِده إلى اللاعب');
+S('st.bankrupt','Bankrupt','En faillite','مفلس'); S('st.inJail','In 3okacha','À 3okacha','في عكاشة'); S('st.goojf','get-out card','carte de sortie','بطاقة خروج'); S('st.worth','worth {a}','fortune {a}','الثروة {a}');
+S('dd.watching','You are watching this game.','Vous regardez cette partie.','أنت تتابع هذه اللعبة.');
+S('dd.none','{p} owns no property yet. Buy a free tile when you land on it, or win one at the Dlala.','{p} n’a encore aucune propriété. Achetez une case libre en vous y arrêtant, ou gagnez-en une à la Dlala.','{p} لا يملك أي عقار بعد. اشترِ خانة حرة عندما تصل إليها، أو اربح واحدة في الدلالة.');
+S('dd.help','Own a whole city to build a dar (house), then a riad (hotel). Build evenly across the city. In a hurry? “Riad now” builds the riad in one go, for {n}% more.','Possédez toute une ville pour construire une dar (maison), puis un riad (hôtel). Construisez de façon égale dans la ville. Pressé ? « Riad direct » construit le riad d’un coup, pour {n} % de plus.','امتلك مدينة كاملة لتبني دارًا ثم رياضًا. ابنِ بالتساوي في كل المدينة. مستعجل؟ «رياض مباشرة» يبني الرياض دفعة واحدة بزيادة {n}%.');
+S('dd.notTurn','You can build, sell and mortgage on {p}’s turn.','Vous pouvez construire, vendre et hypothéquer pendant le tour de {p}.','يمكنك البناء والبيع والرهن خلال دور {p}.');
+S('lv.station','Station','Gare','محطة'); S('lv.utility','Utility','Service public','مرفق'); S('lv.riad','Riad','Riad','رياض'); S('lv.dar','{n} dar','{n} dar','{n} دار'); S('lv.none','No buildings','Aucun bâtiment','بلا بنايات'); S('lv.mort','Mortgaged','Hypothéqué','مرهون');
+S('dd.rent','Rent','Loyer','الكراء'); S('dd.part','{n} of {m} in {c}','{n} sur {m} à {c}','{n} من {m} في {c}'); S('btn.addRiad','+ Riad','+ Riad','+ رياض'); S('btn.addDar','+ Dar','+ Dar','+ دار'); S('btn.sell','Sell','Vendre','بع'); S('btn.lift','Lift rahn','Lever le rahn','فكّ الرهن'); S('btn.rahn','Rahn','Rahn','رهن');
+/* deed */
+S('dm.labels',()=>['Rent','With 1 dar','With 2 dars','With 3 dars','With 4 dars','With a riad'],()=>['Loyer','Avec 1 dar','Avec 2 dars','Avec 3 dars','Avec 4 dars','Avec un riad'],()=>['الكراء','مع دار واحدة','مع داريْن','مع 3 دور','مع 4 دور','مع رياض']);
+S('dm.price','Price','Prix','الثمن'); S('dm.allCity','All of {c}, no buildings','Tout {c}, sans bâtiment','كل {c} بلا بنايات'); S('dm.threeCity','3 of 4 in {c}, no buildings','3 sur 4 à {c}, sans bâtiment','3 من 4 في {c} بلا بنايات'); S('dm.each','Each dar or riad','Chaque dar ou riad','كل دار أو رياض'); S('dm.rahn','Rahn (mortgage)','Rahn (hypothèque)','الرهن');
+S('dm.stations',p=>`Owner has ${p.n} station${p.n>1?'s':''}`,p=>`Le propriétaire a ${p.n} gare${p.n>1?'s':''}`,p=>`المالك لديه ${p.n==1?'محطة واحدة':p.n==2?'محطتان':p.n+' محطات'}`);
+S('dm.railNote','Al Boraq and the national line, Tangier to Marrakech.','Al Boraq et la ligne nationale, de Tanger à Marrakech.','البراق والخط الوطني، من طنجة إلى مراكش.');
+S('dm.util1','Owner has 1 utility','Le propriétaire a 1 service','المالك لديه مرفق واحد'); S('dm.util2','Owner has 2 utilities','Le propriétaire a 2 services','المالك لديه مرفقان'); S('dm.util3','Owner has all 3','Le propriétaire a les trois','المالك لديه الثلاثة');
+S('dm.x40','40 × dice','40 × les dés','40 × النرد'); S('dm.x100','100 × dice','100 × les dés','100 × النرد'); S('dm.x200','200 × dice','200 × les dés','200 × النرد');
+S('info.go','Collect 2,000 DH every time you pass.','Recevez 2 000 DH à chaque passage.','احصل على 2,000 درهم كلما مررت من هنا.');
+S('info.jail','Leave 3okacha by rolling a double, paying 500 DH, or using a get-out card. After three failed rolls you pay and move.','Sortez de 3okacha en faisant un double, en payant 500 DH ou avec une carte de sortie. Après trois essais ratés, vous payez et avancez.','اخرج من عكاشة برمي دوبل، أو بدفع 500 درهم، أو ببطاقة خروج. بعد ثلاث محاولات فاشلة تدفع وتتقدّم.');
+S('info.parking','Mint tea at the café. With the Daret rule on, you take everything in the pot.','Un thé à la menthe au café. Avec la règle de la Daret, vous raflez toute la cagnotte.','أتاي في المقهى. مع قاعدة الدارت، تأخذ كل ما في الصندوق.');
+S('info.gojail','Go directly to 3okacha. Do not pass Al Inṭilāq, do not collect 2,000 DH.','Allez directement à 3okacha. Ne passez pas par Al Inṭilāq, ne recevez pas 2 000 DH.','اذهب مباشرة إلى عكاشة. لا تمرّ بالانطلاق ولا تأخذ 2,000 درهم.');
+S('info.tax','Pay {a}{d}.','Payez {a}{d}.','ادفع {a}{d}.'); S('info.taxDaret',' into the Daret pot',' dans la cagnotte Daret',' في صندوق الدارت');
+S('info.mektoub','Mektoub, what is written: draw a fate card.','Mektoub, ce qui est écrit : tirez une carte du destin.','مكتوب، ما هو مقدَّر: اسحب بطاقة القدر.');
+S('info.baraka','Baraka: blessings and family life. Draw a Baraka card.','Baraka : bénédictions et vie de famille. Tirez une carte Baraka.','بركة: الخير والحياة العائلية. اسحب بطاقة بركة.');
+S('dm.owned','Owned by {p}{m}','Appartient à {p}{m}','ملك {p}{m}'); S('dm.mortSuffix',' · mortgaged',' · hypothéqué',' · مرهون'); S('dm.forSale','For sale','À vendre','للبيع');
+S('aria.close','Close','Fermer','إغلاق');
+/* auction */
+S('au.title','Dlala · {s}','Dlala · {s}','الدلالة · {s}');
+S('au.help','The dlal calls out the price. Raise the bid or leave. The last one standing buys.','Le dlal annonce le prix. Surenchérissez ou retirez-vous. Le dernier en lice achète.','الدلّال ينادي بالثمن. زِد في المزايدة أو انسحب. آخر من يبقى يشتري.');
+S('au.held','held by {p}','tenue par {p}','لصالح {p}'); S('au.none','no bids yet','aucune enchère','لا مزايدة بعد'); S('au.list','list price {a}','prix affiché {a}','الثمن الأصلي {a}');
+S('au.yourBid',', your bid. You have {a}.',', à vous d’enchérir. Vous avez {a}.',' ، دورك في المزايدة. لديك {a}.'); S('au.deciding',' is deciding…',' réfléchit…',' يفكر…');
+S('btn.leaveAuc','Leave auction','Quitter les enchères','انسحب من المزاد');
+/* bankrupt */
+S('bk.title','Declare bankruptcy?','Déclarer faillite ?','إعلان الإفلاس؟');
+S('bk.body','{p} owes {a}. First the game sells {p}’s buildings and mortgages their properties to pay as much as possible. If that is still not enough, {o} gets only that money and the mortgaged properties, and {p} leaves the game. This cannot be undone.','{p} doit {a}. Le jeu vend d’abord les bâtiments de {p} et hypothèque ses propriétés pour payer le plus possible. Si cela ne suffit pas, {o} ne reçoit que cet argent et les propriétés hypothéquées, et {p} quitte la partie. C’est définitif.','{p} مدين بـ{a}. تبيع اللعبة أولًا مباني {p} وترهن ممتلكاته لدفع أكبر قدر ممكن. إذا لم يكفِ ذلك، يحصل {o} فقط على هذا المال والممتلكات المرهونة، ويغادر {p} اللعبة. لا يمكن التراجع عن ذلك.');
+S('btn.keep','Keep playing','Continuer à jouer','واصل اللعب');
+/* trade */
+S('tr.title','Tbadel · Trade','Tbadel · Échange','تبادل'); S('tr.with','Trade with','Échanger avec','تبادل مع'); S('tr.gives','{p} gives','{p} donne','{p} يعطي'); S('tr.cash','Cash','Argent','نقدًا');
+S('tr.nothing','Nothing tradeable','Rien à échanger','لا شيء للتبادل'); S('btn.cancel','Cancel','Annuler','إلغاء'); S('btn.send','Send offer','Envoyer l’offre','أرسل العرض');
+S('tr.pick','Pick something to trade.','Choisissez quelque chose à échanger.','اختر شيئًا للتبادل.'); S('tr.noCash','One side does not have that much cash.','L’un des deux n’a pas assez d’argent.','أحد الطرفين لا يملك هذا المبلغ.');
+S('tr.sent','Offer sent to {p}.','Offre envoyée à {p}.','أُرسل العرض إلى {p}.'); S('tr.thinking','{p} is thinking it over…','{p} réfléchit…','{p} يفكر في العرض…');
+S('trr.title','Tbadel (trade) offer for {p}','Offre de Tbadel (échange) pour {p}','عرض تبادل إلى {p}'); S('trr.pass','Pass the screen to <b>{p}</b>.','Passez l’écran à <b>{p}</b>.','سلّم الشاشة إلى <b>{p}</b>.');
+S('trr.receive','You receive:','Vous recevez :','تحصل على:'); S('trr.give','You give:','Vous donnez :','تعطي:'); S('trr.from','Offer from {p}.','Offre de {p}.','عرض من {p}.'); S('tr.nothingW','nothing','rien','لا شيء');
+S('btn.refuse','Refuse','Refuser','ارفض'); S('btn.accept','Accept','Accepter','اقبل');
+/* game over */
+S('go.title','Mabrouk, {p}!','Mabrouk, {p} !','مبروك يا {p}!'); S('go.props',p=>`${p.n} properties`,p=>`${p.n} propriété${p.n>1?'s':''}`,p=>`${p.n} عقارات`); S('go.nw','net worth','fortune','الثروة');
+S('btn.look','Look at the board','Voir le plateau','انظر إلى اللوحة'); S('btn.backHome','Back to home','Retour à l’accueil','العودة إلى الرئيسية');
+/* lobby */
+S('back','← Home','← Accueil','→ الرئيسية'); S('chip.game','GAME {c}','PARTIE {c}','اللعبة {c}');
+S('lb.hosting','You are hosting','Vous êtes l’hôte','أنت المضيف'); S('lb.invited','You are invited','Vous êtes invité','أنت مدعو'); S('lb.h2','The table is set','La table est prête','الطاولة جاهزة');
+S('lb.invite','Invite players','Inviter des joueurs','ادعُ اللاعبين');
+S('lb.send','Send this link on WhatsApp or anywhere. Everyone who opens it picks a name and a token here.','Envoyez ce lien par WhatsApp ou ailleurs. Chacun choisit ici un nom et un pion.','أرسل هذا الرابط عبر واتساب أو أي تطبيق. كل من يفتحه يختار هنا اسمًا وقطعة.');
+S('lb.claude',' They need access to this page on Claude: share it with them from the Share menu.',' Ils doivent avoir accès à cette page sur Claude : partagez-la depuis le menu Partager.',' يحتاجون إلى صلاحية فتح هذه الصفحة على Claude: شاركها معهم من قائمة المشاركة.');
+S('lb.keepOpen',' Keep this tab open while you play: your browser runs the game.',' Gardez cet onglet ouvert pendant la partie : c’est votre navigateur qui la fait tourner.',' أبقِ هذه الصفحة مفتوحة أثناء اللعب: متصفحك هو من يدير اللعبة.');
+S('btn.copy','Copy link','Copier le lien','انسخ الرابط'); S('lb.atTable','At the table · {n} of 8','À table · {n} sur 8','على الطاولة · {n} من 8');
+S('btn.remove','Remove','Retirer','أزِل'); S('lb.nobody','Nobody has sat down yet.','Personne n’est encore assis.','لم يجلس أحد بعد.'); S('btn.addBot','+ Computer player','+ Joueur ordinateur','+ لاعب حاسوب');
+S('lb.yourSeat','Your seat','Votre place','مقعدك'); S('lb.takeSeat','Take a seat','Prenez place','اجلس'); S('lb.name','Your name','Votre nom','اسمك'); S('lb.namePh','Name shown on the board','Nom affiché sur le plateau','الاسم الذي يظهر في اللوحة'); S('lb.token','Your token','Votre pion','قطعتك');
+S('btn.update','Update my seat','Mettre à jour ma place','حدّث مقعدي'); S('btn.sit','Sit down','S’asseoir','اجلس'); S('btn.leaveTable','Leave the table','Quitter la table','غادر الطاولة');
+S('sec.rules','House rules','Règles maison','قواعد اللعب'); S('btn.start','Start the game','Lancer la partie','ابدأ اللعبة');
+S('lb.need2','At least 2 players needed.','Il faut au moins 2 joueurs.','يلزم لاعبان على الأقل.'); S('lb.ready',p=>`${p.n} players ready.`,p=>`${p.n} joueurs prêts.`,p=>`${p.n} لاعبين جاهزون.`);
+S('lb.hostStarts','The host starts the game when everyone is seated.','L’hôte lance la partie quand tout le monde est assis.','المضيف يبدأ اللعبة عندما يجلس الجميع.'); S('lb.waitHost','Waiting for the host to come back.','En attente du retour de l’hôte.','في انتظار عودة المضيف.');
+S('toast.copied','Invite link copied.','Lien d’invitation copié.','نُسخ رابط الدعوة.'); S('toast.ctrlC','Press Ctrl+C to copy.','Appuyez sur Ctrl+C pour copier.','اضغط Ctrl+C للنسخ.');
+S('toast.name','Type your name first.','Saisissez d’abord votre nom.','اكتب اسمك أولًا.'); S('toast.saved','Seat saved.','Place enregistrée.','حُفظ المقعد.'); S('toast.sitting','Sitting down…','Installation…','جارٍ الجلوس…');
+/* options */
+S('opt.daret','Daret pot','Cagnotte Daret','صندوق الدارت'); S('opt.daretD','Taxes and fines pool at the Qahwa.','Taxes et amendes s’accumulent à la Qahwa.','الضرائب والغرامات تتجمع في القهوة.');
+S('opt.dlala','Dlala auctions','Enchères Dlala','مزادات الدلالة'); S('opt.dlalaD','Unbought property goes to auction.','Une propriété non achetée part aux enchères.','العقار غير المُشترى يذهب إلى المزاد.');
+S('opt.len','Game length','Durée de la partie','مدة اللعبة'); S('opt.lenD','Richest player wins at the limit.','Le plus riche gagne à la fin.','الأغنى يفوز عند النهاية.');
+S('opt.board','Board size','Taille du plateau','حجم اللوحة'); S('opt.boardD','Classic 40-square board, or the Grand 52-square board with 8 extra streets, Mazot w Gaz and Péage.','Plateau classique de 40 cases, ou Grand plateau de 52 cases avec 8 rues de plus, Mazot w Gaz et Péage.','اللوحة الكلاسيكية بـ40 خانة، أو اللوحة الكبرى بـ52 خانة مع 8 شوارع إضافية والمازوط والغاز والطريق السيار.');
+S('opt.boardClassic','Classic · 40 squares','Classique · 40 cases','كلاسيكية · 40 خانة');
+S('opt.boardGrand','Grand · 52 squares','Grand · 52 cases','كبرى · 52 خانة');
+S('opt.until','Until one player is left','Jusqu’au dernier joueur','حتى يبقى لاعب واحد'); S('opt.rounds','{n} rounds','{n} tours','{n} جولة');
+S('opt.gMoney','Money','Argent','المال'); S('opt.gRules','Rules','Règles','القواعد'); S('opt.gGame','Game','Partie','اللعبة');
+S('opt.cash','Starting money','Argent de départ','المال في البداية'); S('opt.cashD','What each player starts with.','Ce que chaque joueur reçoit au départ.','ما يبدأ به كل لاعب.');
+S('opt.salary','Al Inṭilāq salary','Salaire d’Al Inṭilāq','راتب الانطلاق'); S('opt.salaryD','Paid every time you pass Al Inṭilāq.','Versé à chaque passage par Al Inṭilāq.','يُدفع كلما مررت بالانطلاق.');
+S('opt.fine','3okacha fine','Amende de 3okacha','غرامة عكاشة'); S('opt.fineD','What it costs to walk out of 3okacha.','Ce qu’il faut payer pour sortir de 3okacha.','ما تدفعه للخروج من عكاشة.');
+S('opt.goDouble','Double on Al Inṭilāq','Double sur Al Inṭilāq','مضاعف عند الانطلاق'); S('opt.goDoubleD','Land right on it and the salary is paid twice.','Tombez pile dessus et le salaire est versé deux fois.','إذا توقفت عليه تمامًا يُدفع الراتب مرتين.');
+S('opt.riadNow','“Riad now”','« Riad direct »','«رياض مباشرة»'); S('opt.riadNowD','Build a riad in one go, for {n}% more.','Construire un riad d’un coup, pour {n} % de plus.','بناء رياض دفعة واحدة بزيادة {n}%.');
+S('opt.jailRent','Rent from 3okacha','Loyers depuis 3okacha','الكراء من عكاشة'); S('opt.jailRentD','Players in 3okacha still collect their rent.','Les joueurs à 3okacha touchent toujours leurs loyers.','اللاعبون في عكاشة يواصلون تحصيل الكراء.');
+S('log.goDouble','{p} lands right on Al Inṭilāq and collects another {a}.','{p} tombe pile sur Al Inṭilāq et reçoit encore {a}.','{p} يتوقف تمامًا عند الانطلاق ويحصل على {a} إضافية.');
+S('log.jailNoRent','{o} is in 3okacha, so collects no rent for {s}.','{o} est à 3okacha et ne touche pas de loyer pour {s}.','{o} في عكاشة، فلا يقبض كراء {s}.');
+S('opt.fairStart','Fair start','Départ équitable','بداية عادلة'); S('opt.fairStartD','Players further down the turn order start with a little more money.','Les joueurs qui jouent plus tard commencent avec un peu plus d’argent.','من يلعب لاحقًا يبدأ بمال أكثر قليلًا.');
+S('opt.credit','Credit','Crédit','الكريدي'); S('opt.creditD','Borrow up to {a} from the bank; {n}% of what you owe is due each time you pass Al Inṭilāq.','Empruntez jusqu’à {a} à la banque ; {n} % de la dette est dû à chaque passage par Al Inṭilāq.','اقترض حتى {a} من البنك؛ تدفع {n}% مما عليك كلما مررت بالانطلاق.');
+S('opt.solidarity','Solidarity salary','Salaire solidaire','راتب التضامن'); S('opt.solidarityD','The poorest player collects double at Al Inṭilāq.','Le joueur le plus pauvre touche le double à Al Inṭilāq.','أفقر لاعب يتقاضى الضعف عند الانطلاق.');
+S('opt.deeds','Starting deeds','Titres de départ','عقود البداية'); S('opt.deedsD','Everyone is dealt two properties of about the same value.','Chacun reçoit deux propriétés de valeur à peu près égale.','يحصل كل لاعب على عقارين بقيمة متقاربة.');
+S('opt.shufa','Shufa','Chefaa','الشفعة'); S('opt.shufaD','Once a game, from round 6, the player furthest behind can buy another player’s property at 150%.','Une fois par partie, dès le tour 6, le joueur le plus en retard peut racheter la propriété d’un autre à 150 %.','مرة في اللعبة، ابتداءً من الجولة 6، يمكن لأكثر اللاعبين تأخرًا شراء عقار لاعب آخر بـ150%.');
+S('cr.title','Credit','Crédit','الكريدي'); S('cr.none','Borrow up to {a}; {n}% of the loan is due each time you pass Al Inṭilāq.','Empruntez jusqu’à {a} ; {n} % du prêt est dû à chaque passage par Al Inṭilāq.','اقترض حتى {a}؛ تدفع {n}% من القرض كلما مررت بالانطلاق.');
+S('cr.owes','You owe the bank {a}: {b} interest each time you pass Al Inṭilāq.','Vous devez {a} à la banque : {b} d’intérêts à chaque passage par Al Inṭilāq.','عليك {a} للبنك: {b} فائدة كلما مررت بالانطلاق.');
+S('cr.borrow','Borrow','Emprunter','اقترض'); S('cr.amount','Amount to borrow','Montant à emprunter','المبلغ'); S('cr.repay','Repay {a}','Rembourser {a}','سدّد {a}'); S('cr.repayAll','Repay all','Tout rembourser','سدّد الكل');
+S('st.loan','owes the bank {a}','doit {a} à la banque','عليه {a} للبنك');
+S('dd.shufa','You are furthest behind: your Shufa lets you buy one property from another player at {n}% of its price. Open their property on the board.','Vous êtes le plus en retard : votre chefaa vous permet de racheter une propriété d’un autre joueur à {n} % de son prix. Ouvrez sa propriété sur le plateau.','أنت الأكثر تأخرًا: الشفعة تسمح لك بشراء عقار من لاعب آخر بـ{n}% من ثمنه. افتح عقاره على اللوحة.');
+S('sh.explain','Shufa: as the player furthest behind, you may buy this from {o} once in the game. {o} must sell.','Chefaa : en tant que joueur le plus en retard, vous pouvez le racheter à {o} une fois dans la partie. {o} doit vendre.','الشفعة: بصفتك الأكثر تأخرًا، يمكنك شراء هذا من {o} مرة واحدة في اللعبة، و{o} ملزم بالبيع.');
+S('sh.buy','Shufa · buy for {a}','Chefaa · racheter pour {a}','الشفعة · اشترِ بـ{a}'); S('sh.short','Not enough money yet.','Pas encore assez d’argent.','المال غير كافٍ بعد.');
+S('log.fairStart','Fair start: each player after the first starts with {a} more than the one before.','Départ équitable : chaque joueur après le premier commence avec {a} de plus que le précédent.','بداية عادلة: كل لاعب بعد الأول يبدأ بـ{a} أكثر ممن قبله.');
+S('log.dealt','Starting deeds: everyone is dealt {n} properties.','Titres de départ : chacun reçoit {n} propriétés.','عقود البداية: يحصل كل لاعب على {n} عقارات.');
+S('log.passGoSolidarity','{p} passes Al Inṭilāq and, as the poorest player, collects double: {a}.','{p} passe par Al Inṭilāq et, en tant que joueur le plus pauvre, touche le double : {a}.','{p} يمرّ بالانطلاق، وبصفته الأفقر يحصل على الضعف: {a}.');
+S('log.borrow','{p} borrows {a} from the bank ({b} interest each lap).','{p} emprunte {a} à la banque ({b} d’intérêts par tour).','{p} يقترض {a} من البنك ({b} فائدة كل دورة).');
+S('log.repay','{p} repays {a}; still owes {b}.','{p} rembourse {a} ; il doit encore {b}.','{p} يسدّد {a}؛ ما زال عليه {b}.');
+S('log.repayAll','{p} repays the last {a} and is free of debt.','{p} rembourse les derniers {a} et n’a plus de dette.','{p} يسدّد آخر {a} ويتحرر من الدين.');
+S('log.shufa','Shufa! {p} buys {s} from {o} for {a}.','Chefaa ! {p} rachète {s} à {o} pour {a}.','الشفعة! {p} يشتري {s} من {o} بـ{a}.');
+S('opt.bills','Utility bills','Factures','الفواتير'); S('opt.billsD','Passing Al Inṭilāq, players pay each utility’s owner {a} per dar and {b} per riad they have built.','En passant Al Inṭilāq, chaque joueur paie au propriétaire de chaque service {a} par dar et {b} par riad qu’il a construit.','عند المرور بالانطلاق، يدفع كل لاعب لمالك كل مرفق {a} عن كل دار و{b} عن كل رياض بناه.');
+S('opt.train','Train travel','Voyages en train','السفر بالقطار'); S('opt.trainD','A station’s rent goes up by {n}% of the rents of the dars and riads on its side of the board. Stop on a station you already own and you may take the train, free, to another of yours.','Le loyer d’une gare augmente de {n} % des loyers des dars et riads de son côté du plateau. Arrêté sur une gare qu’on possède déjà, on peut prendre le train, gratuitement, vers une autre de ses gares.','يرتفع كراء المحطة بـ{n}% من كراء الدور والرياضات في جهتها من اللوحة. وإذا توقفت في محطة تملكها من قبل، يمكنك ركوب القطار مجانًا إلى محطة أخرى من محطاتك.');
+S('btn.ride','🚆 Train to {s}','🚆 Train pour {s}','🚆 القطار إلى {s}');
+S('dm.side','Plus, on its side of the board','En plus, de son côté du plateau','زائد، في جهتها من اللوحة'); S('dm.sideV','{n}% of their dars’ and riads’ rents','{n} % des loyers de leurs dars et riads','{n}% من كراء دورها ورياضاتها'); S('dm.sideNow','Adds right now','S’ajoute en ce moment','يُضاف الآن'); S('pv.railSide',', more with dars and riads on its side',', plus avec les dars et riads de son côté','، وأكثر مع الدور والرياضات في جهتها');
+S('dm.train','Train','Train','القطار'); S('dm.trainV','between the owner’s stations','entre les gares du propriétaire','بين محطات المالك');
+S('dm.bill','Bill at Al Inṭilāq','Facture à Al Inṭilāq','الفاتورة عند الانطلاق'); S('dm.billV','{a} per dar, {b} per riad','{a} par dar, {b} par riad','{a} لكل دار، {b} لكل رياض');
+S('log.ride','{p} takes the train to {s}.','{p} prend le train jusqu’à {s}.','{p} يركب القطار إلى {s}.');
+S('why.bill','the {s} bill','la facture {s}','فاتورة {s}');
+S('why.interest','interest on the loan','les intérêts du prêt','فائدة القرض');
+S('opt.fast','Fast animations','Animations rapides','حركات سريعة'); S('opt.fastD','Quicker dice and token moves.','Dés et pions plus rapides.','نرد وقطع أسرع.');
+/* setup */
+S('setup.eyebrow','Play on this device','Jouer sur cet appareil','العب على هذا الجهاز'); S('setup.h2','Who’s playing?','Qui joue ?','من يلعب؟');
+S('setup.p','Pass the screen around. Turn seats on or off, and let the computer take any empty chair.','Faites passer l’écran. Activez ou désactivez des places, et laissez l’ordinateur occuper les chaises vides.','مرّروا الشاشة بينكم. فعّلوا المقاعد أو عطّلوها، ودعوا الحاسوب يشغل أي كرسي فارغ.');
+S('btn.startGame','Start game','Commencer','ابدأ'); S('btn.demo','Watch 8 computer players','Regarder 8 joueurs ordinateur','شاهد 8 لاعبين من الحاسوب'); S('btn.resume','Resume saved game','Reprendre la partie','تابع اللعبة المحفوظة');
+S('setup.need2','Turn on at least 2 seats.','Activez au moins 2 places.','فعّل مقعدين على الأقل.'); S('setup.count','{n} players · {h} human','{n} joueurs · {h} humain(s)','{n} لاعبين · {h} بشر');
+S('setup.pickBoard','Choose your board','Choisissez votre plateau','اختر الخريطة');
+S('setup.classicName','Classic Map','Carte Classique','الخريطة الكلاسيكية');
+S('setup.classicMeta','22 streets · fast classic','22 rues · classique rapide','22 شارعًا · إيقاع سريع');
+S('setup.grandName','Grand Map','Grande Carte','الخريطة الكبرى');
+S('setup.grandMeta','30 streets · Mazot w Gaz & Péage','30 rues · Mazot w Gaz & Péage','30 شارعًا · مازوط وغاز والطريق السيار');
+S('setup.paceTitle','Pace & presets','Rythme & préréglages','الإيقاع والإعدادات السريعة');
+S('setup.presets','Rule presets','Préréglages','أنماط سريعة');
+S('setup.presetFull','Full Moropoly','Moropoly complet','موروبولي الكامل');
+S('setup.presetPure','Classic Pure','Classique pur','كلاسيكي خالص');
+S('setup.presetRich','High Stakes','Gros enjeux','ثراء ومغامرة');
+S('setup.seatsLabel','Quick seats','Nombre de joueurs','عدد اللاعبين');
+S('setup.addPlayer','Add player','Ajouter un joueur','أضف لاعبًا');
+S('setup.rulesTitle','Tune the table rules','Ajustez les règles de la table','عدّل قواعد الطاولة');
+S('setup.customizeRules','House rules ({n}/13)','Règles maison ({n}/13)','قواعد الطاولة ({n}/13)');
+S('setup.allRules','All','Toutes','الكل');
+S('seg.human','Human','Humain','إنسان'); S('setup.change','Change','Changer','غيّر'); S('seg.computer','Computer','Ordinateur','حاسوب');
+S('tok.choose','Choose a token','Choisir un pion','اختر قطعة'); S('tok.swap','Picking a token another seat has swaps the two.','Choisir le pion d’une autre place les échange.','اختيار قطعة مقعد آخر يبدّل بينهما.');
+S('aria.seatTok','Choose token for seat {n}','Choisir le pion de la place {n}','اختر قطعة المقعد {n}'); S('aria.seatOn','Seat {n} playing','Place {n} active','المقعد {n} يلعب'); S('aria.seatName','Seat {n} name','Nom de la place {n}','اسم المقعد {n}');
+/* home */
+S('home.players','2–8 players · online or one screen','2 à 8 joueurs · en ligne ou sur un écran','من 2 إلى 8 لاعبين · عبر الإنترنت أو على شاشة واحدة');
+S('home.eyebrow','لعبة العقارات المغربية · The Moroccan property game','لعبة العقارات المغربية · Le jeu immobilier marocain','لعبة العقارات المغربية');
+S('home.h1','<span class="s">Buy Morocco,</span><br>from <span class="r">Tangier</span> to <span class="g">Lagouira</span>.','<span class="s">Achetez le Maroc,</span><br>de <span class="r">Tanger</span> à <span class="g">Lagouira</span>.','<span class="s">اشترِ المغرب،</span><br>من <span class="r">طنجة</span> إلى <span class="g">الكويرة</span>.');
+S('home.lead','Play online with friends or pass one screen around. Pick Classic 40 or the 52-square Grand Map, form Chrika city pacts, and let the dice decide.','Jouez en ligne entre amis ou sur un même écran. Choisissez le plateau Classique 40 ou Grand 52 cases, formez des Chrikas et laissez les dés décider.','العب عبر الإنترنت مع الأصدقاء أو على شاشة واحدة. اختر الخريطة الكلاسيكية (40) أو الكبرى (52 خانة)، واعقد شراكات المدن، واترك القرار للنرد.');
+S('home.statBoards','Classic & Grand maps','Plateaux Classique & Grand','خريطتان: 40 و52 خانة');
+S('home.statCards','Painted Moroccan streets','Rues marocaines peintes','شارعًا مغربيًا مرسومًا');
+S('home.statPieces','3D silver & enamel pieces','Pions 3D argent & émail','قطعة ثلاثية الأبعاد');
+S('home.newTag','NEW','NOUVEAU','جديد');
+S('home.grandTitle','Grand Map · 52 Squares','Grande carte · 52 cases','الخريطة الكبرى · 52 خانة');
+S('home.grandDesc','All eight Moroccan cities expanded with an extra landmark street, plus Mazot w Gaz and Péage highway tolls. Complete 3 of 4 streets for double rent, or all 4 to build riads.','Les huit villes marocaines enrichies d’une rue emblématique, plus Mazot w Gaz et le Péage. Possédez 3 rues sur 4 pour doubler le loyer, ou les 4 pour bâtir des riads.','توسّعت المدن المغربية الثماني بشارع جديد لكل مدينة، مع مازوط وغاز وأداء الطريق السيار. 3 من 4 تضاعف الكراء، و4 تفتح بناء الدور والرياضات.');
+S('home.grandChip1','+8 iconic streets','+8 rues emblématiques','+8 شوارع شهيرة');
+S('home.grandChip2','3-of-4 double rent','3 sur 4 : loyer ×2','3 من 4: كراء مضاعف');
+S('home.grandChip3','Mazot w Gaz & Péage','Mazot w Gaz & Péage','مازوط وغاز والطريق السيار');
+S('home.playGrand','Play Grand 52 →','Jouer en 52 cases →','العب خريطة 52 ←');
+S('home.chrikaTitle','Chrika & L’Ghedr','Chrika & L’Ghedr','الشركة والغدر');
+S('home.chrikaDesc','Split a city with another player? Sign a Chrika to build right away, stay free on each other’s streets, and share outsider rent. Once every property is bought, L’Ghedr unlocks: sell out to the bank for 80% and flee to 3okacha!','Vous partagez une ville ? Signez une Chrika pour construire aussitôt, séjourner gratuitement chez l’autre et partager le loyer. Une fois tout acheté, L’Ghedr se débloque : vendez tout à la banque à 80 % et filez à 3okacha !','تتقاسم مدينة مع لاعب آخر؟ وقّعا شركة للبناء فورًا والإقامة المجانية وتقاسم كراء الغرباء. وبمجرد بيع جميع العقارات يُفتح الغدر: بِع المدينة للبنك بـ80% واهرب إلى عكاشة!');
+S('home.chrikaChip1','Custom rent split','Partage sur mesure','تقاسم مخصّص للكراء');
+S('home.chrikaChip2','80% bank buyout','Rachat banque 80 %','بيع للبنك بـ80%');
+S('home.chrikaChip3','Gheddar badge','Badge Gheddar','وسام غدّار');
+S('home.tryChrika','Try Chrika mode →','Essayer le mode Chrika →','جرّب نظام الشركة ←');
+S('home.galleryEyebrow','Modern Morocco in oil paint','Le Maroc moderne en peinture','المغرب العصري بالرسم الزيتي');
+S('home.galleryTitle','30 Painted Property Cards','30 cartes de propriétés peintes','30 بطاقة عقار مرسومة');
+S('home.galleryHint','Tap any card to inspect','Touchez une carte pour l’agrandir','اضغط على أي بطاقة لتكبيرها');
+S('home.allCities','All cities','Toutes les villes','كل المدن');
+S('home.piecesEyebrow','Crafted in 3D','Modélisés en 3D','مصمّمة ثلاثيًا');
+S('home.piecesTitle','11 Moroccan Tokens','11 pions marocains','11 قطعة مغربية');
+S('home.piecesHint','Hover or tap a piece to inspect','Survolez ou touchez un pion pour l’examiner','مرّر أو اضغط على قطعة لتكبيرها');
+S('home.atlasTitle','Eight Cities of Modern Morocco','Huit villes du Maroc moderne','ثماني مدن من المغرب العصري');
+S('home.streetsCount','{n} streets','{n} rues','{n} شوارع');
+S('home.cityPrices','Street prices','Prix des rues','أثمنة الشوارع');
+S('home.cityDar','Dar cost','Prix d’une dar','بناء الدار');
+S('home.cityMaxRent','Max riad rent','Loyer riad max','أعلى كراء رياض');
+S('home.classicTitle','Classic Map · 40 Squares','Carte Classique · 40 cases','الخريطة الكلاسيكية · 40 خانة');
+S('home.classicDesc','The crisp, fast-paced classic layout: 22 Moroccan streets across 8 cities, 4 ONCF rail stations, Daw w Lma & Maroc Tilikom, and tight monopolies where every roll counts.','Le plateau classique rapide et tendu : 22 rues marocaines sur 8 villes, 4 gares ONCF, Daw w Lma & Maroc Tilikom, et des monopoles serrés où chaque lancer compte.','التصميم الكلاسيكي السريع: 22 شارعًا مغربيًا في 8 مدن، 4 محطات قطار، الضو والما وماروك تيليكوم، ومنافسة حامية في كل رمية.');
+S('home.classicChip1','22 classic streets','22 rues classiques','22 شارعًا كلاسيكيًا');
+S('home.classicChip2','Fast 15–25 round games','Parties rapides 15–25 tours','جولات سريعة (15–25)');
+S('home.classicChip3','Pure classic pacing','Rythme classique pur','إيقاع كلاسيكي أصيل');
+S('home.playClassic','Play Classic 40 →','Jouer en 40 cases →','العب خريطة 40 ←');
+S('home.chrikaStep1','Partner on a shared city to build immediately & stay free','Associez-vous sur une ville partagée pour bâtir et passer gratuit','تشاركا في مدينة للبناء فورًا والإقامة المجانية');
+S('home.chrikaStep2','Split outsider rent by your custom percentage','Partagez le loyer extérieur selon votre pourcentage','تقاسما كراء الغرباء بالنسبة المتفق عليها');
+S('home.chrikaStep3','Once all properties sell, L’Ghedr unlocks: 80% cash → 3okacha','Dès que tout est vendu, L’Ghedr s’ouvre : 80 % cash → 3okacha','عندما تُباع كل العقارات يُفتح الغدر: 80% نقدًا ← عكاشة');
+S('home.footLead','Gather 2 to 8 players — online on any device, or pass one screen around the table.','Réunissez 2 à 8 joueurs — en ligne sur tout appareil, ou autour d’un même écran.','اجمع من 2 إلى 8 لاعبين — عبر الإنترنت من أي جهاز، أو على شاشة واحدة حول الطاولة.');
+S('home.host','Host an online game','Créer une partie en ligne','استضف لعبة عبر الإنترنت'); S('home.local','Play on this device','Jouer sur cet appareil','العب على هذا الجهاز'); S('home.install','Install the app','Installer l’application','ثبّت التطبيق');
+S('home.code','Game code (8 characters)','Code de la partie (8 caractères)','رمز اللعبة (8 رموز)'); S('home.join','Join','Rejoindre','انضم'); S('home.checking','Checking online play…','Vérification du jeu en ligne…','جارٍ التحقق من اللعب عبر الإنترنت…');
+S('home.resume','Resume game {c} · {w}','Reprendre la partie {c} · {w}','تابع اللعبة {c} · {w}'); S('home.lobby','lobby','salon','الانتظار'); S('home.round','round {n}','tour {n}','الجولة {n}');
+S('note.claudeOn','Online play is on. Players join with your invite link and need access to this page on Claude.','Le jeu en ligne est activé. Les joueurs rejoignent avec votre lien et doivent avoir accès à cette page sur Claude.','اللعب عبر الإنترنت مفعّل. ينضم اللاعبون برابط دعوتك، ويحتاجون إلى صلاحية فتح هذه الصفحة على Claude.');
+S('note.claudeHostNo',' You can join games here, but hosting needs edit access.',' Vous pouvez rejoindre des parties ici, mais il faut un accès en modification pour en créer.',' يمكنك الانضمام إلى الألعاب هنا، لكن الاستضافة تتطلب صلاحية التعديل.');
+S('note.claudeOff','Online play is not available in this view. You can still play on this device.','Le jeu en ligne n’est pas disponible ici. Vous pouvez quand même jouer sur cet appareil.','اللعب عبر الإنترنت غير متاح هنا. يمكنك مع ذلك اللعب على هذا الجهاز.');
+S('note.secure','Online play needs the secure address: open https://moropoly.win','Le jeu en ligne nécessite l’adresse sécurisée : ouvrez https://moropoly.win','اللعب عبر الإنترنت يحتاج العنوان الآمن: افتح https://moropoly.win');
+S('note.server','Online play works on any network, including mobile data. The game runs on the Moropoly server, so anyone can close the app and come back to the same table.','Le jeu en ligne fonctionne sur tous les réseaux, y compris les données mobiles. La partie tourne sur le serveur Moropoly : chacun peut fermer l’appli et revenir à la même table.','اللعب عبر الإنترنت يعمل على أي شبكة، بما فيها بيانات الهاتف. اللعبة تجري على خادم موروبولي، فيمكن لأي لاعب أن يغلق التطبيق ويعود إلى الطاولة نفسها.');S('conn.noRelay','Can’t reach the game server yet. Check your internet connection; this page keeps trying.','Impossible de joindre le serveur de jeu pour l’instant. Vérifiez votre connexion internet ; cette page réessaie.','تعذّر الوصول إلى خادم اللعبة حتى الآن. تحقق من اتصالك بالإنترنت؛ هذه الصفحة تواصل المحاولة.');S('conn.found','Table found. Joining…','Table trouvée. Connexion…','تم العثور على الطاولة. جارٍ الانضمام…');
+S('feat.dlala','DLALA','DLALA','المزاد'); S('feat.dlalaP','Nobody buys a property? The souk auctioneer sells it to the highest bidder.','Personne n’achète une propriété ? Le crieur du souk la vend au plus offrant.','لم يشترِ أحد العقار؟ دلّال السوق يبيعه لمن يدفع أكثر.');
+S('feat.daret','DARET','DARET','دارت'); S('feat.daretP','Taxes and fines pool into the Daret. Stop at the Qahwa and take it all.','Taxes et amendes alimentent la Daret. Arrêtez-vous à la Qahwa et raflez tout.','الضرائب والغرامات تتجمع في الدارت. توقّف في القهوة وخذها كلها.');
+S('feat.cards','MEKTOUB & BARAKA','MEKTOUB & BARAKA','مكتوب وبركة'); S('feat.cardsP','Grand taxis, radars, the Eid sheep, Friday couscous and grandma’s baraka.','Grands taxis, radars, mouton de l’Aïd, couscous du vendredi et baraka de grand-mère.','الطاكسي الكبير، الرادار، حولي العيد، كسكس الجمعة وبركة الجدة.');
+S('feat.jail','3OKACHA','3OKACHA','عكاشة'); S('feat.jailP','Roll a double, pay 500 DH, or hope your cousin really is a lawyer.','Faites un double, payez 500 DH, ou espérez que votre cousin soit vraiment avocat.','ارمِ دوبل، أو ادفع 500 درهم، أو تمنَّ أن يكون ابن عمك محاميًا فعلًا.');
+S('sk.eyebrow','From the sketchbook','Le carnet de croquis','من دفتر الرسومات'); S('sk.h2','Every tile has its own painting','Chaque case a sa propre peinture','لكل خانة لوحتها الخاصة');
+S('sk.p','22 property cards painted for Moropoly, from the riverside homes of Sidi Moussa to the Twin Center in Maarif, plus the 3okacha gate and eleven silver tokens. They all appear in the game: on the board, in the deed cards and in the reveal when you land.','22 cartes de propriété peintes pour Moropoly, des maisons au bord du fleuve à Sidi Moussa jusqu’au Twin Center de Maarif, plus la porte de 3okacha et onze pions argentés. Toutes apparaissent dans le jeu : sur le plateau, dans les titres et quand vous vous arrêtez sur une case.','22 بطاقة عقار رُسمت لموروبولي، من بيوت سيدي موسى على ضفة النهر إلى التوين سنتر في المعاريف، إضافة إلى بوابة عكاشة وإحدى عشرة قطعة فضية. كلها تظهر في اللعبة: على اللوحة، وفي بطاقات العقود، وعند وصولك إلى الخانة.');
+S('aria.map','Map of Morocco with the game’s cities','Carte du Maroc avec les villes du jeu','خريطة المغرب مع مدن اللعبة'); S('aria.flag','Flag of Morocco','Drapeau du Maroc','علم المغرب');
+/* network */
+S('err.lib','Could not load the connection library. Check your internet connection.','Impossible de charger la bibliothèque de connexion. Vérifiez votre connexion internet.','تعذّر تحميل مكتبة الاتصال. تحقق من اتصالك بالإنترنت.');
+S('err.inUse','That game is already open in another tab or browser.','Cette partie est déjà ouverte dans un autre onglet ou navigateur.','هذه اللعبة مفتوحة في نافذة أو متصفح آخر.');
+S('err.browser','This browser cannot make direct connections. Try Chrome, Edge, Firefox or Safari.','Ce navigateur ne peut pas établir de connexion directe. Essayez Chrome, Edge, Firefox ou Safari.','هذا المتصفح لا يدعم الاتصال المباشر. جرّب Chrome أو Edge أو Firefox أو Safari.');
+S('err.conn','Could not connect. Check your internet connection and try again.','Connexion impossible. Vérifiez votre connexion internet et réessayez.','تعذّر الاتصال. تحقق من اتصالك بالإنترنت وحاول مجددًا.');
+S('toast.noHost','Hosting is not available here.','Impossible de créer une partie ici.','الاستضافة غير متاحة هنا.'); S('toast.code','Game codes are 8 letters and numbers, at the end of the invite link.','Les codes de partie font 8 lettres et chiffres, à la fin du lien d’invitation.','رمز اللعبة 8 حروف وأرقام، في آخر رابط الدعوة.');
+S('toast.noOnline','Online play is not available in this view.','Le jeu en ligne n’est pas disponible ici.','اللعب عبر الإنترنت غير متاح هنا.'); S('toast.noGame','No game found with code {c}.','Aucune partie trouvée avec le code {c}.','لا توجد لعبة بالرمز {c}.');
+S('conn.opening','Opening your table…','Ouverture de votre table…','جارٍ فتح طاولتك…'); S('conn.reopen','Reopening your table…','Réouverture de votre table…','جارٍ إعادة فتح طاولتك…'); S('conn.connecting','Connecting to the host…','Connexion à l’hôte…','جارٍ الاتصال بالمضيف…');
+S('conn.hint','The host needs to have the game open. This page keeps trying on its own.','L’hôte doit avoir la partie ouverte. Cette page réessaie toute seule.','يجب أن تكون اللعبة مفتوحة عند المضيف. هذه الصفحة تواصل المحاولة تلقائيًا.');
+S('conn.joining','Joining the table…','Connexion à la table…','جارٍ الانضمام إلى الطاولة…');
+S('conn.serverHint','If the connection is slow, this page keeps trying on its own.','Si la connexion est lente, cette page réessaie toute seule.','إذا كان الاتصال بطيئًا، تواصل هذه الصفحة المحاولة تلقائيًا.');
+S('lb.server',' The game runs on the Moropoly server: anyone can close this page and come back with the same link.',' La partie tourne sur le serveur Moropoly : chacun peut fermer cette page et revenir avec le même lien.',' اللعبة تجري على خادم موروبولي: يمكن لأي لاعب أن يغلق هذه الصفحة ويعود بالرابط نفسه.');
+S('banner.offline','Connection lost. Reconnecting… Your moves will be sent once you’re back.','Connexion perdue. Reconnexion… Vos coups seront envoyés dès votre retour.','انقطع الاتصال. جارٍ إعادة الاتصال… ستُرسل حركاتك بمجرد عودتك.');
+S('toast.offline','You’re offline. Your move will be sent when you reconnect.','Vous êtes hors ligne. Votre coup sera envoyé à la reconnexion.','أنت غير متصل. ستُرسل حركتك عند عودة الاتصال.');
+S('toast.hostOff','The host is offline. Your move will be sent when they are back.','L’hôte est hors ligne. Votre coup sera envoyé à son retour.','المضيف غير متصل. ستُرسل حركتك عند عودته.');
+S('toast.taken','That token is taken.','Ce pion est déjà pris.','هذه القطعة مأخوذة.'); S('toast.noMove','That move is not possible right now.','Ce coup n’est pas possible pour l’instant.','هذه الحركة غير ممكنة الآن.');
+S('banner.paused','Can’t reach the host, so the game is paused. It reconnects on its own when the host’s game is open again.','Impossible de joindre l’hôte : la partie est en pause. Elle se reconnecte toute seule quand l’hôte rouvre la partie.','تعذّر الوصول إلى المضيف، فاللعبة متوقفة مؤقتًا. ستعود تلقائيًا عندما يفتح المضيف اللعبة من جديد.');
+S('meta.round','Round {n}{of} · Daret {a}','Tour {n}{of} · Daret {a}','الجولة {n}{of} · الدارت {a}'); S('meta.of',' of {m}',' sur {m}',' من {m}');
+S('btn.leave','Leave','Quitter','غادر'); S('btn.viewTable','Table view','Vue table','عرض الطاولة'); S('btn.viewFlat','Flat view','Vue à plat','عرض مسطّح');
+S('btn.hideSide','Expand board','Agrandir','تكبير اللوحة'); S('btn.showSide','Show panel','Afficher panneau','إظهار اللوحة الجانبية');
+/* pwa */
+S('pwa.installed','Moropoly is on your home screen.','Moropoly est sur votre écran d’accueil.','موروبولي الآن على شاشتك الرئيسية.'); S('pwa.title','Install Moropoly','Installer Moropoly','ثبّت موروبولي');
+S('pwa.ios','<b>iPhone or iPad (Safari):</b> tap the Share button, then <b>Add to Home Screen</b>.','<b>iPhone ou iPad (Safari) :</b> touchez Partager, puis <b>Sur l’écran d’accueil</b>.','<b>آيفون أو آيباد (Safari):</b> اضغط زر المشاركة، ثم <b>إضافة إلى الشاشة الرئيسية</b>.');
+S('pwa.android','<b>Android (Chrome):</b> open the ⋮ menu, then <b>Install app</b> or <b>Add to Home screen</b>.','<b>Android (Chrome) :</b> ouvrez le menu ⋮, puis <b>Installer l’application</b> ou <b>Ajouter à l’écran d’accueil</b>.','<b>أندرويد (Chrome):</b> افتح القائمة ⋮، ثم <b>تثبيت التطبيق</b> أو <b>إضافة إلى الشاشة الرئيسية</b>.');
+S('pwa.note','It opens full screen like an app, and invite links still work.','Il s’ouvre en plein écran comme une application, et les liens d’invitation fonctionnent toujours.','يفتح بملء الشاشة مثل التطبيق، وتبقى روابط الدعوة تعمل.');
+/* dock */
+S('dk.music','Music','Musique','الموسيقى'); S('dk.pick','Choose the music','Choisir la musique','اختر الموسيقى');
+S('trk.oud','Oud Nights','Nuits d’oud','ليالي العود'); S('trk.oud.d','Calm oud under the stars','Oud paisible sous les étoiles','عود هادئ تحت النجوم');
+S('trk.guitar','Andalusian Sunset','Coucher de soleil andalou','غروب أندلسي'); S('trk.guitar.d','Slow guitar, Tangier evenings','Guitare lente, soirées de Tanger','قيثارة هادئة، أمسيات طنجة');
+S('trk.chaabi','Chaabi Wedding','Mariage chaâbi','عرس شعبي'); S('trk.chaabi.d','Lively chaabi, everyone dances','Chaâbi entraînant, tout le monde danse','شعبي حماسي، الكل يرقص'); S('dk.loop','Plays on a loop','En boucle','تُعاد باستمرار'); S('dk.vol','Volume','Volume','الصوت'); S('dk.sfx','Sound effects','Effets sonores','المؤثرات الصوتية');
+S('dk.m','Press M to turn the music on or off.','Appuyez sur M pour activer ou couper la musique.','اضغط M لتشغيل الموسيقى أو إيقافها.'); S('toast.musicOn','Music on','Musique activée','الموسيقى تعمل'); S('toast.musicOff','Music off','Musique coupée','الموسيقى متوقفة');
+S('dk.aria','Open music controls','Ouvrir les réglages de la musique','افتح إعدادات الموسيقى'); S('dk.ariaOn','Music playing. Open music controls','Musique en cours. Ouvrir les réglages','الموسيقى تعمل. افتح الإعدادات');
+S('lang.aria','Language','Langue','اللغة');
+/* house rules guide */
+S("gd.title","House rules at this table","Les règles maison de cette table","قواعد هذه الطاولة");
+S("gd.intro","This table plays with {n} house rules on top of the usual game. Each takes a few seconds to learn: tap one, or go through them in order.","Cette table joue avec {n} règles maison en plus du jeu habituel. Chacune s’apprend en quelques secondes : touchez-en une, ou parcourez-les dans l’ordre.","تلعب هذه الطاولة بـ{n} قواعد إضافية فوق اللعبة المعتادة. كل واحدة تُفهم في ثوانٍ: اضغط على واحدة، أو تصفّحها بالترتيب.");
+S("gd.houseRule","House rule","Règle maison","قاعدة الطاولة");
+S("gd.example","For example","Par exemple","مثال");
+S("gd.where","Where to find it","Où la trouver","أين تجدها");
+S("gd.start","Show me","Montrez-moi","أرني");
+S("gd.next","Next","Suivant","التالي");
+S("gd.back","Back","Retour","رجوع");
+S("gd.done","Let’s play","On joue","يلاه نلعبو");
+S("gd.open","Open the guide","Ouvrir le guide","افتح الدليل");
+S("gd.fairStart","Fair start","Départ équitable","بداية عادلة");
+S("gd.fairStart.d","Playing first is an advantage, so each player after the first starts with {a} more than the one before.","Jouer en premier est un avantage : chaque joueur après le premier commence avec {a} de plus que le précédent.","اللعب أولًا ميزة، لذلك يبدأ كل لاعب بعد الأول بـ{a} أكثر من الذي قبله.");
+S("gd.fairStart.w","Already in everyone’s cash. Nothing to do.","Déjà dans l’argent de chacun. Rien à faire.","موجودة من قبل في مال كل لاعب. لا شيء لتفعله.");
+S("gd.deeds","Starting deeds","Titres de départ","عقود البداية");
+S("gd.deeds.d","Everyone was dealt two properties before the first roll, of about the same total value.","Chacun a reçu deux propriétés avant le premier lancer, d’une valeur totale à peu près égale.","حصل كل لاعب على عقارين قبل أول رمية، بقيمة إجمالية متقاربة.");
+S("gd.deeds.ex","One player might get a Fès street and a station, another two Rabat streets. They add up to roughly the same.","Un joueur peut recevoir une rue de Fès et une gare, un autre deux rues de Rabat. Au total, cela revient à peu près au même.","قد يحصل لاعب على شارع في فاس ومحطة، وآخر على شارعين في الرباط. المجموع متقارب.");
+S("gd.deeds.w","Yours are in the My deeds tab.","Les vôtres sont dans l’onglet Mes titres.","تجد عقاراتك في تبويب ممتلكاتي.");
+S("gd.credit","Credit","Crédit","الكريدي");
+S("gd.credit.d","Borrow from the bank, up to {a} in steps of {s}. Each time you pass Al Inṭilāq, the bank takes 10% of what you still owe. Repay whenever you like.","Empruntez à la banque, jusqu’à {a} par tranches de {s}. À chaque passage par Al Inṭilāq, la banque prend 10 % de ce que vous devez encore. Remboursez quand vous voulez.","اقترض من البنك حتى {a} بدفعات من {s}. كلما مررت بالانطلاق يأخذ البنك 10% مما بقي عليك. سدّد متى شئت.");
+S("gd.credit.ex","Borrow {a}: you pay {b} interest every lap until you repay it.","Empruntez {a} : vous payez {b} d’intérêts à chaque tour jusqu’au remboursement.","اقترض {a}: تدفع {b} فائدة في كل دورة حتى تسدّده.");
+S("gd.credit.w","Credit & Chrika tab: Borrow, and Repay.","Onglet Crédit & Chrika : Emprunter et Rembourser.","تبويب الكريدي والشركة: اقترض وسدّد.");
+S("gd.solidarity","Solidarity salary","Salaire solidaire","راتب التضامن");
+S("gd.solidarity.d","Whoever is poorest when they pass Al Inṭilāq collects double.","Celui qui est le plus pauvre quand il passe Al Inṭilāq touche le double.","من كان أفقر اللاعبين عند مروره بالانطلاق يتقاضى الضعف.");
+S("gd.solidarity.ex","The player with the least money collects {a} instead of {b}.","Le joueur qui a le moins d’argent touche {a} au lieu de {b}.","اللاعب الأقل مالًا يتقاضى {a} بدل {b}.");
+S("gd.solidarity.w","Automatic. The journal says when it happens.","Automatique. Le journal l’indique quand cela arrive.","تلقائي. السجل يخبرك حين يحدث.");
+S("gd.shufa","Shufa","Chefaa","الشفعة");
+S("gd.shufa.d","From round {r}, the player furthest behind may, once in the game, buy any property from its owner at {n}% of its price. The owner must sell.","Dès le tour {r}, le joueur le plus en retard peut, une fois dans la partie, racheter n’importe quelle propriété à son propriétaire pour {n} % de son prix. Le propriétaire doit vendre.","ابتداءً من الجولة {r}، يمكن لأكثر اللاعبين تأخرًا، مرة واحدة في اللعبة، شراء أي عقار من مالكه بـ{n}% من ثمنه. والمالك ملزم بالبيع.");
+S("gd.shufa.ex","{s} costs {a}. With Shufa you pay its owner {b} and it is yours, even if they would rather keep it.","{s} coûte {a}. Avec la Chefaa, vous payez {b} à son propriétaire et elle est à vous, même s’il préférait la garder.","{s} ثمنه {a}. بالشفعة تدفع لمالكه {b} ويصبح لك، حتى لو أراد الاحتفاظ به.");
+S("gd.shufa.w","When you can, My deeds says so. Open the property’s card on the board and press Shufa.","Quand c’est possible, Mes titres vous le dit. Ouvrez la carte de la propriété sur le plateau et appuyez sur Chefaa.","حين يصبح ذلك ممكنًا يخبرك تبويب ممتلكاتي. افتح بطاقة العقار على اللوحة واضغط على الشفعة.");
+S("gd.bills","Utility bills","Factures","الفواتير");
+S("gd.bills.d","Each time you pass Al Inṭilāq, pay the owner of each utility {a} for every dar and {b} for every riad you have built.","À chaque passage par Al Inṭilāq, payez au propriétaire de chaque service {a} par dar et {b} par riad que vous avez construit.","كلما مررت بالانطلاق، ادفع لمالك كل مرفق {a} عن كل دار و{b} عن كل رياض بنيته.");
+S("gd.bills.ex","With 3 dars and a riad you pay {a} to each utility’s owner, every lap. With nothing built, you pay nothing.","Avec 3 dars et un riad, vous payez {a} au propriétaire de chaque service, à chaque tour. Sans construction, vous ne payez rien.","مع 3 دور ورياض واحد تدفع {a} لمالك كل مرفق في كل دورة. وإن لم تبنِ شيئًا لا تدفع شيئًا.");
+S("gd.bills.w","Automatic. Daw w Lma and Maroc Tilikom’s cards show the rates.","Automatique. Les cartes de Daw w Lma et Maroc Tilikom indiquent les tarifs.","تلقائي. بطاقتا الضو والما وماروك تيليكوم تبيّنان الأسعار.");
+S("gd.train","Train travel","Voyages en train","السفر بالقطار");
+S("gd.train.d","A station charges more when the streets on its side of the board are built up: {n}% of their dars’ and riads’ rents. And stop on a station you already own to take the train, free, to another of yours.","Une gare rapporte plus quand les rues de son côté du plateau sont construites : {n} % des loyers de leurs dars et riads. Et arrêté sur une gare qu’on possède déjà, on peut prendre le train, gratuitement, vers une autre de ses gares.","يرتفع كراء المحطة كلما بُنيت شوارع جهتها من اللوحة: {n}% من كراء دورها ورياضاتها. وإذا توقفت في محطة تملكها من قبل، يمكنك ركوب القطار مجانًا إلى محطة أخرى من محطاتك.");
+S("gd.train.ex","{s} alone charges {a}. With riads on every street of its side, it charges {b}.","{s} seule rapporte {a}. Avec des riads sur toutes les rues de son côté, elle rapporte {b}.","{s} وحدها كراؤها {a}. ومع رياض في كل شوارع جهتها يصبح {b}.");
+S("gd.train.w","A 🚆 Train to … button appears in your turn when you stop on your own station.","Un bouton 🚆 Train pour … apparaît pendant votre tour quand vous vous arrêtez sur une de vos gares.","يظهر زر 🚆 القطار إلى … في دورك حين تتوقف في محطة تملكها.");
+S("gd.pause","Timer pause","Minuteur en pause","توقيف المؤقت");
+S("gd.pause.d","When you open Tbadel to write a trade offer, the turn timer stops, for up to two minutes, so nobody is rushed. It also stops while you read this guide on your turn.","Quand vous ouvrez Tbadel pour rédiger une offre d’échange, le minuteur s’arrête, jusqu’à deux minutes, pour que personne ne soit pressé. Il s’arrête aussi pendant que vous lisez ce guide à votre tour.","حين تفتح التبادل لكتابة عرض، يتوقف مؤقت الدور حتى دقيقتين، حتى لا يستعجل أحد. ويتوقف أيضًا وأنت تقرأ هذا الدليل في دورك.");
+S("gd.pause.ex","The timer bar turns grey with ⏸ while you write; it starts again when you send or close the offer.","La barre du minuteur devient grise avec ⏸ pendant que vous écrivez ; elle repart quand vous envoyez ou fermez l’offre.","يصبح شريط المؤقت رماديًا مع ⏸ وأنت تكتب، ويعود حين ترسل العرض أو تغلقه.");
+S("gd.pause.w","The Tbadel button in your turn.","Le bouton Tbadel pendant votre tour.","زر التبادل في دورك.");
+/* one-time house rule tips */
+S("tip.lab","New at this table","Nouveau à cette table","جديد في هذه الطاولة");
+S("tip.ok","Got it","Compris","فهمت");
+S("tip.more","Tell me more","En savoir plus","المزيد");
+S("tip.pause","Your turn timer has stopped while you write this offer, for up to two minutes. It starts again when you send or close it.","Votre minuteur est arrêté pendant que vous rédigez cette offre, jusqu’à deux minutes. Il repart quand vous l’envoyez ou la fermez.","توقف مؤقت دورك وأنت تكتب هذا العرض، حتى دقيقتين. ويعود حين ترسله أو تغلقه.");
+S("tip.ride","{p}, you stopped on a station you own: you can take the train, free, to {s}. Press 🚆 Train to … in your turn.","{p}, vous êtes sur une de vos gares : vous pouvez prendre le train, gratuitement, vers {s}. Appuyez sur 🚆 Train pour … pendant votre tour.","{p}، توقفت في محطة تملكها: يمكنك ركوب القطار مجانًا إلى {s}. اضغط على 🚆 القطار إلى … في دورك.");
+S("tip.shufa","{p}, you are the furthest behind: once in this game you may buy any property from its owner at {n}% of its price, and they must sell. Open its card on the board and press Shufa.","{p}, vous êtes le plus en retard : une fois dans la partie, vous pouvez racheter n’importe quelle propriété à son propriétaire pour {n} % de son prix, et il doit vendre. Ouvrez sa carte sur le plateau et appuyez sur Chefaa.","{p}، أنت الأكثر تأخرًا: مرة واحدة في اللعبة يمكنك شراء أي عقار من مالكه بـ{n}% من ثمنه، وهو ملزم بالبيع. افتح بطاقته على اللوحة واضغط على الشفعة.");
+S("tip.credit","{p}, you are short of money. You can borrow up to {a} from the bank in the Credit & Chrika tab, and repay it when you like.","{p}, il vous manque de l’argent. Vous pouvez emprunter jusqu’à {a} à la banque dans l’onglet Crédit & Chrika, et rembourser quand vous voulez.","{p}، ينقصك المال. يمكنك اقتراض حتى {a} من البنك في تبويب الكريدي والشركة، وتسديده متى شئت.");
+S("tip.bills","{p} just paid {o} {a} in utility bills. At this table, passing Al Inṭilāq costs something for every dar and riad you have built, paid to the owners of the utilities.","{p} vient de payer {a} de factures à {o}. À cette table, passer par Al Inṭilāq coûte quelque chose pour chaque dar et riad construit, payé aux propriétaires des services.","{p} دفع للتو {a} فواتير لـ{o}. في هذه الطاولة، المرور بالانطلاق يكلّف عن كل دار ورياض بنيته، يُدفع لمالكي المرافق.");
+S("tip.solidarity","{p} collected {a}, a double salary, for being the poorest player when they passed Al Inṭilāq.","{p} a touché {a}, un salaire double, parce qu’il était le plus pauvre en passant par Al Inṭilāq.","{p} تقاضى {a}، راتبًا مضاعفًا، لأنه كان أفقر اللاعبين عند مروره بالانطلاق.");
+S("tip.rail","{p} paid {o} {a} at {s}. At this table, the dars and riads on a station’s side of the board make it dearer.","{p} a payé {a} à {o} à {s}. À cette table, les dars et riads du côté d’une gare la rendent plus chère.","{p} دفع {a} لـ{o} في {s}. في هذه الطاولة، الدور والرياضات في جهة المحطة من اللوحة ترفع كراءها.");
+/* rules page */
+S('book',
+`<div class="book"><h3>How a turn works</h3><p>Roll, move, then buy what you land on or send it to the Dlala. Pay rent on other players’ property. Own a whole city to build dars, then a riad. Doubles roll again; three doubles send you to 3okacha.</p>
+<h3>Moroccan rules</h3><div class="tw"><table><tr><th>Classic</th><th>Moropoly</th><th>What it does</th></tr>
+<tr><td>GO</td><td><span class="k">الانطلاق</span> Al Inṭilāq</td><td>Collect 2,000 DH each pass</td></tr>
+<tr><td>Jail</td><td><span class="k">عكاشة</span> 3okacha</td><td>Double, 500 DH, or a get-out card</td></tr>
+<tr><td>Free Parking</td><td><span class="k">القهوة</span> Qahwa</td><td>Take the Daret pot</td></tr>
+<tr><td>Chance</td><td><span class="k">مكتوب</span> Mektoub</td><td>Fate cards</td></tr>
+<tr><td>Community Chest</td><td><span class="k">بركة</span> Baraka</td><td>Family and blessing cards</td></tr>
+<tr><td>Auction</td><td><span class="k">الدلالة</span> Dlala</td><td>Bids in turn, last one standing buys</td></tr>
+<tr><td>House · Hotel</td><td><span class="k">دار · رياض</span></td><td>Four dars, then a riad</td></tr>
+<tr><td>Mortgage</td><td><span class="k">رهن</span> Rahn</td><td>Half the price, lift it for 55%</td></tr>
+<tr><td>Trade</td><td><span class="k">تبادل</span> Tbadel</td><td>Properties and cash</td></tr></table></div>
+<h3>Playing online</h3><ul><li>The game runs on the Moropoly server. Anyone can close the page and come back to the table with the invite link or from the home page.</li><li>If a player drops out, the host can let the computer play for them from the Players tab.</li></ul></div>`,
+`<div class="book"><h3>Déroulement d’un tour</h3><p>Lancez les dés, avancez, puis achetez la case où vous tombez ou mettez-la à la Dlala. Payez un loyer sur les propriétés des autres. Possédez toute une ville pour construire des dars, puis un riad. Un double fait rejouer ; trois doubles vous envoient à 3okacha.</p>
+<h3>Les règles marocaines</h3><div class="tw"><table><tr><th>Classique</th><th>Moropoly</th><th>Effet</th></tr>
+<tr><td>Départ</td><td><span class="k">الانطلاق</span> Al Inṭilāq</td><td>Recevez 2 000 DH à chaque passage</td></tr>
+<tr><td>Prison</td><td><span class="k">عكاشة</span> 3okacha</td><td>Double, 500 DH ou carte de sortie</td></tr>
+<tr><td>Parc gratuit</td><td><span class="k">القهوة</span> Qahwa</td><td>Raflez la cagnotte Daret</td></tr>
+<tr><td>Chance</td><td><span class="k">مكتوب</span> Mektoub</td><td>Cartes du destin</td></tr>
+<tr><td>Caisse de communauté</td><td><span class="k">بركة</span> Baraka</td><td>Cartes de famille et de bénédiction</td></tr>
+<tr><td>Enchères</td><td><span class="k">الدلالة</span> Dlala</td><td>On enchérit à tour de rôle, le dernier achète</td></tr>
+<tr><td>Maison · Hôtel</td><td><span class="k">دار · رياض</span></td><td>Quatre dars, puis un riad</td></tr>
+<tr><td>Hypothèque</td><td><span class="k">رهن</span> Rahn</td><td>La moitié du prix, levée pour 55 %</td></tr>
+<tr><td>Échange</td><td><span class="k">تبادل</span> Tbadel</td><td>Propriétés et argent</td></tr></table></div>
+<h3>Jouer en ligne</h3><ul><li>La partie tourne sur le serveur Moropoly. Chacun peut fermer la page et revenir à la table avec le lien d’invitation ou depuis l’accueil.</li><li>Si un joueur décroche, l’hôte peut laisser l’ordinateur jouer pour lui depuis l’onglet Joueurs.</li></ul></div>`,
+`<div class="book"><h3>كيف يجري الدور</h3><p>ارمِ النرد وتقدّم، ثم اشترِ الخانة التي وصلتها أو أرسلها إلى الدلالة. ادفع الكراء في عقارات الآخرين. امتلك مدينة كاملة لتبني دورًا ثم رياضًا. الدوبل يمنحك رمية أخرى، وثلاثة دوبلات ترسلك إلى عكاشة.</p>
+<h3>القواعد المغربية</h3><div class="tw"><table><tr><th>الأصل</th><th>موروبولي</th><th>ماذا تفعل</th></tr>
+<tr><td>البداية</td><td><span class="k">الانطلاق</span></td><td>احصل على 2,000 درهم في كل مرور</td></tr>
+<tr><td>السجن</td><td><span class="k">عكاشة</span></td><td>دوبل، أو 500 درهم، أو بطاقة خروج</td></tr>
+<tr><td>موقف مجاني</td><td><span class="k">القهوة</span></td><td>خذ صندوق الدارت</td></tr>
+<tr><td>الحظ</td><td><span class="k">مكتوب</span></td><td>بطاقات القدر</td></tr>
+<tr><td>صندوق الجماعة</td><td><span class="k">بركة</span></td><td>بطاقات العائلة والخير</td></tr>
+<tr><td>المزاد</td><td><span class="k">الدلالة</span></td><td>مزايدة بالدور، وآخر من يبقى يشتري</td></tr>
+<tr><td>بيت · فندق</td><td><span class="k">دار · رياض</span></td><td>أربع دور ثم رياض</td></tr>
+<tr><td>الرهن</td><td><span class="k">رهن</span></td><td>نصف الثمن، ويُفكّ بـ 55%</td></tr>
+<tr><td>التبادل</td><td><span class="k">تبادل</span></td><td>عقارات ونقود</td></tr></table></div>
+<h3>اللعب عبر الإنترنت</h3><ul><li>اللعبة تجري على خادم موروبولي. يمكن لأي لاعب أن يغلق الصفحة ويعود إلى الطاولة برابط الدعوة أو من الصفحة الرئيسية.</li><li>إذا انقطع لاعب، يمكن للمضيف أن يترك الحاسوب يلعب مكانه من تبويب اللاعبين.</li></ul></div>`);
+S('store.full','The game store is full. Finish an old game first.','Le stockage des parties est plein. Terminez d’abord une ancienne partie.','مخزن الألعاب ممتلئ. أنهِ لعبة قديمة أولًا.');
+S('store.retry','Could not save the game online. Retrying on the next move.','Impossible d’enregistrer la partie en ligne. Nouvel essai au prochain coup.','تعذّر حفظ اللعبة على الإنترنت. ستُعاد المحاولة في الحركة التالية.');
+S('lbl.player','Player','Joueur','لاعب');
+S('log.joinsMid','{p} joins the game and starts at Al Inṭilāq.','{p} rejoint la partie et commence à Al Inṭilāq.','{p} ينضم إلى اللعبة ويبدأ من الانطلاق.');
+S('pin.title','This table has a code','Cette table a un code','لهذه الطاولة رمز');
+S('pin.help','Ask the host for the code, then type it here.','Demandez le code à l’hôte, puis saisissez-le ici.','اطلب الرمز من المضيف ثم اكتبه هنا.');
+S('pin.ph','Table code','Code de la table','رمز الطاولة');
+S('pin.join','Join the table','Rejoindre la table','انضم إلى الطاولة');
+S('pin.wrong','That code is not right. Try again.','Ce code n’est pas bon. Réessayez.','الرمز غير صحيح. حاول مجددًا.');
+S('pin.checking','Checking the code…','Vérification du code…','جارٍ التحقق من الرمز…');
+S('pin.set','Table code (optional)','Code de la table (facultatif)','رمز الطاولة (اختياري)');
+S('pin.setHelp','Players who open the link must type this code to join.','Les joueurs qui ouvrent le lien devront saisir ce code pour rejoindre.','من يفتح الرابط يجب أن يكتب هذا الرمز للانضمام.');
+S('pin.save','Set code','Définir le code','عيّن الرمز'); S('pin.remove','Remove code','Supprimer le code','أزل الرمز');
+S('pin.on','Code: {c}','Code : {c}','الرمز: {c}'); S('pin.onOther','This table has a code.','Cette table a un code.','لهذه الطاولة رمز.');
+S('pin.off','No code: anyone with the link can join.','Pas de code : toute personne qui a le lien peut rejoindre.','بدون رمز: كل من لديه الرابط يمكنه الانضمام.');
+S('pin.bad','Use 4 to 6 digits.','Utilisez 4 à 6 chiffres.','استعمل من 4 إلى 6 أرقام.');
+S('seat.joinedMid','You’re in! You start at Al Inṭilāq with {a} and play when your turn comes.','Vous êtes dans la partie ! Vous commencez à Al Inṭilāq avec {a} et jouez quand votre tour arrive.','أنت في اللعبة! تبدأ من الانطلاق ومعك {a} وتلعب عندما يحين دورك.');
+S('seat.help','Pick your token and the name shown on the board.','Choisissez votre pion et le nom affiché sur le plateau.','اختر قطعتك والاسم الذي يظهر على اللوحة.');
+S('btn.mySeat','My seat','Ma place','مقعدي'); S('btn.save','Save','Enregistrer','احفظ'); S('btn.done','Done','Terminé','تم');
+S('lb.full','The table is full (8 players). You can watch the game.','La table est complète (8 joueurs). Vous pouvez regarder la partie.','الطاولة ممتلئة (8 لاعبين). يمكنك مشاهدة اللعبة.');
+S('lb.joining','Taking your seat…','Installation à la table…','جارٍ إجلاسك…');
+S('lb.autoNote','You are at the table. Pick your token and change your name if you like.','Vous êtes à la table. Choisissez votre pion et changez votre nom si vous voulez.','أنت على الطاولة. اختر قطعتك وغيّر اسمك إن أردت.');
+S('lb.lateJoin',' Friends can still join with the link after the game starts.',' Vos amis peuvent rejoindre avec le lien même après le début de la partie.',' يمكن لأصدقائك الانضمام بالرابط حتى بعد بدء اللعبة.');
+S('watching','You are watching. The table is full.','Vous regardez : la table est complète.','أنت تشاهد. الطاولة ممتلئة.');
+/* chrika & l'ghedr */
+S('opt.chrika','Chrika (city pacts)','Chrika (pactes de ville)','شركة (شراكة المدن)');
+S('opt.chrikaD','Two players who complete a city together can partner to build, stay free and split rent. At 75% claimed or Round 8, high-risk L’Ghedr unlocks (roll 7+ to escape with 70%, or bust and lose the city).','Deux joueurs qui complètent une ville ensemble peuvent s’associer pour construire, passer gratuitement et partager le loyer. À 75 % achetés ou au tour 8, L’Ghedr à haut risque se débloque (7+ pour fuir avec 70 %, sinon votre partenaire rafle la ville).','لاعبان يملكان مدينة معًا يمكنهما عقد شركة للبناء والإقامة المجانية وتقاسم الكراء. عند 75% من العقارات أو الجولة 8 يُفتح الغدر عالي المخاطرة (7+ للهروب بـ70% وإلا يأخذ شريكك المدينة كاملة).');
+S('btn.chrika','Chrika','Chrika','شركة');
+S('btn.chrikaPropose','Propose Chrika','Proposer une Chrika','اقترح شركة');
+S('btn.chrikaExit','Clean exit','Sortie propre','انفصال ودي');
+S('btn.ghedr','L’Ghedr','L’Ghedr','الغدر');
+S('btn.ghedrGo','L’Ghedr · 7+ ({a})','L’Ghedr · 7+ ({a})','الغدر · 7+ ({a})');
+S('pill.chrika','Chrika','Chrika','شركة');
+S('pill.creply','Chrika offer','Offre Chrika','عرض شركة');
+S('pill.ghedr','L’Ghedr','L’Ghedr','الغدر');
+S('badge.gheddar','Gheddar','Gheddar','غدّار');
+S('ch.title','Chrika · City Pacts','Chrika · Pactes de ville','شركة · شراكات المدن');
+S('ch.locked','L’Ghedr unlocks in {n} tiles or Round {r}','L’Ghedr se débloque dans {n} cases ou au tour {r}','يُفتح الغدر بعد {n} عقارات أو في الجولة {r}');
+S('ch.unlocked','L’Ghedr unlocked — roll 7+ to cash out, or get busted!','L’Ghedr débloqué — faites 7+ pour fuir avec le pactole, ou faites-vous prendre !','الغدر مفتوح — ارمِ 7+ للهروب بالمال، أو يُقبض عليك!');
+S('ch.active','Active Chrikas','Chrikas actives','الشراكات النشطة');
+S('ch.available','Cities ready for a Chrika','Villes prêtes pour une Chrika','مدن جاهزة للشركة');
+S('ch.none','Own every street of a city together with one other player (in a 3+ player game) to propose a Chrika.','Possédez toutes les rues d’une ville à deux (à 3 joueurs ou plus) pour proposer une Chrika.','امتلك كل شوارع مدينة مع لاعب واحد آخر (في لعبة من 3 لاعبين فأكثر) لتقترح شركة.');
+S('ch.blocked','You are marked Gheddar — no new Chrikas, no Credit, no Daret pot, 3× bail, and +25% rent to your victim.','Vous êtes marqué Gheddar — plus de Chrika, crédit bloqué, pas de Daret, caution ×3 et +25 % de loyer chez votre victime.','أنت موسوم كغدّار — لا شراكات جديدة، لا كريدي، لا دارت، كفالة ×3 و+25% كراء لضحيتك.');
+S('ch.split','Outsider rent split','Partage du loyer extérieur','تقاسم كراء الغرباء');
+S('ch.splitLine','{p} {n}% · {o} {m}%','{p} {n} % · {o} {m} %','{p} {n}% · {o} {m}%');
+S('ch.partner','Partner: {o}','Partenaire : {o}','الشريك: {o}');
+S('ch.val','Clean exit: {a} · Heist (7+): {b}','Sortie propre : {a} · Casse (7+) : {b}','انفصال: {a} · الغدر (7+): {b}');
+S('ch.sent','Chrika offer sent to {p}.','Offre de Chrika envoyée à {p}.','أُرسل عرض الشركة إلى {p}.');
+S('ch.exitSent','Clean exit proposed to {p}.','Sortie propre proposée à {p}.','اقتُرح الانفصال الودي على {p}.');
+S('ch.deedNote','Chrika: {a} ({n}%) & {b} ({m}%) — free stay between partners; streets locked while active.','Chrika : {a} ({n} %) & {b} ({m} %) — gratuit entre partenaires ; rues bloquées tant qu’elle dure.','شركة: {a} ({n}%) و{b} ({m}%) — إقامة مجانية بين الشريكين؛ الشوارع مقفلة أثناء الشراكة.');
+S('ch.ghedrTitle','Pull L’Ghedr on {g}?','Lancer L’Ghedr sur {g} ?','تنفيذ الغدر في {g}؟');
+S('ch.ghedrWin','Roll 7+ (~58%): Heist succeeds! Pocket {a} (+{d} seized to Daret), {g} returns to the bank, and flee to 3okacha.','Faites 7+ (~58 %) : Casse réussi ! Empochez {a} (+{d} saisis pour la Daret), {g} revient à la banque, direction 3okacha.','ارمِ 7+ (~58%): ينجح الغدر! تأخذ {a} (+{d} لصندوق الدارت)، وتعود {g} للبنك، وتهرب إلى عكاشة.');
+S('ch.ghedrLose','Roll 2–6 (~42%): BUSTED! 0 DH, straight to 3okacha, and {o} seizes ALL of {g} as a solo monopoly!','Faites 2–6 (~42 %) : PRIS LA MAIN DANS LE SAC ! 0 DH, direction 3okacha, et {o} rafle tout {g} en monopole !','ارمِ 2–6 (~42%): يُقبض عليك! 0 درهم، فورًا إلى عكاشة، ويستولي {o} على {g} كاملة وحده!');
+S('ch.ghedrCurse','Gheddar curse (permanent): 3× bail & 0 rent in 3okacha · Bank Credit locked · No Daret pot · +25% revenge rent to {o} · No future Chrikas.','Malédiction Gheddar (permanente) : caution ×3 et 0 loyer à 3okacha · Crédit bloqué · Pas de Daret · +25 % de loyer chez {o} · Plus de Chrika.','لعنة الغدّار (دائمة): كفالة ×3 ولا كراء في عكاشة · لا كريدي · لا دارت · +25% كراء انتقامي لـ{o} · لا شراكات جديدة.');
+S('ch.ghedrLockedTip','Unlocks at 75% of properties claimed or Round 8','Se débloque à 75 % des propriétés achetées ou au tour 8','يُفتح عند امتلاك 75% من العقارات أو في الجولة 8');
+S('cr.blacklisted','Blacklisted (Gheddar) — bank Credit is locked for the rest of the game.','Liste noire (Gheddar) — le crédit bancaire est bloqué jusqu’à la fin.','محظور (غدّار) — قرض البنك مقفل حتى نهاية اللعبة.');
+S('chr.formTitle','Chrika offer for {p}','Offre de Chrika pour {p}','عرض شركة لـ{p}');
+S('chr.exitTitle','Clean exit offer for {p}','Offre de sortie propre pour {p}','عرض انفصال ودي لـ{p}');
+S('chr.formBody','<b>{p}</b> proposes a <b>{g}</b> Chrika: you both build right away, stay free on each other’s streets, and split outsider rent <b>{p} {n}% / {o} {m}%</b>.','<b>{p}</b> propose une Chrika sur <b>{g}</b> : vous construisez aussitôt, séjournez gratuitement chez l’autre et partagez le loyer extérieur <b>{p} {n} % / {o} {m} %</b>.','<b>{p}</b> يقترح شركة في <b>{g}</b>: تبنيان فورًا، وتقيمان مجانًا في شوارع بعضكما، وتتشاركان كراء الغرباء <b>{p} {n}% / {o} {m}%</b>.');
+S('chr.exitBody','<b>{p}</b> proposes a proportional clean exit from <b>{g}</b>: the bank pays <b>{a}</b> total — <b>{b}</b> to you and <b>{c}</b> to {p}.','<b>{p}</b> propose une sortie propre proportionnelle de <b>{g}</b> : la banque paie <b>{a}</b> au total — <b>{b}</b> pour vous et <b>{c}</b> pour {p}.','<b>{p}</b> يقترح انفصالًا وديًا نسبيًا من <b>{g}</b>: يدفع البنك <b>{a}</b> إجمالًا — <b>{b}</b> لك و<b>{c}</b> لـ{p}.');
+S('tc.chrikaOffer','<b>{p}</b> offered <b>{o}</b> a {g} Chrika ({n}% / {m}%).','<b>{p}</b> propose une Chrika sur {g} à <b>{o}</b> ({n} % / {m} %).','<b>{p}</b> عرض على <b>{o}</b> شركة في {g} ({n}% / {m}%).');
+S('tc.chrikaExitOffer','<b>{p}</b> proposed a clean exit on {g} to <b>{o}</b>.','<b>{p}</b> propose une sortie propre sur {g} à <b>{o}</b>.','<b>{p}</b> اقترح على <b>{o}</b> انفصالًا وديًا في {g}.');
+S('why.chrikaRent','Chrika rent ({n}%) at {s}','loyer Chrika ({n} %) à {s}','كراء الشركة ({n}%) في {s}');
+S('why.revengeRent','revenge rent (+25%) at {s}','loyer de vengeance (+25 %) à {s}','كراء الانتقام (+25%) في {s}');
+S('log.chrikaOffer','{p} offers {o} a {g} Chrika ({n}% / {m}%).','{p} propose à {o} une Chrika sur {g} ({n} % / {m} %).','{p} يعرض على {o} شركة في {g} ({n}% / {m}%).');
+S('log.chrikaExitOffer','{p} proposes a clean exit on {g} to {o}.','{p} propose une sortie propre sur {g} à {o}.','{p} يقترح على {o} انفصالًا وديًا في {g}.');
+S('log.chrikaDeal','{p} and {o} signed a {g} Chrika ({n}% / {m}%)!','{p} et {o} ont signé une Chrika sur {g} ({n} % / {m} %) !','وقّع {p} و{o} شركة في {g} ({n}% / {m}%)!');
+S('log.chrikaRefuse','{p} declined the {g} Chrika offer.','{p} a refusé l’offre de Chrika sur {g}.','رفض {p} عرض الشركة في {g}.');
+S('log.chrikaFree','{p} stays free at {s} ({o}’s Chrika partner).','{p} séjourne gratuitement à {s} (partenaire Chrika de {o}).','أقام {p} مجانًا في {s} (شريك {o} في الشركة).');
+S('log.chrikaExit','{p} and {o} closed their {g} Chrika cleanly ({a} / {b}).','{p} et {o} ont clos leur Chrika sur {g} ({a} / {b}).','أنهى {p} و{o} شركة {g} وديًا ({a} / {b}).');
+S('log.chrikaEnd','The {g} Chrika dissolved.','La Chrika sur {g} a été dissoute.','انحلّت شركة {g}.');
+S('log.chrikaEnd2','Only two players remain — active Chrikas dissolved for the final showdown.','Plus que deux joueurs — les Chrikas actives sont dissoutes pour le duel final.','بقي لاعبان فقط — انحلّت الشراكات النشطة للمواجهة الأخيرة.');
+S('log.ghedrOpen','L’Ghedr is now unlocked! Any Chrika partner can gamble on a 7+ heist!','L’Ghedr est débloqué ! Tout partenaire de Chrika peut tenter un casse (7+) !','الغدر مفتوح الآن! يمكن لأي شريك المخاطرة بمحاولة الغدر (7+)!');
+S('log.ghedr','L’GHEDR! {p} rolled {d1}+{d2} ({tot}) and liquidated {o}’s {g} — pocketed {a}, {d} to Daret, fled to 3okacha!','L’GHEDR ! {p} a fait {d1}+{d2} ({tot}) et liquidé {g} de {o} — {a} empochés, {d} pour la Daret, direction 3okacha !','الغدر! رمى {p} {d1}+{d2} ({tot}) وباع {g} — أخذ {a} و{d} للدارت وهرب إلى عكاشة!');
+S('log.ghedrBusted','BUSTED! {p} rolled {d1}+{d2} ({tot}) trying L’Ghedr on {g} — sent to 3okacha while {o} seizes the entire city!','PRIS ! {p} a fait {d1}+{d2} ({tot}) en tentant L’Ghedr sur {g} — direction 3okacha et {o} rafle toute la ville !','حصل! رمى {p} {d1}+{d2} ({tot}) في محاولة الغدر في {g} — إلى عكاشة واستولى {o} على المدينة كاملة!');
+S('log.ghedrClawback','Bank blacklist: {a} seized from {p}’s heist to repay their loan.','Liste noire : la banque saisit {a} sur le casse de {p} pour solder son prêt.','القائمة السوداء: اقتطع البنك {a} من غنيمة {p} لتسديد قرضه.');
+S('log.gheddarNoDaret','{p} is marked Gheddar and cannot claim the {a} Daret pot at Qahwa!','{p} est marqué Gheddar et ne peut pas toucher la cagnotte Daret ({a}) !','{p} موسوم كغدّار ولا يمكنه أخذ صندوق الدارت ({a}) في القهوة!');
+S('fl.chrika','Chrika!','Chrika !','شركة!');
+S('fl.ghedr','L’GHEDR!','L’GHEDR !','الغدر!');
+S('fl.busted','BUSTED!','PRIS !','حصلت!');
+S('fl.monopoly','CITY SEIZED!','VILLE PRISE !','المدينة لك!');
+S('ev.ghedrOpen','L’Ghedr is unlocked! (7+ heist)','L’Ghedr est débloqué ! (casse 7+)','الغدر مفتوح الآن! (رمية 7+)');
+S('ev.ghedrRoll','🎲 L’Ghedr Escape Roll (need 7+): {p} rolls {d1} + {d2} = {tot}!','🎲 Lancer L’Ghedr (7+ requis) : {p} fait {d1} + {d2} = {tot} !','🎲 رمية هروب الغدر (7+): رمى {p} {d1} + {d2} = {tot}!');
+S('ch.almost','Almost ready — grab the missing street!','Presque prêt — prenez la rue manquante !','شبه جاهزة — امتلك الشارع المتبقي!');
+S('ch.missing','{n} unowned','{n} libre(s)','بقي {n}');
+S('ch.unowned','Bank','Banque','البنك');
+S('ch.yours','You','Vous','أنت');
+S('ch.perkBuild','Build riads right away','Bâtir aussitôt','البناء فورًا');
+S('ch.perkFree','Free stay together','Séjour gratuit','إقامة مجانية');
+S('ch.perkSplit','Split outsider rent','Loyer partagé','تقاسم الكراء');
+S('ch.cBail','3× Bail & 0 jail rent','Caution ×3 & 0 loyer','كفالة ×3 ولا كراء');
+S('ch.cCredit','No Bank Credit','Crédit bloqué','لا كريدي');
+S('ch.cDaret','No Daret Pot','Pas de Daret','لا دارت');
+S('ch.cRevenge','+25% rent to {o}','+25 % chez {o}','+25% لـ{o}');
+S('ch.cityToBank','{g} returns to the bank','{g} revient à la banque','تعود {g} للبنك');
+S('ch.seizesAll','{o} seizes ALL of {g}!','{o} rafle tout {g} !','يستولي {o} على {g} كاملة!');
+S('ch.youGet','{p} gets','{p} reçoit','يأخذ {p}');
+S('ch.daretCut','+{a} → Daret','+{a} → Daret','+{a} ← الدارت');
+S('ch.otherPacts','Other table Chrikas','Autres Chrikas à la table','شراكات أخرى على الطاولة');
+S('gd.chrika','Chrika & L’Ghedr','Chrika & L’Ghedr','الشركة والغدر');
+S('gd.chrika.d','Two players who complete a city together (in a 3+ player game) can sign a Chrika to build right away, stay free on each other’s streets and split outsider rent. Clean Exit pays {n}% proportionally to what each invested. At 75% of properties claimed or Round 8, high-risk L’Ghedr unlocks: roll 7+ (~58%) to pocket 70% (+10% to Daret) and return the city to the bank — or roll 2–6 (~42%) and get BUSTED, handing the entire city monopoly to your partner! Either way, you go to 3okacha with the permanent Gheddar curse (3× bail, 0 rent in 3okacha, no Credit, no Daret pot, +25% revenge rent to your victim).','Deux joueurs complétant une ville (à 3+ joueurs) peuvent signer une Chrika pour bâtir tout de suite, passer gratuitement et partager le loyer extérieur. La sortie propre rembourse {n} % proportionnellement à l’investissement de chacun. À 75 % achetés ou au tour 8, L’Ghedr à haut risque se débloque : faites 7+ (~58 %) pour empocher 70 % (+10 % pour la Daret) et rendre la ville à la banque — ou 2–6 (~42 %) pour vous faire prendre et offrir tout le monopole à votre partenaire ! Dans tous les cas : 3okacha et malédiction Gheddar (caution ×3, 0 loyer en prison, plus de crédit ni de Daret, +25 % de loyer chez votre victime).','لاعبان يملكان مدينة كاملة (في لعبة من 3+ لاعبين) يمكنهما عقد شركة للبناء فورًا والإقامة المجانية وتقاسم كراء الغرباء. الانفصال الودي يدفع {n}% نسبيًا حسب استثمار كل طرف. عند 75% من العقارات أو الجولة 8 يُفتح الغدر عالي المخاطرة: ارمِ 7+ (~58%) لتأخذ 70% (+10% للدارت) وتعود المدينة للبنك — أو 2–6 (~42%) فيُقبض عليك ويستولي شريكك على المدينة كاملة! وفي الحالتين تذهب إلى عكاشة مع لعنة الغدّار الدائمة (كفالة ×3، لا كراء في عكاشة، لا كريدي، لا دارت، +25% كراء انتقامي لضحيتك).');
+S('gd.chrika.ex','You and Salma share Marrakech. Once Round 8 hits (or 75% of tiles sell), you can gamble on L’Ghedr: roll 7+ for a massive 70% cashout, or roll 6 or under and hand Salma a full Marrakech monopoly!','Vous partagez Marrakech avec Salma. Dès le tour 8 (ou 75 % vendus), tentez L’Ghedr : 7+ pour rafler 70 % cash, ou 6 et moins pour offrir tout Marrakech à Salma !','تتشارك مراكش مع سلمى. عند الجولة 8 (أو بيع 75%) يمكنك المخاطرة بالغدر: 7+ لأخذ 70% نقدًا، أو 6 فأقل فتسلّم مراكش كاملة لسلمى!');
+S('gd.chrika.w','The Chrika button in your turn or in the Credit & Chrika tab.','Le bouton Chrika pendant votre tour ou dans l’onglet Crédit & Chrika.','زر الشركة في دورك أو في تبويب الكريدي والشركة.');
+S('tip.chrika','{p}, you and {o} together own all of {g}! Open Chrika to partner up, unlock building and split outsider rent.','{p}, vous et {o} possédez toute la ville de {g} ! Ouvrez Chrika pour vous associer, construire et partager le loyer.','{p}، أنت و{o} تملكان مدينة {g} كاملة! افتح الشركة لتتشاركا البناء وتتقاسما الكراء.');
+S('tip.ghedrOpen','L’Ghedr is unlocked! Any Chrika partner can now gamble on a 7+ escape roll for 70% cash — or get busted and lose the entire city to their partner.','L’Ghedr est débloqué ! Un partenaire de Chrika peut tenter un lancer 7+ pour 70 % cash — ou se faire prendre et perdre toute la ville au profit de son partenaire.','الغدر مفتوح الآن! يمكن لأي شريك المخاطرة برمية 7+ للحصول على 70% نقدًا — أو يُقبض عليه ويخسر المدينة كاملة لصالح شريكه.');
